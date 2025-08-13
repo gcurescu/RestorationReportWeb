@@ -282,10 +282,10 @@ export default function LandingPage() {
       <header className="bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/70 border-b border-slate-200 sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <a href="#" className="flex items-center gap-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded">
+            <button type="button" onClick={() => window.location.reload()} className="flex items-center gap-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded">
               <LogoMark />
               <span className="font-bold text-slate-900 text-sm sm:text-base">Restoration Report</span>
-            </a>
+            </button>
             <nav className="hidden md:flex items-center gap-6 text-sm">
               <a href="#features" className="text-slate-600 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded px-1">Features</a>
               <a href="#how-it-works" className="text-slate-600 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded px-1">How it works</a>
@@ -435,7 +435,7 @@ export default function LandingPage() {
         <div className="fixed bottom-0 inset-x-0 bg-white border-t border-slate-200 shadow-lg z-50">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
             <form onSubmit={(e) => handleSubmit(e, stickyEmail, true)} className="flex items-center gap-3" aria-label="Sticky signup form">
-              <label htmlFor="sticky-email" className="sr-only">Email</label>
+              <label htmlFor="sticky-email" className="sr-only">Work Email Address</label>
               <input
                 id="sticky-email"
                 type="email"
@@ -488,7 +488,7 @@ function SignupForm({ email, zip, setEmail, setZip, utmParams, isSubmitting, sub
       ))}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="flex-1">
-          <label htmlFor="email" className="sr-only">Email</label>
+          <label htmlFor="email" className="sr-only">Work Email Address</label>
           <input
             id="email"
             type="email"
@@ -502,7 +502,7 @@ function SignupForm({ email, zip, setEmail, setZip, utmParams, isSubmitting, sub
           />
         </div>
         <div className="sm:w-32">
-          <label htmlFor="zip" className="sr-only">ZIP</label>
+          <label htmlFor="zip" className="sr-only">ZIP Code</label>
           <input
             id="zip"
             type="text"

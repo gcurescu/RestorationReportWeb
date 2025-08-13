@@ -1,7 +1,4 @@
-.App {
-  text-align: center;
-}
-
+/* Minimal reset - removed global text-align center to avoid Tailwind conflicts */
 .App-logo {
   height: 40vmin;
   pointer-events: none;
