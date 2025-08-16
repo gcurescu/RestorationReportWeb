@@ -13,7 +13,7 @@ const getEmailDomain = (email) => {
   return parts.length > 1 ? parts[1] : 'unknown';
 };
 
-export function EmailSignup({ id = "signup" }) {
+export function EmailSignup({ id = 'signup' }) {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -43,7 +43,7 @@ export function EmailSignup({ id = "signup" }) {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ email: email.trim() })
+          body: JSON.stringify({ email: email.trim() }),
         });
 
         if (!response.ok) {
@@ -56,10 +56,10 @@ export function EmailSignup({ id = "signup" }) {
 
       // Track successful submission
       analytics.waitlistSubmit(getEmailDomain(email));
-      
+
       setIsSuccess(true);
-    } catch (error) {
-      console.error('Waitlist submission error:', error);
+    } catch (err) {
+      console.error('Waitlist submission error:', err);
       setError('Something went wrong. Please try again.');
     } finally {
       setIsSubmitting(false);
@@ -81,14 +81,15 @@ export function EmailSignup({ id = "signup" }) {
   return (
     <form id={id} onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label htmlFor="email" className="sr-only">
+        <label htmlFor="signup-email" className="sr-only">
           Email address
         </label>
         <input
           type="email"
-          id="email"
+          id="signup-email"
           name="email"
           required
+          aria-label="Email address"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Enter your email address"
@@ -97,20 +98,19 @@ export function EmailSignup({ id = "signup" }) {
           disabled={isSubmitting}
         />
         {error && (
-          <div id="email-error" className="text-red-600 text-sm mt-2">
+          <div id="email-error" className="text-red-600 text-sm mt-2" aria-live="polite" role="status">
             {error}
           </div>
         )}
       </div>
-      
+
       <button
         type="submit"
         disabled={isSubmitting}
         className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        >
+      >
         {isSubmitting ? 'Joining...' : 'Join waitlist'}
       </button>
-
 
       <p className="text-xs text-slate-500 text-center">
         No spam. Unsubscribe anytime. No credit card for beta.

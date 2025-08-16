@@ -6,7 +6,8 @@ function RestorationReportLogo({ className = "w-8 h-8" }) {
     <img
       src="/RestorationReportLogo.png"
       alt="Restoration Report Logo"
-      className={className}
+  className={className}
+  loading="lazy"
     />
   );
 }

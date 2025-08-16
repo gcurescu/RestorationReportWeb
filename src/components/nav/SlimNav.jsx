@@ -6,7 +6,8 @@ function LogoMark() {
     <img 
       src="/RR_Icon.png" 
       alt="Restoration Report Logo" 
-      className="h-8 w-8 object-contain"
+  className="h-8 w-8 object-contain"
+  loading="lazy"
     />
   );
 }

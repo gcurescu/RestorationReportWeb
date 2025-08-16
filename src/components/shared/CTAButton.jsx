@@ -5,7 +5,8 @@ export function CTAButton({
   onClick, 
   children = "Join waitlist",
   className = "",
-  variant = "primary"
+  variant = "primary",
+  ...props
 }) {
   const baseClasses = "inline-flex items-center justify-center px-6 py-3 rounded-lg font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 transition-colors";
   
@@ -48,6 +49,7 @@ export function CTAButton({
         onClick={handleClick}
         className={combinedClasses}
         data-analytics="cta"
+        {...props}
       >
         {children}
       </button>
@@ -60,6 +62,7 @@ export function CTAButton({
       onClick={handleClick}
       className={combinedClasses}
       data-analytics="cta"
+      {...props}
     >
       {children}
     </a>

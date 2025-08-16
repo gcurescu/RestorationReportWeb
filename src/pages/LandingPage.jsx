@@ -83,6 +83,31 @@ export default function LandingPage() {
     setUtmParams(params);
   }, []);
 
+  // Global handler: smooth-scroll any link/button that points to #signup
+  useEffect(() => {
+    function handleClick(e) {
+      // Find closest anchor or button with href or data-href
+      const target = e.target.closest && e.target.closest('a[href="#signup"], button[data-href="#signup"], [data-cta="signup"]');
+      if (target) {
+        e.preventDefault();
+        const el = document.getElementById('signup');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          // Focus the first input (email) inside the signup form after scrolling
+          setTimeout(() => {
+            const input = el.querySelector && (el.querySelector('#signup-email') || el.querySelector('input[type="email"]'));
+            if (input && typeof input.focus === 'function') {
+              try { input.focus({ preventScroll: true }); } catch { input.focus(); }
+            }
+          }, 400);
+        }
+      }
+    }
+
+    document.addEventListener('click', handleClick, { capture: true });
+    return () => document.removeEventListener('click', handleClick, { capture: true });
+  }, []);
+
   const faqData = [
     { q: 'Who is this for?', a: 'Water, fire, and mold mitigation contractors who need professional reports for insurance adjusters. Especially helpful for crews handling multiple claims per week.' },
     { q: 'Do you integrate with adjuster portals?', a: 'We generate clean PDFs that work with any portal - Xactimate, CoreLogic, or email. No complex integrations needed.' },
@@ -104,7 +129,15 @@ export default function LandingPage() {
 
   function scrollToSignup() {
     const el = document.getElementById('signup');
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(() => {
+        const input = el.querySelector && (el.querySelector('#signup-email') || el.querySelector('input[type="email"]'));
+        if (input && typeof input.focus === 'function') {
+          try { input.focus({ preventScroll: true }); } catch { input.focus(); }
+        }
+      }, 400);
+    }
   }
 
   return (
@@ -114,8 +147,8 @@ export default function LandingPage() {
       {/* Slim Navigation */}
       <SlimNav />
 
-      {/* Hero Section */}
-      <Hero />
+  {/* Hero Section */}
+  <Hero subcopy="Generate Water, Fire, and Mold reports your adjuster can approve on first pass." />
 
       {/* Social Proof */}
       <SocialProof />
@@ -158,7 +191,7 @@ export default function LandingPage() {
       {/* Section CTA after Features */}
       <section className="py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionCTA />
+          <SectionCTA ctaHref="#signup" data-cta="signup" />
         </div>
       </section>
 
@@ -183,6 +216,7 @@ export default function LandingPage() {
           <SectionCTA 
             title="Ready to transform your reporting?"
             description="Join restoration professionals who are saving hours on every claim."
+            ctaHref="#signup" data-cta="signup"
           />
         </div>
       </section>
@@ -246,6 +280,7 @@ export default function LandingPage() {
           <SectionCTA 
             title="Ready to get started?"
             description="Join the waitlist and be among the first to create professional reports that adjusters love."
+            ctaHref="#signup" data-cta="signup"
           />
         </div>
       </section>
@@ -260,7 +295,7 @@ export default function LandingPage() {
               <span className="font-bold text-sm sm:text-base">Restoration Report</span>
             </div>
             <div className="flex gap-6 text-sm">
-              <a href="/privacy" className="text-slate-400 hover:text-white transition-colors">Privacy</a>
+              <a href="/privacy.html" className="text-slate-400 hover:text-white transition-colors">Privacy</a>
             </div>
           </div>
           <p className="mt-4 text-sm text-slate-400 max-w-2xl">Made for Water, Fire, and Mold mitigation teams. Not affiliated with Encircle or Xactimate.</p>

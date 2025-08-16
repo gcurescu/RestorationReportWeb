@@ -396,7 +396,7 @@ export default function LandingPage() {
                 <li className="flex items-start gap-3"><Check /><span>Clear value prop and proof sections</span></li>
                 <li className="flex items-start gap-3"><Check /><span>Optional ZIP to prioritize invites by territory</span></li>
               </ul>
-              <div id="signup" className="scroll-mt-24">
+              <div id="signup-section" className="scroll-mt-24">
                 <SignupForm
                   email={email}
                   zip={zip}
