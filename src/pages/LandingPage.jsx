@@ -160,6 +160,21 @@ export default function LandingPage() {
             <h2 id="sample-heading" className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">Sample Report</h2>
             <p className="text-lg text-slate-600 mb-8">See what your reports will look like</p>
             <div className="flex justify-center"><MockReportPreview /></div>
+            <div className="mt-8">
+              <button 
+                onClick={() => {
+                  // Trigger the modal in the SampleReport component
+                  const sampleReportElement = document.querySelector('[data-sample-report]');
+                  if (sampleReportElement) {
+                    const viewButton = sampleReportElement.querySelector('button');
+                    if (viewButton) viewButton.click();
+                  }
+                }}
+                className="inline-flex items-center bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-medium shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-600 text-sm"
+              >
+                View Full Sample Report →
+              </button>
+            </div>
             </div>
         </section>
 

@@ -627,7 +627,7 @@ export default function SampleReport() {
 
   return (
     <>
-      <div className="w-full max-w-sm mx-auto rounded-lg shadow-lg border border-slate-200 bg-white overflow-hidden">
+      <div className="w-full max-w-sm mx-auto rounded-lg shadow-lg border border-slate-200 bg-white overflow-hidden" data-sample-report>
         {/* Scrollable container with fixed height */}
         <div className="h-96 overflow-y-auto">
           {/* Header */}
