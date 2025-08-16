@@ -1,0 +1,282 @@
+import { useState, useEffect } from 'react';
+import { SlimNav } from '../components/nav/SlimNav';
+import { Hero } from '../components/hero/Hero';
+import { SocialProof } from '../components/proof/SocialProof';
+import { SectionCTA } from '../components/shared/SectionCTA';
+import SampleReport from './SampleReport.jsx';
+
+// Reusable components from original (keeping for backward compatibility)
+function FeatureCard({ title, description }) {
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h3 className="font-semibold text-slate-900 mb-2 text-base">{title}</h3>
+      <p className="text-slate-600 text-sm leading-relaxed">{description}</p>
+    </div>
+  );
+}
+
+function StepCard({ number, title, description }) {
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="flex items-center gap-3 mb-3">
+        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-100 text-blue-600 font-bold text-sm" aria-hidden>{number}</div>
+        <h3 className="font-semibold text-slate-900 text-base">{title}</h3>
+      </div>
+      <p className="text-slate-600 text-sm leading-relaxed">{description}</p>
+    </div>
+  );
+}
+
+function Faq({ q, a }) {
+  const [open, setOpen] = useState(false);
+  const id = q.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  return (
+    <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+      <button
+        type="button"
+        className="flex w-full items-center justify-between text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
+        aria-expanded={open}
+        aria-controls={id}
+        onClick={() => setOpen(o => !o)}
+      >
+        <span className="font-medium text-slate-900 pr-4 text-sm md:text-base">{q}</span>
+        <span className="text-slate-500" aria-hidden>{open ? '-' : '+'}</span>
+      </button>
+      {open && (
+        <div id={id} className="mt-3 text-sm text-slate-600 leading-relaxed">
+          {a}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function LogoMark() {
+  return (
+    <img 
+      src="/RR_Icon.png" 
+      alt="Restoration Report Logo" 
+      className="h-8 w-8 object-contain"
+    />
+  );
+}
+
+function MockReportPreview() {
+  return <SampleReport />;
+}
+
+export default function LandingPage() {
+  // UTM state
+  const [utmParams, setUtmParams] = useState({});
+  // ROI calculator state
+  const [claimsPerMonth, setClaimsPerMonth] = useState(10);
+  const [hoursPerClaim, setHoursPerClaim] = useState(2);
+
+  useEffect(() => {
+    // Parse UTM parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const params = {};
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].forEach(param => {
+      const value = urlParams.get(param);
+      if (value) params[param] = value;
+    });
+    setUtmParams(params);
+  }, []);
+
+  const faqData = [
+    { q: 'Who is this for?', a: 'Water, fire, and mold mitigation contractors who need professional reports for insurance adjusters. Especially helpful for crews handling multiple claims per week.' },
+    { q: 'Do you integrate with adjuster portals?', a: 'We generate clean PDFs that work with any portal - Xactimate, CoreLogic, or email. No complex integrations needed.' },
+    { q: 'Will my data be private?', a: 'Yes. Your job data stays private and secure. We do not share information with competitors or insurance companies.' },
+    { q: 'How do invites work?', a: 'We are rolling out to Chicagoland first, then expanding. ZIP codes help us prioritize. Beta is free - no credit card required.' }
+  ];
+
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqData.map(item => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: { '@type': 'Answer', text: item.a }
+    }))
+  };
+
+  const derivedHours = (claimsPerMonth * hoursPerClaim) || 0;
+
+  function scrollToSignup() {
+    const el = document.getElementById('signup');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  return (
+    <div className="min-h-screen bg-slate-50 text-slate-800">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      
+      {/* Slim Navigation */}
+      <SlimNav />
+
+      {/* Hero Section */}
+      <Hero />
+
+      {/* Social Proof */}
+      <SocialProof />
+
+      {/* Features */}
+      <section id="features" className="py-16 bg-white" aria-labelledby="features-heading">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 id="features-heading" className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">Everything you need for professional reports</h2>
+            <p className="text-lg text-slate-600">Stop juggling multiple apps and spreadsheets</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+            <FeatureCard title="Moisture and Equipment Logs" description="Capture readings as you go - auto roll-up into tables." />
+            <FeatureCard title="Before/After and Scope" description="Attach photos and scope notes side by side for adjusters." />
+            <FeatureCard title="One-tap Export" description="Generate polished PDFs you can email or upload to claim portals." />
+          </div>
+        </div>
+      </section>
+
+      {/* Section CTA after Features */}
+      <section className="py-16">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SectionCTA />
+        </div>
+      </section>
+
+      {/* How it works */}
+      <section id="how-it-works" className="py-16 bg-white" aria-labelledby="how-heading">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 id="how-heading" className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">How it works</h2>
+            <p className="text-lg text-slate-600">Simple workflow that fits your process</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+            <StepCard number="1" title="Capture on site" description="Take photos, record moisture readings, and add equipment as you work the job." />
+            <StepCard number="2" title="Auto-organize" description="Everything gets sorted into the right sections automatically - photos, logs, scope." />
+            <StepCard number="3" title="Export and share" description="One tap generates a clean PDF ready for adjusters, claim portals, or email." />
+          </div>
+        </div>
+      </section>
+
+      {/* Section CTA after How it Works */}
+      <section className="py-16">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SectionCTA 
+            title="Ready to transform your reporting?"
+            description="Join restoration professionals who are saving hours on every claim."
+          />
+        </div>
+      </section>
+
+      {/* ROI calculator */}
+      <section id="roi" className="py-16 bg-white" aria-labelledby="roi-heading">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-slate-50 rounded-xl border border-slate-200 p-8 shadow-sm">
+            <div className="text-center mb-8">
+              <h2 id="roi-heading" className="text-2xl font-bold text-slate-900 mb-2">Calculate your time savings</h2>
+              <p className="text-slate-600 text-sm sm:text-base">Estimated hours saved per month = claims * hours saved per claim.</p>
+            </div>
+            <div className="grid md:grid-cols-2 gap-6 mb-6">
+              <div>
+                <label htmlFor="claims" className="block text-sm font-medium text-slate-700 mb-2">Claims per month</label>
+                <input
+                  id="claims"
+                  type="number"
+                  min="0"
+                  value={claimsPerMonth}
+                  onChange={e => setClaimsPerMonth(Number(e.target.value))}
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm bg-white"
+                />
+              </div>
+              <div>
+                <label htmlFor="hours" className="block text-sm font-medium text-slate-700 mb-2">Hours saved per claim</label>
+                <input
+                  id="hours"
+                  type="number"
+                  step="0.5"
+                  min="0"
+                  value={hoursPerClaim}
+                  onChange={e => setHoursPerClaim(Number(e.target.value))}
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm bg-white"
+                />
+              </div>
+            </div>
+            <div className="bg-blue-50 rounded-lg p-6 text-center mb-8">
+              <div className="text-3xl font-bold text-blue-600 mb-1">{derivedHours} hours</div>
+              <div className="text-slate-600 text-sm">Estimated hours saved per month</div>
+            </div>
+            <div className="text-center">
+              <button 
+                type="button" 
+                onClick={scrollToSignup} 
+                className="inline-flex items-center bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 font-medium shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-600"
+              >
+                Join waitlist
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section id="faq" className="py-16" aria-labelledby="faq-heading">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 id="faq-heading" className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">Frequently asked questions</h2>
+            <p className="text-lg text-slate-600">Everything you need to know about Restoration Report</p>
+          </div>
+          <div className="space-y-4">
+            {faqData.map((f, i) => (
+              <Faq key={i} q={f.q} a={f.a} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Section CTA after FAQ */}
+      <section className="py-16">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SectionCTA 
+            title="Still have questions?"
+            description="Get early access and see how Restoration Report can work for your team."
+          />
+        </div>
+      </section>
+
+      {/* Sample */}
+      <section id="sample" className="py-16 bg-white" aria-labelledby="sample-heading">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 id="sample-heading" className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">Sample Report</h2>
+          <p className="text-lg text-slate-600 mb-8">See what your reports will look like</p>
+          <div className="flex justify-center"><MockReportPreview /></div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="py-16">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SectionCTA 
+            title="Ready to get started?"
+            description="Join the waitlist and be among the first to create professional reports that adjusters love."
+          />
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-slate-900 text-white py-12 mt-12" aria-labelledby="footer-heading">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 id="footer-heading" className="sr-only">Footer</h2>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div className="flex items-center gap-3">
+              <LogoMark />
+              <span className="font-bold text-sm sm:text-base">Restoration Report</span>
+            </div>
+            <div className="flex gap-6 text-sm">
+              <a href="/privacy" className="text-slate-400 hover:text-white transition-colors">Privacy</a>
+            </div>
+          </div>
+          <p className="mt-4 text-sm text-slate-400 max-w-2xl">Made for Water, Fire, and Mold mitigation teams. Not affiliated with Encircle or Xactimate.</p>
+        </div>
+      </footer>
+    </div>
+  );
+}
