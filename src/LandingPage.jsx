@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import SampleReport from './SampleReport';
+
 
 // Configuration
 const SUBMIT_MODE = "netlify"; // or "webhook"
@@ -7,17 +9,11 @@ const WEBHOOK_URL = ""; // used only if SUBMIT_MODE === "webhook"
 // Inline components and helpers
 function LogoMark() {
   return (
-    <svg className="h-8 w-8" viewBox="0 0 48 48" fill="none" aria-hidden>
-      <rect x="8" y="6" width="24" height="32" rx="2.5" className="fill-slate-900 stroke-slate-600" strokeWidth="1" />
-      <rect x="12" y="12" width="16" height="2" className="fill-slate-400" />
-      <rect x="12" y="18" width="12" height="2" className="fill-slate-500" />
-      <rect x="12" y="24" width="10" height="2" className="fill-slate-600" />
-      {/* Water drop */}
-      <path d="M40 20c0 4.418-3.134 8-7 8s-7-3.582-7-8c0-3.098 2.648-7.077 5.138-10.119a2 2 0 0 1 3.21 0C37.352 12.923 40 16.902 40 20Z" className="fill-sky-500" />
-      {/* Flame overlay (small) */}
-      <path d="M37 18.5c0 2.485-1.79 4.5-4 4.5s-4-2.015-4-4.5c0-1.742 1.489-3.937 2.89-5.63a1.2 1.2 0 0 1 1.857 0C35.511 14.563 37 16.758 37 18.5Z" className="fill-orange-500" />
-      <circle cx="33" cy="20" r="1.2" className="fill-white" />
-    </svg>
+    <img 
+      src="/RR_Icon.png" 
+      alt="Restoration Report Logo" 
+      className="h-8 w-8 object-contain"
+    />
   );
 }
 
@@ -94,71 +90,18 @@ function TrustBar() {
   );
 }
 
-function MockReportPreview() {
+function MockScreenPreview() {
   return (
-    <div className="max-w-sm w-full rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden text-left">
-      <div className="bg-slate-50 px-4 py-3 border-b border-slate-200">
-        <div className="flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-slate-800">Water Damage Report</h3>
-          <span className="text-xs text-slate-500">Nov 5, 2024</span>
-        </div>
-        <p className="text-xs text-slate-600 mt-1">123 Main St, Chicago IL</p>
-      </div>
-      <div className="p-4 space-y-5">
-        <div>
-          <p className="text-xs font-semibold text-slate-700 mb-2">Overview Photos</p>
-          <div className="grid grid-cols-3 gap-2">
-            <div className="aspect-video rounded bg-slate-200" />
-            <div className="aspect-video rounded bg-slate-200" />
-            <div className="aspect-video rounded bg-slate-200" />
-          </div>
-        </div>
-        <div>
-          <p className="text-xs font-semibold text-slate-700 mb-2">Moisture Log</p>
-            <table className="w-full text-[11px] border-separate border-spacing-y-1">
-              <thead>
-                <tr className="text-left text-slate-500">
-                  <th className="pr-2 font-medium">Room</th>
-                  <th className="pr-2 font-medium">RH</th>
-                  <th className="pr-2 font-medium">GPP</th>
-                  <th className="pr-2 font-medium">Temp</th>
-                </tr>
-              </thead>
-              <tbody className="align-top">
-                <tr className="bg-slate-50">
-                  <td className="py-1 pr-2">Kitchen</td>
-                  <td className="py-1 pr-2">36%</td>
-                  <td className="py-1 pr-2">64.6</td>
-                  <td className="py-1 pr-2">85°F</td>
-                </tr>
-                <tr className="bg-slate-50">
-                  <td className="py-1 pr-2">Bedroom</td>
-                  <td className="py-1 pr-2">25%</td>
-                  <td className="py-1 pr-2">52.4</td>
-                  <td className="py-1 pr-2">90°F</td>
-                </tr>
-              </tbody>
-            </table>
-        </div>
-        <div>
-          <p className="text-xs font-semibold text-slate-700 mb-2">Equipment Log</p>
-          <ul className="space-y-1 text-[11px] list-disc pl-4 text-slate-700">
-            <li>DH-001 - XD-85L - 38.9 kWh - 3 days</li>
-            <li>AM-026 - Velo - 11.0 kWh - 3 days</li>
-            <li>AM-021 - Sahara Pro - 27.3 kWh - 3 days</li>
-          </ul>
-        </div>
-        <div>
-          <p className="text-xs font-semibold text-slate-700 mb-2">Scope Summary</p>
-          <ul className="text-[11px] space-y-1 list-disc pl-4 text-slate-700">
-            <li>Remove impacted hardwood - clean and apply antimicrobial</li>
-            <li>Ventilate drywall - remove trim where required</li>
-            <li>Daily monitoring - document drying progress</li>
-          </ul>
-        </div>
-      </div>
-    </div>
+    <img 
+      src="/ProjectSummary.png" 
+      alt="Restoration Report Preview" 
+      className="w-full max-w-sm mx-auto rounded-lg shadow-lg border border-slate-200"
+    />
   );
+}
+
+function MockReportPreview() {
+  return <SampleReport />;
 }
 
 function encode(data) {
@@ -299,11 +242,23 @@ export default function LandingPage() {
         </div>
       </header>
       {/* Hero */}
+            
+              {/* Hero */}
+              <section className="relative h-screen">
+                <div className="absolute inset-0 z-0">         {/* changed -z-10 -> z-0 */}
+                  <img
+                    src="/RestorationReportHeroImagePromo.svg"
+                    alt="Hero Image"
+                    className="w-full h-full object-cover"
+                    aria-hidden
+                  />
+                </div>
+              </section>
+      {/* Sign up */}
       <section className="pt-14 pb-16 lg:pt-20 lg:pb-24" aria-labelledby="hero-heading">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-start">
             <div>
-              <div className="mb-6"><Badge>Private beta • Limited seats for Chicagoland</Badge></div>
               <h1 id="hero-heading" className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 mb-6 leading-tight">Create claim-ready Water, Fire, and Mold reports in minutes</h1>
               <p className="text-base sm:text-lg text-slate-600 mb-8 max-w-xl">Capture photos, readings, and notes one time, then export a clean PDF adjusters accept.</p>
               <ul className="space-y-3 mb-8 text-sm sm:text-base">
@@ -324,9 +279,6 @@ export default function LandingPage() {
                   handleSubmit={handleSubmit}
                 />
               </div>
-            </div>
-            <div className="lg:pl-4 xl:pl-10 order-first lg:order-none">
-              <MockReportPreview />
             </div>
           </div>
         </div>
