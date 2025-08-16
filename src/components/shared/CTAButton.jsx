@@ -22,9 +22,19 @@ export function CTAButton({
       onClick(e);
     } else if (to.startsWith('#')) {
       e.preventDefault();
-      const element = document.querySelector(to);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const container = document.querySelector(to);
+      if (container) {
+        // prefer the first input-like element (excluding submit/button/hidden)
+        const inputSelector = 'input:not([type=submit]):not([type=button]):not([type=hidden]), textarea, select, [contenteditable="true"]';
+        const inputEl = container.querySelector(inputSelector);
+        const elToScroll = inputEl || container;
+        elToScroll.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // focus the input if available for better UX (delay to allow smooth scroll)
+        if (inputEl && typeof inputEl.focus === 'function') {
+          setTimeout(() => {
+            try { inputEl.focus({ preventScroll: true }); } catch { inputEl.focus(); }
+          }, 300);
+        }
       }
     }
   };
