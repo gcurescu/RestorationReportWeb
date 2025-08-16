@@ -26,59 +26,102 @@ function RestorationReportLogo({ className = "w-8 h-8" }) {
 function FullReportModal({ isOpen, onClose }) {
   if (!isOpen) return null;
 
+  const isMobile = window.innerWidth < 768;
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-6xl max-h-[90vh] w-full overflow-hidden">
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-2 md:p-4">
+      <div className="bg-white rounded-lg shadow-xl max-w-6xl max-h-[95vh] md:max-h-[90vh] w-full overflow-hidden">
         {/* Modal Header */}
-        <div className="flex items-center justify-between p-4 border-b border-slate-200 bg-slate-50">
-          <h3 className="text-lg font-semibold text-slate-900">Sample Restoration Report</h3>
+        <div className="flex items-center justify-between p-3 md:p-4 border-b border-slate-200 bg-slate-50">
+          <h3 className="text-base md:text-lg font-semibold text-slate-900">Sample Restoration Report</h3>
           <button
             onClick={onClose}
             className="text-slate-400 hover:text-slate-600 transition-colors p-1 rounded-md hover:bg-slate-100"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
 
         {/* Modal Content - Scrollable */}
-        <div className="overflow-y-auto max-h-[calc(90vh-80px)] bg-gray-100">
+        <div className="overflow-y-auto max-h-[calc(95vh-60px)] md:max-h-[calc(90vh-80px)] bg-gray-100">
           <style jsx>{`
-            .doc { width: 8.5in; margin: 0 auto; background: #ffffff; }
-            .page { width: 8.5in; min-height: 11in; position: relative; padding: 0.75in 0.6in 0.6in 0.6in; background: #ffffff; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-            .header { position: absolute; left: 0; top: 0; width: 100%; height: 0.9in; background: #0C2D48; color: #fff; }
-            .header-inner { display: flex; align-items: center; justify-content: space-between; padding: 0 0.6in; height: 100%; }
-            .brand { display: flex; align-items: center; gap: 14px; }
-            .brand svg { width: 48px; height: 48px; }
-            .brand .title { font: 700 18px Montserrat, Inter, sans-serif; }
-            .brand .subtitle { font: 600 12px Montserrat, Inter, sans-serif; opacity: .95; }
-            .contact { font: 400 10px Inter, sans-serif; text-align: right; line-height: 1.25; }
-            .underline { position: absolute; left: 0.6in; right: 0.6in; top: 0.9in; height: 1px; background: #E5E7EB; }
-            .footer { position: absolute; left: 0.6in; right: 0.6in; bottom: 0.45in; display: flex; justify-content: space-between; align-items: center; color: #475569; font: 400 10px Inter; }
-            .hr { height: 1px; background: #E5E7EB; margin: 16px 0; }
-            .modal-h1 { font: 700 20px Montserrat, Inter, sans-serif; margin: 0 0 8px; }
-            .modal-h2 { font: 700 14px Montserrat, Inter, sans-serif; margin: 18px 0 8px; }
-            .modal-p { margin: 0 0 10px; line-height: 1.45; }
-            .kv { display: flex; gap: 20px; margin-top: 12px; }
-            .kv .panel { flex: 1; border: 1px solid #E5E7EB; padding: 12px; border-radius: 8px; background: #fff; }
-            .row { display: flex; justify-content: space-between; border-bottom: 1px solid #f0f2f5; padding: 6px 0; }
+            .doc { max-width: 100%; margin: 0 auto; background: #ffffff; }
+            .page { 
+              max-width: 100%; 
+              width: 100%;
+              min-height: auto; 
+              position: relative; 
+              padding: 12px; 
+              background: #ffffff; 
+              margin-bottom: 16px; 
+              box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+            }
+            .header { position: relative; left: 0; top: 0; width: 100%; min-height: 80px; background: #0C2D48; color: #fff; margin-bottom: 16px; border-radius: 4px; }
+            .header-inner { display: flex; align-items: center; justify-content: space-between; padding: 12px; min-height: 80px; flex-wrap: wrap; gap: 8px; }
+            .brand { display: flex; align-items: center; gap: 8px; }
+            .brand svg { width: 32px; height: 32px; }
+            .brand .title { font: 700 14px Montserrat, Inter, sans-serif; }
+            .brand .subtitle { font: 600 10px Montserrat, Inter, sans-serif; opacity: .95; }
+            .contact { font: 400 8px Inter, sans-serif; text-align: right; line-height: 1.25; }
+            .underline { display: none; }
+            .footer { position: relative; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-between; align-items: center; color: #475569; font: 400 9px Inter; margin-top: 16px; padding-top: 8px; border-top: 1px solid #E5E7EB; }
+            .hr { height: 1px; background: #E5E7EB; margin: 12px 0; }
+            .modal-h1 { font: 700 16px Montserrat, Inter, sans-serif; margin: 0 0 6px; }
+            .modal-h2 { font: 700 12px Montserrat, Inter, sans-serif; margin: 12px 0 6px; }
+            .modal-p { margin: 0 0 8px; line-height: 1.4; font-size: 11px; }
+            .kv { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+            .kv .panel { flex: 1; border: 1px solid #E5E7EB; padding: 8px; border-radius: 6px; background: #fff; }
+            .row { display: flex; justify-content: space-between; border-bottom: 1px solid #f0f2f5; padding: 4px 0; }
             .row:last-child { border-bottom: none; }
-            .k { color: #475569; font-size: 12px; }
-            .v { font-size: 12.5px; font-weight: 500; }
-            .photos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
-            .ph { background: #e5e7eb; border: 1px solid #E5E7EB; height: 1.7in; border-radius: 6px; position: relative; overflow: hidden; }
-            .ph.blur::before { content: ""; position: absolute; inset: 0; background: linear-gradient(135deg, #cbd5e1, #94a3b8, #cbd5e1); filter: blur(6px) saturate(.9) brightness(1.05); transform: scale(1.06); }
+            .k { color: #475569; font-size: 10px; }
+            .v { font-size: 10px; font-weight: 500; }
+            .photos { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 8px; }
+            .ph { background: #e5e7eb; border: 1px solid #E5E7EB; height: 120px; border-radius: 4px; position: relative; overflow: hidden; }
+            .ph.blur::before { content: ""; position: absolute; inset: 0; background: linear-gradient(135deg, #cbd5e1, #94a3b8, #cbd5e1); filter: blur(4px) saturate(.9) brightness(1.05); transform: scale(1.06); }
             .ph.blur::after { content: ""; position: absolute; inset: 0; background: rgba(255,255,255,.08); }
-            .cap { font-size: 11px; color: #475569; text-align: center; margin-top: 4px; }
-            .meta { font-size: 10px; color: #475569; text-align: center; margin-top: 2px; opacity: .85; }
-            .video { background: #e5e7eb; border: 1px solid #E5E7EB; height: 2.5in; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #475569; }
-            .muted { background: #F8FAFC; padding: 10px; border-radius: 8px; border: 1px solid #E5E7EB; }
-            .toc { font: 500 12px Inter; white-space: pre-line; }
-            .table { width: 100%; border-collapse: collapse; font: 400 11px Inter; color: #0F172A; }
-            .table th { background: #e2e8f0; border: 1px solid #E5E7EB; padding: 6px; text-align: left; font-weight: 600; }
-            .table td { border: 1px solid #E5E7EB; padding: 6px; }
+            .cap { font-size: 9px; color: #475569; text-align: center; margin-top: 3px; }
+            .meta { font-size: 8px; color: #475569; text-align: center; margin-top: 2px; opacity: .85; }
+            .video { background: #e5e7eb; border: 1px solid #E5E7EB; height: 160px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #475569; }
+            .muted { background: #F8FAFC; padding: 8px; border-radius: 6px; border: 1px solid #E5E7EB; }
+            .toc { font: 500 10px Inter; white-space: pre-line; }
+            .table { width: 100%; border-collapse: collapse; font: 400 9px Inter; color: #0F172A; overflow-x: auto; }
+            .table th { background: #e2e8f0; border: 1px solid #E5E7EB; padding: 4px; text-align: left; font-weight: 600; font-size: 9px; }
+            .table td { border: 1px solid #E5E7EB; padding: 4px; font-size: 9px; }
             .stripe tr:nth-child(even) td { background: #f8fafc; }
+            
+            /* Desktop styles */
+            @media (min-width: 768px) {
+              .doc { width: 8.5in; }
+              .page { width: 8.5in; min-height: 11in; padding: 0.75in 0.6in 0.6in 0.6in; margin-bottom: 20px; }
+              .header { position: absolute; height: 0.9in; margin-bottom: 0; border-radius: 0; }
+              .header-inner { padding: 0 0.6in; min-height: 0.9in; flex-wrap: nowrap; gap: 14px; }
+              .brand svg { width: 48px; height: 48px; }
+              .brand .title { font: 700 18px Montserrat, Inter, sans-serif; }
+              .brand .subtitle { font: 600 12px Montserrat, Inter, sans-serif; }
+              .contact { font: 400 10px Inter, sans-serif; }
+              .underline { display: block; position: absolute; left: 0.6in; right: 0.6in; top: 0.9in; height: 1px; background: #E5E7EB; }
+              .footer { position: absolute; left: 0.6in; right: 0.6in; bottom: 0.45in; font: 400 10px Inter; margin-top: 0; padding-top: 0; border-top: none; }
+              .modal-h1 { font: 700 20px Montserrat, Inter, sans-serif; margin: 0 0 8px; }
+              .modal-h2 { font: 700 14px Montserrat, Inter, sans-serif; margin: 18px 0 8px; }
+              .modal-p { line-height: 1.45; font-size: inherit; margin: 0 0 10px; }
+              .kv { flex-direction: row; gap: 20px; margin-top: 12px; }
+              .kv .panel { padding: 12px; }
+              .row { padding: 6px 0; }
+              .k { font-size: 12px; }
+              .v { font-size: 12.5px; }
+              .photos { grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+              .ph { height: 1.7in; border-radius: 6px; }
+              .cap { font-size: 11px; margin-top: 4px; }
+              .meta { font-size: 10px; }
+              .video { height: 2.5in; border-radius: 6px; }
+              .muted { padding: 10px; }
+              .toc { font: 500 12px Inter; }
+              .table { font: 400 11px Inter; }
+              .table th { padding: 6px; font-size: inherit; }
+              .table td { padding: 6px; font-size: inherit; }
+            }
           `}</style>
 
           <div className="doc">
@@ -100,7 +143,7 @@ function FullReportModal({ isOpen, onClose }) {
                 </div>
                 <div className="underline"></div>
               </div>
-              <div style={{ marginTop: '1.1in' }}>
+              <div style={{ marginTop: isMobile ? '0' : '1.1in' }}>
                 <div className="kv">
                   <div className="panel">
                     <h2 className="modal-h2">Policyholder</h2>
@@ -142,7 +185,7 @@ function FullReportModal({ isOpen, onClose }) {
                 </div>
                 <div className="underline"></div>
               </div>
-              <div style={{ marginTop: '1.1in' }}>
+              <div style={{ marginTop: isMobile ? '0' : '1.1in' }}>
                 <div className="muted">
                   <div className="toc">{`3  General Notes
 4  Risk - Overview Photos, Log Notes, Room Notes
@@ -180,7 +223,7 @@ function FullReportModal({ isOpen, onClose }) {
                 </div>
                 <div className="underline"></div>
               </div>
-              <div style={{ marginTop: '1.1in' }}>
+              <div style={{ marginTop: isMobile ? '0' : '1.1in' }}>
                 <h2 className="modal-h2">Initial Inspection 4-18-2022</h2>
                 <p className="modal-p">This single-family home experienced water damage impacting the kitchen, dining room, and basement. The loss originated from a damaged plastic water supply line behind the refrigerator and has been corrected. Restoration Report mitigation partners were engaged to perform extraction, removals as needed, antimicrobial application, equipment installation, and daily monitoring until drying goals were met.</p>
                 <h2 className="modal-h2">Kitchen/Dining Room</h2>
@@ -211,7 +254,7 @@ function FullReportModal({ isOpen, onClose }) {
                 </div>
                 <div className="underline"></div>
               </div>
-              <div style={{ marginTop: '1.1in' }}>
+              <div style={{ marginTop: isMobile ? '0' : '1.1in' }}>
                 <h2 className="modal-h2">Overview Photos: Risk</h2>
                 <div className="photos">
                   <div><div className="ph blur"></div><div className="cap">Exterior - Front elevation</div><div className="meta">Photo 1 · Apr 18, 2022 · 10:40 AM CT</div></div>
@@ -253,32 +296,36 @@ function FullReportModal({ isOpen, onClose }) {
                 </div>
                 <div className="underline"></div>
               </div>
-              <div style={{ marginTop: '1.1in' }}>
+              <div style={{ marginTop: isMobile ? '0' : '1.1in' }}>
                 <h2 className="modal-h2">Daily Psychrometric Readings</h2>
-                <table className="table stripe">
-                  <thead>
-                    <tr>
-                      <th>Date</th><th>Location</th><th>Temp (°F)</th><th>RH (%)</th><th>GPP</th><th>Grain Depression</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr><td>Apr 18, 2022</td><td>Affected Area</td><td>85</td><td>36</td><td>64.6</td><td>—</td></tr>
-                    <tr><td>Apr 19, 2022</td><td>Affected Area</td><td>90</td><td>25</td><td>52.4</td><td>12.2</td></tr>
-                    <tr><td>Apr 20, 2022</td><td>Affected Area</td><td>86</td><td>22</td><td>49.0</td><td>15.6</td></tr>
-                  </tbody>
-                </table>
+                <div style={{ overflowX: 'auto' }}>
+                  <table className="table stripe">
+                    <thead>
+                      <tr>
+                        <th>Date</th><th>Location</th><th>Temp (°F)</th><th>RH (%)</th><th>GPP</th><th>Grain Depression</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>Apr 18, 2022</td><td>Affected Area</td><td>85</td><td>36</td><td>64.6</td><td>—</td></tr>
+                      <tr><td>Apr 19, 2022</td><td>Affected Area</td><td>90</td><td>25</td><td>52.4</td><td>12.2</td></tr>
+                      <tr><td>Apr 20, 2022</td><td>Affected Area</td><td>86</td><td>22</td><td>49.0</td><td>15.6</td></tr>
+                    </tbody>
+                  </table>
+                </div>
                 <h2 className="modal-h2" style={{ marginTop: '14px' }}>Moisture Points (1–4)</h2>
-                <table className="table stripe">
-                  <thead>
-                    <tr><th>Point</th><th>Room</th><th>Surface</th><th>Reading</th><th>Notes</th></tr>
-                  </thead>
-                  <tbody>
-                    <tr><td>1</td><td>Kitchen</td><td>Hardwood</td><td>18%</td><td>Pre-drydown</td></tr>
-                    <tr><td>2</td><td>Kitchen</td><td>Hardwood</td><td>12%</td><td>Improving</td></tr>
-                    <tr><td>3</td><td>Dining</td><td>Drywall</td><td>11%</td><td>Improving</td></tr>
-                    <tr><td>4</td><td>Dining</td><td>Drywall</td><td>8%</td><td>At goal</td></tr>
-                  </tbody>
-                </table>
+                <div style={{ overflowX: 'auto' }}>
+                  <table className="table stripe">
+                    <thead>
+                      <tr><th>Point</th><th>Room</th><th>Surface</th><th>Reading</th><th>Notes</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>1</td><td>Kitchen</td><td>Hardwood</td><td>18%</td><td>Pre-drydown</td></tr>
+                      <tr><td>2</td><td>Kitchen</td><td>Hardwood</td><td>12%</td><td>Improving</td></tr>
+                      <tr><td>3</td><td>Dining</td><td>Drywall</td><td>11%</td><td>Improving</td></tr>
+                      <tr><td>4</td><td>Dining</td><td>Drywall</td><td>8%</td><td>At goal</td></tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
               <div className="footer"><div>Powered by Restoration Report</div><div>Page 11 of 15</div></div>
             </section>
