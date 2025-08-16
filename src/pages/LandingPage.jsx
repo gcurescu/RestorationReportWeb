@@ -195,7 +195,7 @@ export default function LandingPage() {
               <h2 id="roi-heading" className="text-2xl font-bold text-slate-900 mb-2">Calculate your time savings</h2>
               <p className="text-slate-600 text-sm sm:text-base">Estimated hours saved per month = claims * hours saved per claim.</p>
             </div>
-            <div className="grid md:grid-cols-2 gap-6 mb-6">
+            <div className="mb-6">
               <div>
                 <label htmlFor="claims" className="block text-sm font-medium text-slate-700 mb-2">Claims per month</label>
                 <input
@@ -204,18 +204,6 @@ export default function LandingPage() {
                   min="0"
                   value={claimsPerMonth}
                   onChange={e => setClaimsPerMonth(Number(e.target.value))}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm bg-white"
-                />
-              </div>
-              <div>
-                <label htmlFor="hours" className="block text-sm font-medium text-slate-700 mb-2">Hours saved per claim</label>
-                <input
-                  id="hours"
-                  type="number"
-                  step="0.5"
-                  min="0"
-                  value={hoursPerClaim}
-                  onChange={e => setHoursPerClaim(Number(e.target.value))}
                   className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm bg-white"
                 />
               </div>
@@ -249,16 +237,6 @@ export default function LandingPage() {
               <Faq key={i} q={f.q} a={f.a} />
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Section CTA after FAQ */}
-      <section className="py-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionCTA 
-            title="Still have questions?"
-            description="Get early access and see how Restoration Report can work for your team."
-          />
         </div>
       </section>
 

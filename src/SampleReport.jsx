@@ -3,22 +3,11 @@ import { useState } from 'react';
 // Logo SVG component for consistency
 function RestorationReportLogo({ className = "w-8 h-8" }) {
   return (
-    <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" className={className} aria-hidden>
-      <defs>
-        <linearGradient id="g1" x1="0" x2="1">
-          <stop offset="0%" stopColor="#10b981"/>
-          <stop offset="100%" stopColor="#0ea5e9"/>
-        </linearGradient>
-      </defs>
-      <rect x="10" y="8" width="36" height="48" rx="6" fill="url(#g1)" opacity=".12"/>
-      <rect x="14" y="12" width="28" height="40" rx="4" fill="#fff" stroke="#0f172a" strokeOpacity=".2"/>
-      <rect x="18" y="18" width="20" height="4" rx="2" fill="#0f172a" opacity=".5"/>
-      <rect x="18" y="26" width="20" height="4" rx="2" fill="#0f172a" opacity=".2"/>
-      <rect x="18" y="34" width="14" height="4" rx="2" fill="#0f172a" opacity=".2"/>
-      <path d="M50 28c0 6-4.5 10-9 10s-9-4-9-10C32 19 41 12 41 12s9 7 9 16z" fill="#0ea5e9"/>
-      <path d="M44 26c0 4-3 7-6 7s-6-3-6-7c0-5 6-9 6-9s6 4 6 9z" fill="#f97316" opacity=".9"/>
-      <circle cx="41" cy="49" r="6" fill="#10b981"/>
-    </svg>
+    <img
+      src="/RestorationReportLogo.png"
+      alt="Restoration Report Logo"
+      className={className}
+    />
   );
 }
 
