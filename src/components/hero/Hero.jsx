@@ -1,11 +1,17 @@
 import { useState, useEffect, useRef } from 'react';
 import { EmailSignup } from '../forms/EmailSignup';
 
-function AppImages() {
+function AppImages({ prefersReducedMotion = false }) {
   const [isVisible, setIsVisible] = useState(false);
   const containerRef = useRef(null);
 
   useEffect(() => {
+    // If the user prefers reduced motion, skip intersection animations and show immediately.
+    if (prefersReducedMotion) {
+      setIsVisible(true);
+      return;
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) setIsVisible(true);
@@ -15,29 +21,33 @@ function AppImages() {
 
     if (containerRef.current) observer.observe(containerRef.current);
     return () => observer.disconnect();
-  }, []);
+  }, [prefersReducedMotion]);
+
+  const transitionClass = prefersReducedMotion ? '' : 'transition-all duration-700 ease-out';
+  const visibleClass = 'opacity-100 translate-y-0';
+  const hiddenClass = prefersReducedMotion ? visibleClass : 'opacity-0 translate-y-8';
 
   return (
     <div ref={containerRef} className="relative flex justify-center items-center h-80 sm:h-96">
       <div
-        className={`absolute transition-all duration-700 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+        className={`absolute ${transitionClass} ${isVisible ? visibleClass : hiddenClass}`}
         style={{ transitionDelay: isVisible ? '400ms' : '0ms', left: '0%', top: '20%', zIndex: 1 }}
       >
-  <img src="/ReportPreview.svg" alt="Report Preview" className="w-32 sm:w-40 md:w-48 rounded-lg shadow-lg border border-slate-200 transform -rotate-6" loading="lazy" />
+        <img src="/ReportPreview.svg" alt="Report Preview" className="w-32 sm:w-40 md:w-48 rounded-lg shadow-lg border border-slate-200 transform -rotate-6" loading="lazy" />
       </div>
 
       <div
-        className={`absolute transition-all duration-700 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+        className={`absolute ${transitionClass} ${isVisible ? visibleClass : hiddenClass}`}
         style={{ transitionDelay: isVisible ? '200ms' : '0ms', right: '0%', top: '20%', zIndex: 1 }}
       >
-  <img src="/Gallary.svg" alt="Gallery Preview" className="w-32 sm:w-40 md:w-48 rounded-lg shadow-lg border border-slate-200 transform rotate-6" loading="lazy" />
+        <img src="/Gallary.svg" alt="Gallery Preview" className="w-32 sm:w-40 md:w-48 rounded-lg shadow-lg border border-slate-200 transform rotate-6" loading="lazy" />
       </div>
 
       <div
-        className={`absolute transition-all duration-700 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+        className={`absolute ${transitionClass} ${isVisible ? visibleClass : hiddenClass}`}
         style={{ transitionDelay: isVisible ? '0ms' : '0ms', left: '50%', top: '10%', transform: 'translateX(-50%)', zIndex: 2 }}
       >
-  <img src="/Dashboard.svg" alt="Dashboard Preview" className="w-40 sm:w-48 md:w-56 rounded-lg shadow-xl border border-slate-200" loading="lazy" />
+        <img src="/Dashboard.svg" alt="Dashboard Preview" className="w-40 sm:w-48 md:w-56 rounded-lg shadow-xl border border-slate-200" loading="lazy" />
       </div>
     </div>
   );
@@ -114,7 +124,7 @@ export function Hero() {
           {/* Right Column - Product Preview (App images) */}
           <div className="order-first lg:order-last">
             <div className="relative max-w-md mx-auto lg:max-w-none">
-              <AppImages />
+              <AppImages prefersReducedMotion={prefersReducedMotion} />
             </div>
           </div>
         </div>

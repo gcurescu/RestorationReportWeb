@@ -70,7 +70,8 @@ export default function LandingPage() {
   const [utmParams, setUtmParams] = useState({});
   // ROI calculator state
   const [claimsPerMonth, setClaimsPerMonth] = useState(10);
-  const [hoursPerClaim, setHoursPerClaim] = useState(2);
+  // Hours saved per claim is a fixed default (not editable in the form)
+  const hoursPerClaim = 2;
 
   useEffect(() => {
     // Parse UTM parameters
@@ -141,7 +142,7 @@ export default function LandingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800">
+    <div className="min-h-screen bg-slate-50 text-slate-800" data-utm={JSON.stringify(utmParams)}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       
       {/* Slim Navigation */}
