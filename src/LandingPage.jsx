@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import SampleReport from './SampleReport';
 
 
@@ -110,6 +110,96 @@ function encode(data) {
     .join('&');
 }
 
+function AppImages() {
+  const [isVisible, setIsVisible] = useState(false);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.1, rootMargin: '50px' }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={containerRef} className="relative flex justify-center items-center h-80 sm:h-96">
+      {/* ReportPreview - Background Left */}
+      <div
+        className={`absolute transition-all duration-700 ease-out ${
+          isVisible 
+            ? 'opacity-100 translate-y-0' 
+            : 'opacity-0 translate-y-8'
+        }`}
+        style={{ 
+          transitionDelay: isVisible ? '400ms' : '0ms',
+          left: '0%',
+          top: '20%',
+          zIndex: 1
+        }}
+      >
+        <img
+          src="/ReportPreview.svg"
+          alt="Report Preview"
+          className="w-32 sm:w-40 md:w-48 rounded-lg shadow-lg border border-slate-200 transform -rotate-6"
+        />
+      </div>
+
+      {/* Gallery - Background Right */}
+      <div
+        className={`absolute transition-all duration-700 ease-out ${
+          isVisible 
+            ? 'opacity-100 translate-y-0' 
+            : 'opacity-0 translate-y-8'
+        }`}
+        style={{ 
+          transitionDelay: isVisible ? '200ms' : '0ms',
+          right: '0%',
+          top: '20%',
+          zIndex: 1
+        }}
+      >
+        <img
+          src="/Gallary.svg"
+          alt="Gallery Preview"
+          className="w-32 sm:w-40 md:w-48 rounded-lg shadow-lg border border-slate-200 transform rotate-6"
+        />
+      </div>
+
+      {/* Dashboard - Foreground Center */}
+      <div
+        className={`absolute transition-all duration-700 ease-out ${
+          isVisible 
+            ? 'opacity-100 translate-y-0' 
+            : 'opacity-0 translate-y-8'
+        }`}
+        style={{ 
+          transitionDelay: isVisible ? '0ms' : '0ms',
+          left: '50%',
+          top: '10%',
+          transform: 'translateX(-50%)',
+          zIndex: 2
+        }}
+      >
+        <img
+          src="/Dashboard.svg"
+          alt="Dashboard Preview"
+          className="w-40 sm:w-48 md:w-56 rounded-lg shadow-xl border border-slate-200"
+        />
+      </div>
+    </div>
+  );
+}
+
 export default function LandingPage() {
   // Form state
   const [email, setEmail] = useState('');
@@ -119,6 +209,7 @@ export default function LandingPage() {
   const [submitMessage, setSubmitMessage] = useState('');
   const [isError, setIsError] = useState(false);
   const [showSticky, setShowSticky] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   // UTM state
   const [utmParams, setUtmParams] = useState({});
@@ -238,20 +329,59 @@ export default function LandingPage() {
               <a href="#sample" className="text-slate-600 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded px-1">Sample</a>
               <a href="#signup" className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-600 font-medium shadow">Join</a>
             </nav>
+            {/* Mobile menu button */}
+            <div className="md:hidden">
+              <button
+                type="button"
+                onClick={() => setMobileOpen(o => !o)}
+                aria-expanded={mobileOpen}
+                aria-label="Toggle menu"
+                className="inline-flex items-center justify-center p-2 rounded-md text-slate-700 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+              >
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden>
+                  {mobileOpen ? (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  ) : (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  )}
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
+        {/* Mobile menu panel */}
+        {mobileOpen && (
+          <div className="md:hidden border-t border-slate-200 bg-white">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 grid gap-3">
+              <a href="#features" onClick={() => setMobileOpen(false)} className="block text-slate-700 py-2">Features</a>
+              <a href="#how-it-works" onClick={() => setMobileOpen(false)} className="block text-slate-700 py-2">How it works</a>
+              <a href="#proof" onClick={() => setMobileOpen(false)} className="block text-slate-700 py-2">Proof</a>
+              <a href="#roi" onClick={() => setMobileOpen(false)} className="block text-slate-700 py-2">ROI</a>
+              <a href="#faq" onClick={() => setMobileOpen(false)} className="block text-slate-700 py-2">FAQ</a>
+              <a href="#sample" onClick={() => setMobileOpen(false)} className="block text-slate-700 py-2">Sample</a>
+              <a href="#signup" onClick={() => { setMobileOpen(false); setTimeout(() => { const el = document.getElementById('signup'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50); }} className="block bg-blue-600 text-white text-center rounded-lg px-4 py-2">Join</a>
+            </div>
+          </div>
+        )}
       </header>
       {/* Hero */}
-            
               {/* Hero */}
-              <section className="relative h-screen">
+              <section className="relative min-h-[35vh] sm:min-h-[60vh] lg:min-h-[80vh]">
                 <div className="absolute inset-0 z-0">         {/* changed -z-10 -> z-0 */}
                   <img
                     src="/RestorationReportHeroImagePromo.svg"
                     alt="Hero Image"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain sm:object-cover sm:object-center"
                     aria-hidden
                   />
+                </div>
+                 {/* Minimal overlay: only a bottom-centered CTA so hero image stays uncluttered */}
+                <div className="absolute inset-0 z-10 flex items-end justify-center pointer-events-none">
+                  <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 pointer-events-auto">
+                    <div className="flex justify-center">
+                      <button onClick={scrollToSignup} className="bg-blue-600 text-white px-5 py-3 rounded-lg hover:bg-blue-700 font-medium shadow">Join the waitlist</button>
+                    </div>
+                  </div>
                 </div>
               </section>
       {/* Sign up */}
@@ -279,6 +409,14 @@ export default function LandingPage() {
                   handleSubmit={handleSubmit}
                 />
               </div>
+              {/* Mobile app images - shown below signup on small screens */}
+              <div className="lg:hidden mt-12">
+                <AppImages />
+              </div>
+            </div>
+            {/* Desktop app images - shown next to signup on large screens */}
+            <div className="hidden lg:block">
+              <AppImages />
             </div>
           </div>
         </div>
