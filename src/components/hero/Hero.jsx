@@ -82,17 +82,19 @@ export function Hero() {
   }, []);
 
   return (
-    <section className="bg-white py-16 lg:py-24">
-      {/* Top header photo displayed above the columns
-      <div className="relative w-full h-64 sm:h-96 mb-8">
-        <img
-          src="/RestorationReportHeroImagePromo.svg"
+    <section className="relative bg-white py-16 lg:py-24 overflow-hidden">
+      {/* Background SVG */}
+      <div className="absolute inset-0 z-0">
+        <img 
+          src="/HeroBackground.svg" 
           alt=""
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 w-full h-full object-contain sm:object-cover sm:object-center opacity-100"
+          className="w-full h-full object-cover object-center sm:object-right-top opacity-30 sm:opacity-50"
+          onLoad={() => console.log('Background image loaded successfully')}
+          onError={(e) => console.error('Background image failed to load:', e)}
         />
-      </div> */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      </div>
+      
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Left Column - Content */}
           <div className="max-w-lg">
