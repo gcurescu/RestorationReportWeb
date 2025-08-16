@@ -106,10 +106,11 @@ export function EmailSignup({ id = "signup" }) {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-      >
+        className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
         {isSubmitting ? 'Joining...' : 'Join waitlist'}
       </button>
+
 
       <p className="text-xs text-slate-500 text-center">
         No spam. Unsubscribe anytime. No credit card for beta.

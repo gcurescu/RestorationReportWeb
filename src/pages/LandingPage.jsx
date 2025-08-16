@@ -3,7 +3,7 @@ import { SlimNav } from '../components/nav/SlimNav';
 import { Hero } from '../components/hero/Hero';
 import { SocialProof } from '../components/proof/SocialProof';
 import { SectionCTA } from '../components/shared/SectionCTA';
-import SampleReport from './SampleReport.jsx';
+import SampleReport from '../SampleReport.jsx';
 
 // Reusable components from original (keeping for backward compatibility)
 function FeatureCard({ title, description }) {
@@ -124,14 +124,25 @@ export default function LandingPage() {
       <section id="features" className="py-16 bg-white" aria-labelledby="features-heading">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 id="features-heading" className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">Everything you need for professional reports</h2>
+            <h2 id="features-heading" className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">
+            Everything you need for professional reports
+            </h2>
             <p className="text-lg text-slate-600">Stop juggling multiple apps and spreadsheets</p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
-            <FeatureCard title="Moisture and Equipment Logs" description="Capture readings as you go - auto roll-up into tables." />
-            <FeatureCard title="Before/After and Scope" description="Attach photos and scope notes side by side for adjusters." />
-            <FeatureCard title="One-tap Export" description="Generate polished PDFs you can email or upload to claim portals." />
-          </div>
+            </div>
+            <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+            <FeatureCard
+                title="Moisture and Equipment Logs"
+                description="Capture readings as you go — auto roll-up into tables."
+            />
+            <FeatureCard
+                title="Before/After and Scope"
+                description="Attach photos and scope notes side by side for adjusters."
+            />
+            <FeatureCard
+                title="One-tap Export"
+                description="Generate polished PDFs you can email or upload to claim portals."
+            />
+            </div>
         </div>
       </section>
 

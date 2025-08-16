@@ -24,11 +24,10 @@ export function SlimNav() {
   }, []);
 
   return (
-    <header 
-      className={`bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/70 border-b border-slate-200 sticky top-0 z-40 transition-shadow duration-200 ${
-        isScrolled ? 'shadow-sm' : ''
-      }`}
-    >
+    <header
+        className={`bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-slate-200 sticky top-0 z-40 transition-shadow duration-200 ${isScrolled ? 'shadow-sm' : ''}`}
+        >
+
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <button 
