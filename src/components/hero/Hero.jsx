@@ -1,5 +1,47 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { EmailSignup } from '../forms/EmailSignup';
+
+function AppImages() {
+  const [isVisible, setIsVisible] = useState(false);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) setIsVisible(true);
+      },
+      { threshold: 0.1, rootMargin: '50px' }
+    );
+
+    if (containerRef.current) observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={containerRef} className="relative flex justify-center items-center h-80 sm:h-96">
+      <div
+        className={`absolute transition-all duration-700 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+        style={{ transitionDelay: isVisible ? '400ms' : '0ms', left: '0%', top: '20%', zIndex: 1 }}
+      >
+        <img src="/ReportPreview.svg" alt="Report Preview" className="w-32 sm:w-40 md:w-48 rounded-lg shadow-lg border border-slate-200 transform -rotate-6" />
+      </div>
+
+      <div
+        className={`absolute transition-all duration-700 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+        style={{ transitionDelay: isVisible ? '200ms' : '0ms', right: '0%', top: '20%', zIndex: 1 }}
+      >
+        <img src="/Gallary.svg" alt="Gallery Preview" className="w-32 sm:w-40 md:w-48 rounded-lg shadow-lg border border-slate-200 transform rotate-6" />
+      </div>
+
+      <div
+        className={`absolute transition-all duration-700 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+        style={{ transitionDelay: isVisible ? '0ms' : '0ms', left: '50%', top: '10%', transform: 'translateX(-50%)', zIndex: 2 }}
+      >
+        <img src="/Dashboard.svg" alt="Dashboard Preview" className="w-40 sm:w-48 md:w-56 rounded-lg shadow-xl border border-slate-200" />
+      </div>
+    </div>
+  );
+}
 
 export function Hero() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
@@ -7,18 +49,49 @@ export function Hero() {
   useEffect(() => {
     // Check for reduced motion preference
     if (typeof window !== 'undefined' && window.matchMedia) {
+      // matchMedia may exist but return undefined in some test environments
       const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-      setPrefersReducedMotion(mediaQuery.matches);
+      if (mediaQuery) {
+        try {
+          setPrefersReducedMotion(!!mediaQuery.matches);
 
-      const handleChange = (e) => setPrefersReducedMotion(e.matches);
-      mediaQuery.addEventListener('change', handleChange);
-      
-      return () => mediaQuery.removeEventListener('change', handleChange);
+          const handleChange = (e) => setPrefersReducedMotion(!!e.matches);
+
+          // Support both modern and older APIs
+          if (typeof mediaQuery.addEventListener === 'function') {
+            mediaQuery.addEventListener('change', handleChange);
+          } else if (typeof mediaQuery.addListener === 'function') {
+            mediaQuery.addListener(handleChange);
+          }
+
+          return () => {
+            if (typeof mediaQuery.removeEventListener === 'function') {
+              mediaQuery.removeEventListener('change', handleChange);
+            } else if (typeof mediaQuery.removeListener === 'function') {
+              mediaQuery.removeListener(handleChange);
+            }
+          };
+        } catch (err) {
+          // Defensive: if reading matches throws, ignore and leave default
+          // (tests and older browsers may behave differently)
+          // eslint-disable-next-line no-console
+          console.warn('matchMedia check failed', err);
+        }
+      }
     }
   }, []);
 
   return (
     <section className="bg-white py-16 lg:py-24">
+      {/* Top header photo displayed above the columns
+      <div className="relative w-full h-64 sm:h-96 mb-8">
+        <img
+          src="/RestorationReportHeroImagePromo.svg"
+          alt=""
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 w-full h-full object-contain sm:object-cover sm:object-center opacity-100"
+        />
+      </div> */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Left Column - Content */}
@@ -34,55 +107,12 @@ export function Hero() {
             <div className="mb-8">
               <EmailSignup id="signup" />
             </div>
-
-            <p className="text-xs text-slate-500 text-center lg:text-left">
-              No spam. Unsubscribe anytime. No credit card for beta.
-            </p>
           </div>
 
-          {/* Right Column - Product Preview */}
+          {/* Right Column - Product Preview (App images) */}
           <div className="order-first lg:order-last">
             <div className="relative max-w-md mx-auto lg:max-w-none">
-              {/* Try video first, fallback to image */}
-              {!prefersReducedMotion ? (
-                <video
-                  className="w-full rounded-lg shadow-xl border border-slate-200"
-                  muted
-                  autoPlay
-                  loop
-                  playsInline
-                  poster="/assets/sample-report.webp"
-                  onError={(e) => {
-                    // If video fails to load, hide it and show the fallback image
-                    e.target.style.display = 'none';
-                    e.target.nextElementSibling.style.display = 'block';
-                  }}
-                >
-                  <source src="/assets/sample-report-demo.mp4" type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
-              ) : null}
-              
-              {/* Fallback image (always present, hidden if video works) */}
-              <picture 
-                className={`block ${!prefersReducedMotion ? 'hidden' : ''}`}
-                style={{ display: prefersReducedMotion ? 'block' : 'none' }}
-              >
-                <source srcSet="/assets/sample-report.webp" type="image/webp" />
-                <img
-                  src="/ProjectSummary.png"
-                  alt="Sample restoration report preview showing professional layout with project details, photos, and measurements"
-                  className="w-full rounded-lg shadow-xl border border-slate-200"
-                  loading="lazy"
-                />
-              </picture>
-            </div>
-
-            {/* Additional context for the preview */}
-            <div className="mt-6 text-center lg:text-left">
-              <p className="text-sm text-slate-500">
-                Sample report generated in under 2 minutes
-              </p>
+              <AppImages />
             </div>
           </div>
         </div>

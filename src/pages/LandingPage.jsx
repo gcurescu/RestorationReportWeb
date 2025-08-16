@@ -120,6 +120,15 @@ export default function LandingPage() {
       {/* Social Proof */}
       <SocialProof />
 
+            {/* Sample */}
+        <section id="sample" className="py-16 bg-white" aria-labelledby="sample-heading">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 id="sample-heading" className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">Sample Report</h2>
+            <p className="text-lg text-slate-600 mb-8">See what your reports will look like</p>
+            <div className="flex justify-center"><MockReportPreview /></div>
+            </div>
+        </section>
+
       {/* Features */}
       <section id="features" className="py-16 bg-white" aria-labelledby="features-heading">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -250,15 +259,6 @@ export default function LandingPage() {
             title="Still have questions?"
             description="Get early access and see how Restoration Report can work for your team."
           />
-        </div>
-      </section>
-
-      {/* Sample */}
-      <section id="sample" className="py-16 bg-white" aria-labelledby="sample-heading">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 id="sample-heading" className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">Sample Report</h2>
-          <p className="text-lg text-slate-600 mb-8">See what your reports will look like</p>
-          <div className="flex justify-center"><MockReportPreview /></div>
         </div>
       </section>
 
