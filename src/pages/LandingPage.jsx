@@ -3,7 +3,7 @@ import { SlimNav } from '../components/nav/SlimNav';
 import { Hero } from '../components/hero/Hero';
 import { SocialProof } from '../components/proof/SocialProof';
 import { SectionCTA } from '../components/shared/SectionCTA';
-import SampleReport from '../SampleReport.jsx';
+import SampleReport from '../components/shared/SampleReport.jsx';
 
 // Reusable components from original (keeping for backward compatibility)
 function FeatureCard({ title, description }) {
