@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/LandingPage.jsx';
 import NewJobForm from './mvp/NewJobForm.jsx';
 import JobsList from './mvp/JobsList.jsx';
-import ReportPreview from './mvp/ReportPreview.jsx';
+import ReportPreview from './mvp/ReportPreviewEnhanced.jsx';
 import './App.css';
 
 function App() {

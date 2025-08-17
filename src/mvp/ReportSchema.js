@@ -78,17 +78,18 @@ export const reportSchema = z.object({
   photos: z.array(z.object({
     caption: z.string().optional(),
     file: z.string(), // base64 dataURL
+    time: z.string().optional(),
   })).optional(),
 });
 
 // Default values for the form
 export const defaultValues = {
   company: {
-    name: '',
-    phone: '',
-    email: '',
-    address: '',
-    logoUrl: '',
+    name: 'Restoration Report',
+    phone: '1-800-RESTORE',
+    email: 'info@restorationreport.com',
+    address: 'Professional Restoration Services',
+    logoUrl: '/RestorationReportLogo.png',
   },
   policyholder: {
     name: '',

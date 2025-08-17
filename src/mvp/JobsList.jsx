@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getJobs, deleteJob } from './storage';
+import { getJobs, deleteJob, duplicateJob } from './storage';
 
 const JobsList = () => {
   const navigate = useNavigate();
@@ -27,6 +27,18 @@ const JobsList = () => {
     if (window.confirm('Are you sure you want to delete this job?')) {
       deleteJob(jobId);
       loadJobs();
+    }
+  };
+
+  const handleDuplicate = (jobId, event) => {
+    event.stopPropagation();
+    if (window.confirm('Create a duplicate of this job?')) {
+      const newJobId = duplicateJob(jobId);
+      if (newJobId) {
+        loadJobs();
+        // Optionally navigate to the duplicated job
+        navigate(`/app/job/${newJobId}`);
+      }
     }
   };
 
@@ -70,7 +82,7 @@ const JobsList = () => {
       </div>
 
       {/* Content */}
-      <div className="p-4 max-w-4xl mx-auto">
+      <div className="p-4 max-w-4xl mx-auto pb-20">
         {jobs.length === 0 ? (
           <div className="bg-white rounded-lg border border-slate-200 p-8 text-center">
             <div className="text-slate-400 text-4xl mb-4">📋</div>
@@ -125,12 +137,20 @@ const JobsList = () => {
                         {formatDate(job.updatedAt)}
                       </td>
                       <td className="px-4 py-3">
-                        <button
-                          onClick={(e) => handleDelete(job.id, e)}
-                          className="text-red-600 hover:text-red-700 text-sm font-medium"
-                        >
-                          Delete
-                        </button>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={(e) => handleDuplicate(job.id, e)}
+                            className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                          >
+                            Duplicate
+                          </button>
+                          <button
+                            onClick={(e) => handleDelete(job.id, e)}
+                            className="text-red-600 hover:text-red-700 text-sm font-medium"
+                          >
+                            Delete
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -160,8 +180,18 @@ const JobsList = () => {
                         {job.claim?.typeOfLoss || 'N/A'}
                       </span>
                       <button
+                        onClick={(e) => handleDuplicate(job.id, e)}
+                        className="text-blue-600 hover:text-blue-700 p-1"
+                        title="Duplicate Job"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                      </button>
+                      <button
                         onClick={(e) => handleDelete(job.id, e)}
                         className="text-red-600 hover:text-red-700 p-1"
+                        title="Delete Job"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -183,6 +213,15 @@ const JobsList = () => {
           </>
         )}
       </div>
+
+      {/* Mobile FAB */}
+      <button
+        onClick={() => navigate('/app/new')}
+        className="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-blue-600 text-white rounded-full shadow-lg flex items-center justify-center text-2xl font-light hover:bg-blue-700 transition-colors"
+        aria-label="Create New Job"
+      >
+        +
+      </button>
     </div>
   );
 };

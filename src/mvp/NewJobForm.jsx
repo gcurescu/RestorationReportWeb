@@ -52,19 +52,31 @@ const NewJobForm = () => {
   });
 
   const handlePhotoUpload = (e, index) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const currentPhotos = watch('photos') || [];
-        currentPhotos[index] = {
-          ...currentPhotos[index],
-          file: event.target.result,
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      Array.from(files).forEach((file, fileIndex) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const currentPhotos = watch('photos') || [];
+          const targetIndex = index + fileIndex;
+          
+          // Ensure we have enough photo slots
+          while (currentPhotos.length <= targetIndex) {
+            currentPhotos.push({ caption: '', file: '' });
+          }
+          
+          currentPhotos[targetIndex] = {
+            ...currentPhotos[targetIndex],
+            file: event.target.result,
+            caption: currentPhotos[targetIndex].caption || `Photo ${targetIndex + 1}`,
+            time: new Date().toISOString(),
+          };
+          
+          // Force form update
+          setValue('photos', currentPhotos);
         };
-        // Force form update
-        setValue('photos', currentPhotos);
-      };
-      reader.readAsDataURL(file);
+        reader.readAsDataURL(file);
+      });
     }
   };
 
@@ -101,7 +113,7 @@ const NewJobForm = () => {
       <input
         type={type}
         {...register(name)}
-        className="w-full border rounded-lg px-3 py-2 text-sm border-slate-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+        className="w-full border rounded-lg px-3 py-3 text-sm border-slate-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 min-h-[44px]"
         {...props}
       />
       {errors[name] && (
@@ -118,7 +130,7 @@ const NewJobForm = () => {
       <textarea
         rows={rows}
         {...register(name)}
-        className="w-full border rounded-lg px-3 py-2 text-sm border-slate-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+        className="w-full border rounded-lg px-3 py-3 text-sm border-slate-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 min-h-[44px]"
         {...props}
       />
       {errors[name] && (
@@ -176,7 +188,7 @@ const NewJobForm = () => {
             </label>
             <select
               {...register('claim.typeOfLoss')}
-              className="w-full border rounded-lg px-3 py-2 text-sm border-slate-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className="w-full border rounded-lg px-3 py-3 text-sm border-slate-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 min-h-[44px]"
             >
               <option value="Water">Water</option>
               <option value="Fire">Fire</option>
@@ -361,8 +373,10 @@ const NewJobForm = () => {
                 <input
                   type="file"
                   accept="image/*"
+                  capture="environment"
+                  multiple
                   onChange={(e) => handlePhotoUpload(e, index)}
-                  className="w-full text-sm"
+                  className="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                 />
               </div>
               <button

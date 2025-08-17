@@ -57,3 +57,23 @@ export const deleteJob = (id) => {
   localStorage.setItem(JOBS_KEY, JSON.stringify(filtered));
   return true;
 };
+
+export const duplicateJob = (id) => {
+  const job = getJob(id);
+  if (!job) return null;
+  
+  // Create a copy without the id and timestamps
+  const { id: _, createdAt: __, updatedAt: ___, ...jobData } = job;
+  
+  // Update some fields to indicate it's a duplicate
+  const duplicatedJob = {
+    ...jobData,
+    claim: {
+      ...jobData.claim,
+      claimId: jobData.claim?.claimId ? `${jobData.claim.claimId}-COPY` : 'COPY',
+      summary: jobData.claim?.summary ? `[COPY] ${jobData.claim.summary}` : '[COPY] Duplicated claim'
+    }
+  };
+  
+  return saveJob(duplicatedJob);
+};
