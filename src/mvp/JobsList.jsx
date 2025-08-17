@@ -1,15 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getJobs, deleteJob, duplicateJob } from './storage';
+import { formatDate, formatDateTime } from './utils/formatters';
 
 const JobsList = () => {
   const navigate = useNavigate();
   const [jobs, setJobs] = useState([]);
+  const [filteredJobs, setFilteredJobs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterType, setFilterType] = useState('all');
 
   useEffect(() => {
     loadJobs();
   }, []);
+
+  useEffect(() => {
+    filterJobs();
+  }, [jobs, searchTerm, filterType]);
 
   const loadJobs = () => {
     try {
@@ -20,6 +28,26 @@ const JobsList = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const filterJobs = () => {
+    let filtered = jobs;
+
+    // Filter by search term
+    if (searchTerm) {
+      filtered = filtered.filter(job => 
+        (job.claim?.claimId?.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (job.policyholder?.name?.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (job.claim?.carrier?.toLowerCase().includes(searchTerm.toLowerCase()))
+      );
+    }
+
+    // Filter by loss type
+    if (filterType !== 'all') {
+      filtered = filtered.filter(job => job.claim?.typeOfLoss === filterType);
+    }
+
+    setFilteredJobs(filtered);
   };
 
   const handleDelete = (jobId, event) => {
@@ -40,14 +68,6 @@ const JobsList = () => {
         navigate(`/app/job/${newJobId}`);
       }
     }
-  };
-
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
   };
 
   if (loading) {
@@ -74,12 +94,53 @@ const JobsList = () => {
           </div>
           <button
             onClick={() => navigate('/app/new')}
-            className="px-3 py-2 rounded-md bg-blue-600 text-white text-sm font-medium"
+            className="px-3 py-2 rounded-md bg-blue-600 text-white text-sm font-medium min-h-[44px] hover:bg-blue-700 transition-colors"
           >
             + New Job
           </button>
         </div>
       </div>
+
+      {/* Search and Filters */}
+      {jobs.length > 0 && (
+        <div className="bg-white border-b px-4 py-3">
+          <div className="max-w-4xl mx-auto flex flex-col sm:flex-row gap-3">
+            <div className="flex-1">
+              <input
+                type="text"
+                placeholder="Search by claim ID, policyholder, or carrier..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[44px]"
+              />
+            </div>
+            <select
+              value={filterType}
+              onChange={(e) => setFilterType(e.target.value)}
+              className="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[44px]"
+            >
+              <option value="all">All Types</option>
+              <option value="Water">Water</option>
+              <option value="Fire">Fire</option>
+              <option value="Mold">Mold</option>
+            </select>
+          </div>
+          
+          {(searchTerm || filterType !== 'all') && (
+            <div className="max-w-4xl mx-auto mt-2 text-sm text-slate-600">
+              Showing {filteredJobs.length} of {jobs.length} jobs
+              {searchTerm && <span> matching "{searchTerm}"</span>}
+              {filterType !== 'all' && <span> • {filterType} losses</span>}
+              <button 
+                onClick={() => { setSearchTerm(''); setFilterType('all'); }}
+                className="ml-2 text-blue-600 hover:text-blue-800"
+              >
+                Clear filters
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Content */}
       <div className="p-4 max-w-4xl mx-auto pb-20">
@@ -92,9 +153,23 @@ const JobsList = () => {
             </p>
             <button
               onClick={() => navigate('/app/new')}
-              className="px-4 py-2 rounded-md bg-blue-600 text-white font-medium"
+              className="px-4 py-2 rounded-md bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors min-h-[44px]"
             >
               Create New Job
+            </button>
+          </div>
+        ) : filteredJobs.length === 0 ? (
+          <div className="bg-white rounded-lg border border-slate-200 p-8 text-center">
+            <div className="text-slate-400 text-4xl mb-4">🔍</div>
+            <h2 className="text-xl font-semibold text-slate-900 mb-2">No matching jobs</h2>
+            <p className="text-slate-600 mb-4">
+              Try adjusting your search terms or filters.
+            </p>
+            <button
+              onClick={() => { setSearchTerm(''); setFilterType('all'); }}
+              className="px-4 py-2 rounded-md bg-slate-600 text-white font-medium hover:bg-slate-700 transition-colors"
+            >
+              Clear Filters
             </button>
           </div>
         ) : (
@@ -113,7 +188,7 @@ const JobsList = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {jobs.map((job) => (
+                  {filteredJobs.map((job) => (
                     <tr
                       key={job.id}
                       className="border-t border-slate-200 hover:bg-slate-50 cursor-pointer"
@@ -123,30 +198,48 @@ const JobsList = () => {
                         {job.claim?.claimId || 'N/A'}
                       </td>
                       <td className="px-4 py-3 text-slate-700">
-                        {job.policyholder?.name || 'N/A'}
+                        <div>
+                          <div className="font-medium">{job.policyholder?.name || 'N/A'}</div>
+                          <div className="text-xs text-slate-500">{job.claim?.carrier || 'No carrier'}</div>
+                        </div>
                       </td>
                       <td className="px-4 py-3">
                         <span className="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
                           {job.claim?.typeOfLoss || 'N/A'}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-slate-600">
+                      <td className="px-4 py-3 text-slate-600 text-sm">
                         {job.claim?.dateOfLoss ? formatDate(job.claim.dateOfLoss) : 'N/A'}
                       </td>
-                      <td className="px-4 py-3 text-slate-600">
-                        {formatDate(job.updatedAt)}
+                      <td className="px-4 py-3 text-slate-600 text-sm">
+                        <div>
+                          <div>{formatDate(job.updatedAt)}</div>
+                          <div className="text-xs text-slate-400">{formatDateTime(job.updatedAt, 'h:mm A')}</div>
+                        </div>
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex gap-2">
                           <button
-                            onClick={(e) => handleDuplicate(job.id, e)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/app/job/${job.id}`);
+                            }}
                             className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                            title="Open Report"
+                          >
+                            Open
+                          </button>
+                          <button
+                            onClick={(e) => handleDuplicate(job.id, e)}
+                            className="text-green-600 hover:text-green-700 text-sm font-medium"
+                            title="Duplicate Job"
                           >
                             Duplicate
                           </button>
                           <button
                             onClick={(e) => handleDelete(job.id, e)}
                             className="text-red-600 hover:text-red-700 text-sm font-medium"
+                            title="Delete Job"
                           >
                             Delete
                           </button>
@@ -160,52 +253,64 @@ const JobsList = () => {
 
             {/* Mobile Card View */}
             <div className="md:hidden space-y-3">
-              {jobs.map((job) => (
+              {filteredJobs.map((job) => (
                 <div
                   key={job.id}
-                  className="bg-white rounded-lg border border-slate-200 p-4 cursor-pointer"
+                  className="bg-white rounded-lg border border-slate-200 p-4 cursor-pointer hover:bg-slate-50 transition-colors"
                   onClick={() => navigate(`/app/job/${job.id}`)}
                 >
-                  <div className="flex justify-between items-start mb-2">
-                    <div>
-                      <h3 className="font-medium text-slate-900">
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="flex-1">
+                      <h3 className="font-medium text-slate-900 mb-1">
                         {job.claim?.claimId || 'Untitled Job'}
                       </h3>
-                      <p className="text-sm text-slate-600">
+                      <p className="text-sm text-slate-600 mb-1">
                         {job.policyholder?.name || 'No policyholder'}
                       </p>
+                      {job.claim?.carrier && (
+                        <p className="text-xs text-slate-500">
+                          {job.claim.carrier}
+                        </p>
+                      )}
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
                         {job.claim?.typeOfLoss || 'N/A'}
                       </span>
-                      <button
-                        onClick={(e) => handleDuplicate(job.id, e)}
-                        className="text-blue-600 hover:text-blue-700 p-1"
-                        title="Duplicate Job"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                        </svg>
-                      </button>
-                      <button
-                        onClick={(e) => handleDelete(job.id, e)}
-                        className="text-red-600 hover:text-red-700 p-1"
-                        title="Delete Job"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                      </button>
                     </div>
                   </div>
-                  <div className="flex justify-between text-xs text-slate-500">
+                  
+                  <div className="flex justify-between items-center text-xs text-slate-500 mb-3">
                     <span>
                       Loss: {job.claim?.dateOfLoss ? formatDate(job.claim.dateOfLoss) : 'N/A'}
                     </span>
                     <span>
                       Updated: {formatDate(job.updatedAt)}
                     </span>
+                  </div>
+
+                  <div className="flex justify-end gap-3 pt-2 border-t border-slate-100">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/app/job/${job.id}`);
+                      }}
+                      className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                    >
+                      Open
+                    </button>
+                    <button
+                      onClick={(e) => handleDuplicate(job.id, e)}
+                      className="text-green-600 hover:text-green-700 text-sm font-medium"
+                    >
+                      Duplicate
+                    </button>
+                    <button
+                      onClick={(e) => handleDelete(job.id, e)}
+                      className="text-red-600 hover:text-red-700 text-sm font-medium"
+                    >
+                      Delete
+                    </button>
                   </div>
                 </div>
               ))}
@@ -217,7 +322,7 @@ const JobsList = () => {
       {/* Mobile FAB */}
       <button
         onClick={() => navigate('/app/new')}
-        className="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-blue-600 text-white rounded-full shadow-lg flex items-center justify-center text-2xl font-light hover:bg-blue-700 transition-colors"
+        className="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-blue-600 text-white rounded-full shadow-lg flex items-center justify-center text-2xl font-light hover:bg-blue-700 transition-colors z-20"
         aria-label="Create New Job"
       >
         +

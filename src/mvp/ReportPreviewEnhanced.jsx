@@ -3,6 +3,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { getJob } from './storage';
+import { formatDate, formatDateTime, formatEnergy, formatDays, formatTemperature, formatRH, formatGPP } from './utils/formatters';
+import SectionHeader from './components/SectionHeader';
+import KeyValuePanel, { TwoPanelLayout } from './components/KeyValuePanel';
+import PhotoGrid, { PhotoSingle } from './components/PhotoGrid';
 
 const ReportPreview = () => {
   const { id } = useParams();
@@ -11,6 +15,7 @@ const ReportPreview = () => {
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
+  const [totalPages, setTotalPages] = useState(15);
 
   useEffect(() => {
     const jobData = getJob(id);
@@ -21,6 +26,16 @@ const ReportPreview = () => {
     setJob(jobData);
     setLoading(false);
   }, [id, navigate]);
+
+  useEffect(() => {
+    // Count pages after component mounts
+    if (job && reportRef.current) {
+      setTimeout(() => {
+        const pages = reportRef.current.querySelectorAll('.rr-page');
+        setTotalPages(pages.length);
+      }, 100);
+    }
+  }, [job]);
 
   const generatePDF = async () => {
     if (!reportRef.current) return;
@@ -111,10 +126,11 @@ const ReportPreview = () => {
           {title}
         </div>
       )}
+      <div className="mt-2 h-px bg-white/30"></div>
     </div>
   );
 
-  const PageFooter = ({ pageNumber, totalPages = 15 }) => (
+  const PageFooter = ({ pageNumber }) => (
     <div className="absolute bottom-4 left-4 right-4 flex justify-between text-xs text-slate-500 border-t pt-2">
       <span>Powered by Restoration Report</span>
       <span className="page-number">Page {pageNumber} of {totalPages}</span>
@@ -123,11 +139,11 @@ const ReportPreview = () => {
 
   const ReportTable = ({ title, headers, data, className = "" }) => (
     <div className={`mb-6 ${className}`}>
-      <h3 className="font-semibold text-slate-900 mb-3 text-sm">{title}</h3>
+      <h3 className="font-semibold text-[#0C2D48] mb-3 text-sm border-b border-slate-200 pb-2">{title}</h3>
       <div className="overflow-hidden">
         <table className="w-full border border-slate-300 text-xs">
           <thead>
-            <tr className="bg-slate-100">
+            <tr className="bg-[#0C2D48] text-white">
               {headers.map((header, index) => (
                 <th key={index} className="border border-slate-300 px-2 py-2 text-left font-medium">
                   {header}
@@ -137,12 +153,15 @@ const ReportPreview = () => {
           </thead>
           <tbody>
             {data && data.length > 0 ? data.map((row, index) => (
-              <tr key={index}>
+              <tr key={index} className={index % 2 === 0 ? 'bg-slate-50' : 'bg-white'}>
                 {headers.map((header, cellIndex) => {
                   const key = header.toLowerCase().replace(/[^a-z0-9]/g, '');
+                  const value = row[key] || row[Object.keys(row).find(k => 
+                    k.toLowerCase().replace(/[^a-z0-9]/g, '') === key
+                  )] || '-';
                   return (
                     <td key={cellIndex} className="border border-slate-300 px-2 py-1">
-                      {row[key] || '-'}
+                      {value}
                     </td>
                   );
                 })}
@@ -160,24 +179,26 @@ const ReportPreview = () => {
     </div>
   );
 
-  const PhotoGrid = ({ photos = [], columns = 3, showPlaceholders = 6 }) => {
-    const totalSlots = Math.max(photos.length, showPlaceholders);
+  const EnhancedPhotoGrid = ({ photos = [], columns = 3, showPlaceholders = 6, title }) => {
+    const allPhotos = photos.filter(p => p && p.file);
+    const totalSlots = Math.max(allPhotos.length, showPlaceholders);
     const items = [];
     
     for (let i = 0; i < totalSlots; i++) {
-      const photo = photos[i];
+      const photo = allPhotos[i];
       items.push(
         <div key={i} className="aspect-video bg-slate-100 rounded border overflow-hidden">
           {photo?.file ? (
             <div className="h-full">
               <img
                 src={photo.file}
-                alt={photo.caption || `Photo ${i + 1}`}
+                alt={photo.caption || `${title} Photo ${i + 1}`}
                 className="w-full h-4/5 object-cover"
+                loading="lazy"
               />
               <div className="p-1 bg-white text-xs text-center">
-                <p className="text-slate-600 truncate">{photo.caption || 'Photo'}</p>
-                <p className="text-slate-400">MM/DD/YYYY HH:mm CT</p>
+                <p className="text-slate-600 truncate">{photo.caption || `${title} Photo`}</p>
+                <p className="text-slate-400">{photo.timeISO ? formatDateTime(photo.timeISO, 'MM/DD/YY HH:mm') : '--'}</p>
               </div>
             </div>
           ) : (
