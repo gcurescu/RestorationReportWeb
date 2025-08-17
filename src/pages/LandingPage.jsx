@@ -154,13 +154,31 @@ export default function LandingPage() {
       {/* Social Proof */}
       <SocialProof />
 
+      {/* Beta Access Banner */}
+      <section className="py-12 bg-gradient-to-r from-green-600 to-green-700">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="text-white">
+            <h2 className="text-xl sm:text-2xl font-bold mb-2">🎉 Beta Now Live!</h2>
+            <p className="text-green-100 mb-4">
+              Skip the waitlist. Start creating professional reports today.
+            </p>
+            <a 
+              href="/app/jobs"
+              className="inline-flex items-center bg-white text-green-600 px-6 py-3 rounded-lg hover:bg-green-50 font-medium shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white text-sm transition-colors"
+            >
+              Access Beta (Free) →
+            </a>
+          </div>
+        </div>
+      </section>
+
             {/* Sample */}
         <section id="sample" className="py-16 bg-white" aria-labelledby="sample-heading">
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 id="sample-heading" className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">Sample Report</h2>
             <p className="text-lg text-slate-600 mb-8">See what your reports will look like</p>
             <div className="flex justify-center"><MockReportPreview /></div>
-            <div className="mt-8">
+            <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
               <button 
                 onClick={() => {
                   // Trigger the modal in the SampleReport component
@@ -174,6 +192,12 @@ export default function LandingPage() {
               >
                 View Full Sample Report →
               </button>
+              <a 
+                href="/app/jobs"
+                className="inline-flex items-center bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 font-medium shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-600 text-sm"
+              >
+                Try Beta Now (Free) →
+              </a>
             </div>
             </div>
         </section>
