@@ -1,5 +1,16 @@
 import { z } from 'zod';
 
+// Helper for numeric fields that converts empty strings to undefined
+const optionalNumber = z.preprocess(
+  (v) => v === '' || v === null || v === undefined ? undefined : Number(v), 
+  z.number().optional()
+);
+
+const requiredNumber = z.preprocess(
+  (v) => v === '' || v === null || v === undefined ? undefined : Number(v), 
+  z.number({ invalid_type_error: 'Must be a number' })
+);
+
 // Define the main report schema
 export const reportSchema = z.object({
   company: z.object({
@@ -67,13 +78,13 @@ export const reportSchema = z.object({
     psychrometrics: z.array(z.object({
       dateISO: z.string(),
       location: z.string(),
-      tempF: z.number(),
-      rh: z.number(),
-      gpp: z.number(),
-      grainDepression: z.number().optional(),
+      tempF: requiredNumber,
+      rh: requiredNumber,
+      gpp: requiredNumber,
+      grainDepression: optionalNumber,
     })),
     points: z.array(z.object({
-      point: z.number(),
+      point: requiredNumber,
       room: z.string(),
       surface: z.string(),
       reading: z.string(),
@@ -82,16 +93,16 @@ export const reportSchema = z.object({
     unaffected: z.array(z.object({
       dateISO: z.string(),
       room: z.string(),
-      rh: z.number(),
-      gpp: z.number(),
-      tempF: z.number(),
+      rh: requiredNumber,
+      gpp: requiredNumber,
+      tempF: requiredNumber,
     })).optional(),
     hvac: z.array(z.object({
       dateISO: z.string(),
       room: z.string(),
-      rh: z.number(),
-      gpp: z.number(),
-      tempF: z.number(),
+      rh: requiredNumber,
+      gpp: requiredNumber,
+      tempF: requiredNumber,
     })).optional(),
   }),
   
@@ -100,32 +111,32 @@ export const reportSchema = z.object({
       name: z.string(),
       placedISO: z.string(),
       removedISO: z.string().optional(),
-      powerKw: z.number().optional(),
-      energyKwh: z.number().optional(),
-      days: z.number().optional(),
+      powerKw: optionalNumber,
+      energyKwh: optionalNumber,
+      days: optionalNumber,
       area: z.string().optional(),
     })),
     movers: z.array(z.object({
       name: z.string(),
       placedISO: z.string(),
       removedISO: z.string().optional(),
-      energyKwh: z.number().optional(),
-      days: z.number().optional(),
+      energyKwh: optionalNumber,
+      days: optionalNumber,
       area: z.string().optional(),
     })),
     scrubbers: z.array(z.object({
       name: z.string(),
       placedISO: z.string(),
       removedISO: z.string().optional(),
-      energyKwh: z.number().optional(),
-      days: z.number().optional(),
+      energyKwh: optionalNumber,
+      days: optionalNumber,
       area: z.string().optional(),
     })),
     totals: z.object({
-      dehusKwh: z.number().optional(),
-      moversKwh: z.number().optional(),
-      scrubbersKwh: z.number().optional(),
-      days: z.number().optional(),
+      dehusKwh: optionalNumber,
+      moversKwh: optionalNumber,
+      scrubbersKwh: optionalNumber,
+      days: optionalNumber,
     }).optional(),
   }),
 
@@ -133,14 +144,14 @@ export const reportSchema = z.object({
     dehu: z.array(z.object({
       atmosphere: z.string(),
       classOfWater: z.enum([1, 2, 3, 4]),
-      volumeFt3: z.number(),
-      recommendedPintsPerDay: z.number(),
+      volumeFt3: requiredNumber,
+      recommendedPintsPerDay: requiredNumber,
     })),
     airMovers: z.array(z.object({
       area: z.string(),
-      floorFt2: z.number(),
-      insetsOrOffsets: z.number().optional(),
-      recommendedMovers: z.number(),
+      floorFt2: requiredNumber,
+      insetsOrOffsets: optionalNumber,
+      recommendedMovers: requiredNumber,
     })),
   }).optional(),
 

@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { getJob } from './storage';
-import { formatDate, formatDateTime, formatEnergy, formatDays, formatTemperature, formatRH, formatGPP } from './utils/formatters';
+import { formatDate, formatDateTime, formatEnergy, formatDays, formatTemperature, formatRH, formatGPP, formatNumber } from './utils/formatters';
 import SectionHeader from './components/SectionHeader';
 import KeyValuePanel, { TwoPanelLayout } from './components/KeyValuePanel';
 import PhotoGrid, { PhotoSingle } from './components/PhotoGrid';
@@ -16,6 +16,26 @@ const ReportPreview = () => {
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [totalPages, setTotalPages] = useState(15);
+  const [tocSections, setTocSections] = useState([]);
+  const [pdfProgress, setPdfProgress] = useState({ current: 0, total: 0 });
+
+  // Define sections for Table of Contents
+  const sections = [
+    { title: 'Claim Summary', dataSection: 'claim-summary' },
+    { title: 'Table of Contents', dataSection: 'table-of-contents' },
+    { title: 'General Notes', dataSection: 'general-notes' },
+    { title: 'Risk — Overview Photos, Log Notes, Room Notes', dataSection: 'risk-overview' },
+    { title: 'Room: Kitchen — Overview Photos', dataSection: 'room-kitchen' },
+    { title: 'Floor Plan — Floor Plan 1', dataSection: 'floor-plan' },
+    { title: 'Room: Hardwood Floors — Overview Photos', dataSection: 'room-hardwood' },
+    { title: 'Room: Basement — Overview Photos', dataSection: 'room-basement' },
+    { title: 'Attachments', dataSection: 'attachments' },
+    { title: 'Moisture FULL Report (Psychrometrics)', dataSection: 'moisture-psychrometrics' },
+    { title: 'Moisture & Equipment Report', dataSection: 'moisture-equipment' },
+    { title: 'Mitigation Scope (Sample)', dataSection: 'mitigation-scope' },
+    { title: 'Work Authorization (Sample)', dataSection: 'work-authorization' },
+    { title: 'Health & Safety Consent (Sample)', dataSection: 'health-safety' },
+  ];
 
   useEffect(() => {
     const jobData = getJob(id);
@@ -28,11 +48,22 @@ const ReportPreview = () => {
   }, [id, navigate]);
 
   useEffect(() => {
-    // Count pages after component mounts
+    // Count pages and calculate ToC after component mounts
     if (job && reportRef.current) {
       setTimeout(() => {
         const pages = reportRef.current.querySelectorAll('.rr-page');
         setTotalPages(pages.length);
+        
+        // Calculate dynamic page numbers for ToC
+        const updatedSections = sections.map(section => {
+          const pageElement = reportRef.current.querySelector(`[data-section="${section.dataSection}"]`);
+          if (pageElement) {
+            const pageIndex = Array.from(pages).indexOf(pageElement);
+            return { ...section, page: pageIndex + 1 };
+          }
+          return { ...section, page: '—' };
+        });
+        setTocSections(updatedSections);
       }, 100);
     }
   }, [job]);
@@ -41,12 +72,27 @@ const ReportPreview = () => {
     if (!reportRef.current) return;
     
     setGenerating(true);
+    setPdfProgress({ current: 0, total: 0 });
+    
     try {
       const pdf = new jsPDF('p', 'pt', 'letter');
       const pages = reportRef.current.querySelectorAll('.rr-page');
       
+      setPdfProgress({ current: 0, total: pages.length });
+      
+      // Set PDF properties
+      pdf.setProperties({
+        title: `Restoration Report - ${job.claim?.claimId || 'Untitled'}`,
+        subject: `${job.claim?.typeOfLoss} Damage Assessment`,
+        author: job.company?.name || 'Restoration Report',
+        creator: 'Restoration Report Web'
+      });
+      
       for (let i = 0; i < pages.length; i++) {
         const page = pages[i];
+        
+        // Update progress
+        setPdfProgress({ current: i + 1, total: pages.length });
         
         // Update page numbers before capture
         const footers = page.querySelectorAll('.page-number');
@@ -55,18 +101,25 @@ const ReportPreview = () => {
         });
         
         const canvas = await html2canvas(page, {
-          scale: 2,
+          scale: 2, // Higher quality
           useCORS: true,
-          allowTaint: true,
+          windowWidth: 816,
+          logging: false, // Disable console logs
+          allowTaint: false,
           backgroundColor: '#ffffff',
           width: 816,
           height: 1056,
         });
         
-        const imgData = canvas.toDataURL('image/png');
+        // Use JPEG for photo-heavy pages to reduce file size
+        const isPhotoHeavy = page.querySelector('.grid') && page.querySelectorAll('img').length > 2;
+        const format = isPhotoHeavy ? 'JPEG' : 'PNG';
+        const quality = isPhotoHeavy ? 0.85 : 1.0;
+        
+        const imgData = canvas.toDataURL(`image/${format.toLowerCase()}`, quality);
         
         if (i > 0) pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, 0, 816, 1056);
+        pdf.addImage(imgData, format, 0, 0, 816, 1056);
       }
       
       const fileName = `restoration-report-${job.claim?.claimId || 'untitled'}.pdf`;
@@ -76,6 +129,7 @@ const ReportPreview = () => {
       alert('Error generating PDF. Please try again.');
     } finally {
       setGenerating(false);
+      setPdfProgress({ current: 0, total: 0 });
     }
   };
 
@@ -104,31 +158,40 @@ const ReportPreview = () => {
   }
 
   // Reusable Components
-  const PageHeader = ({ title, company = job.company }) => (
-    <div className="bg-[#0C2D48] text-white p-4 mb-6">
-      <div className="flex justify-between items-center">
-        <div className="flex items-center gap-4">
-          {company?.logoUrl && (
-            <img src={company.logoUrl} alt="Company Logo" className="h-8 w-auto" />
-          )}
-          <div>
-            <h1 className="text-lg font-bold">{company?.name || 'Restoration Report'}</h1>
+  const PageHeader = ({ title, company = job.company }) => {
+    // Filter out empty company contact fields
+    const contactInfo = [company?.phone, company?.email].filter(Boolean);
+    
+    return (
+      <div className="bg-[#0C2D48] text-white p-4 mb-6">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            {company?.logoUrl && (
+              <img src={company.logoUrl} alt="Company Logo" className="h-8 w-auto" />
+            )}
+            <div>
+              <h1 className="text-lg font-bold">{company?.name || 'Restoration Report'}</h1>
+            </div>
+          </div>
+          <div className="text-right text-sm">
+            {contactInfo.length > 0 && (
+              <div>{contactInfo.join(' • ')}</div>
+            )}
+            {!contactInfo.length && (
+              <div>Professional Restoration Services</div>
+            )}
+            <div className="text-xs">{company?.address || 'Professional Restoration Services'}</div>
           </div>
         </div>
-        <div className="text-right text-sm">
-          <div>{company?.phone || '1-800-RESTORE'}</div>
-          <div>{company?.email || 'info@restorationreport.com'}</div>
-          <div className="text-xs">{company?.address || 'Professional Restoration Services'}</div>
-        </div>
+        {title && (
+          <div className="mt-3 text-lg font-semibold text-blue-200">
+            {title}
+          </div>
+        )}
+        <div className="mt-2 h-px bg-white/30"></div>
       </div>
-      {title && (
-        <div className="mt-3 text-lg font-semibold text-blue-200">
-          {title}
-        </div>
-      )}
-      <div className="mt-2 h-px bg-white/30"></div>
-    </div>
-  );
+    );
+  };
 
   const PageFooter = ({ pageNumber }) => (
     <div className="absolute bottom-4 left-4 right-4 flex justify-between text-xs text-slate-500 border-t pt-2">
@@ -272,9 +335,19 @@ const ReportPreview = () => {
           <button
             onClick={generatePDF}
             disabled={generating}
-            className="px-4 py-2 rounded-md bg-blue-600 text-white text-sm font-medium disabled:opacity-60 min-h-[44px]"
+            className="px-4 py-2 rounded-md bg-blue-600 text-white text-sm font-medium disabled:opacity-60 min-h-[44px] flex items-center gap-2"
           >
-            {generating ? 'Generating PDF...' : 'Generate PDF'}
+            {generating ? (
+              <>
+                <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                {pdfProgress.total > 0 ? `${pdfProgress.current}/${pdfProgress.total}` : 'Generating...'}
+              </>
+            ) : (
+              'Generate PDF'
+            )}
           </button>
         </div>
       </div>
@@ -284,7 +357,7 @@ const ReportPreview = () => {
         <div ref={reportRef} className="max-w-4xl mx-auto space-y-6">
           
           {/* Page 1: Cover / Claim Summary */}
-          <div className="rr-page bg-white shadow-sm relative">
+          <div className="rr-page bg-white shadow-sm relative" data-section="claim-summary">
             <PageHeader title="Claim Summary" />
             
             <div className="px-8 pb-20">
@@ -328,29 +401,14 @@ const ReportPreview = () => {
           </div>
 
           {/* Page 2: Table of Contents */}
-          <div className="rr-page bg-white shadow-sm relative">
+          <div className="rr-page bg-white shadow-sm relative" data-section="table-of-contents">
             <PageHeader title="Table of Contents" />
             
             <div className="px-8 pb-20">
               <h1 className="text-2xl font-bold text-slate-900 mb-8">Table of Contents</h1>
               
               <div className="space-y-2 text-sm">
-                {[
-                  { title: 'Claim Summary', page: 1 },
-                  { title: 'Table of Contents', page: 2 },
-                  { title: 'General Notes', page: 3 },
-                  { title: 'Risk — Overview Photos, Log Notes, Room Notes', page: 4 },
-                  { title: 'Room: Kitchen — Overview Photos', page: 5 },
-                  { title: 'Floor Plan — Floor Plan 1', page: 6 },
-                  { title: 'Room: Hardwood Floors — Overview Photos', page: 7 },
-                  { title: 'Room: Basement — Overview Photos', page: 8 },
-                  { title: 'Attachments', page: 9 },
-                  { title: 'Moisture FULL Report (Psychrometrics)', page: 10 },
-                  { title: 'Moisture & Equipment Report', page: 11 },
-                  { title: 'Mitigation Scope (Sample)', page: 12 },
-                  { title: 'Work Authorization (Sample)', page: 13 },
-                  { title: 'Health & Safety Consent (Sample)', page: 14 },
-                ].map((item, index) => (
+                {tocSections.map((item, index) => (
                   <div key={index} className="flex justify-between py-2 border-b border-slate-100">
                     <span className="text-slate-700">{item.title}</span>
                     <span className="text-slate-500">{item.page}</span>
@@ -363,7 +421,7 @@ const ReportPreview = () => {
           </div>
 
           {/* Page 3: General Notes */}
-          <div className="rr-page bg-white shadow-sm relative">
+          <div className="rr-page bg-white shadow-sm relative" data-section="general-notes">
             <PageHeader title="General Notes" />
             
             <div className="px-8 pb-20">
@@ -415,7 +473,7 @@ const ReportPreview = () => {
           </div>
 
           {/* Page 4: Risk — Overview Photos, Log Notes, Room Notes */}
-          <div className="rr-page bg-white shadow-sm relative">
+          <div className="rr-page bg-white shadow-sm relative" data-section="risk-overview">
             <PageHeader title="Risk — Overview Photos, Log Notes, Room Notes" />
             
             <div className="px-8 pb-20">
@@ -468,7 +526,7 @@ const ReportPreview = () => {
           </div>
 
           {/* Page 5: Room: Kitchen — Overview Photos */}
-          <div className="rr-page bg-white shadow-sm relative">
+          <div className="rr-page bg-white shadow-sm relative" data-section="room-kitchen">
             <PageHeader title="Room: Kitchen — Overview Photos" />
             
             <div className="px-8 pb-20">
@@ -488,7 +546,7 @@ const ReportPreview = () => {
           </div>
 
           {/* Page 6: Floor Plan */}
-          <div className="rr-page bg-white shadow-sm relative">
+          <div className="rr-page bg-white shadow-sm relative" data-section="floor-plan">
             <PageHeader title="Floor Plan — Floor Plan 1" />
             
             <div className="px-8 pb-20">
@@ -541,7 +599,7 @@ const ReportPreview = () => {
           </div>
 
           {/* Page 7: Room: Hardwood Floors — Overview Photos */}
-          <div className="rr-page bg-white shadow-sm relative">
+          <div className="rr-page bg-white shadow-sm relative" data-section="room-hardwood">
             <PageHeader title="Room: Hardwood Floors — Overview Photos" />
             
             <div className="px-8 pb-20">
@@ -561,7 +619,7 @@ const ReportPreview = () => {
           </div>
 
           {/* Page 8: Room: Basement — Overview Photos */}
-          <div className="rr-page bg-white shadow-sm relative">
+          <div className="rr-page bg-white shadow-sm relative" data-section="room-basement">
             <PageHeader title="Room: Basement — Overview Photos" />
             
             <div className="px-8 pb-20">
@@ -581,7 +639,7 @@ const ReportPreview = () => {
           </div>
 
           {/* Page 9: Attachments */}
-          <div className="rr-page bg-white shadow-sm relative">
+          <div className="rr-page bg-white shadow-sm relative" data-section="attachments">
             <PageHeader title="Attachments" />
             
             <div className="px-8 pb-20">
@@ -627,7 +685,7 @@ const ReportPreview = () => {
           </div>
 
           {/* Page 10: Moisture FULL Report (Psychrometrics) */}
-          <div className="rr-page bg-white shadow-sm relative">
+          <div className="rr-page bg-white shadow-sm relative" data-section="moisture-psychrometrics">
             <PageHeader title="Moisture FULL Report (Psychrometrics)" />
             
             <div className="px-8 pb-20">
@@ -687,7 +745,7 @@ const ReportPreview = () => {
           </div>
 
           {/* Page 11: Moisture & Equipment Report */}
-          <div className="rr-page bg-white shadow-sm relative">
+          <div className="rr-page bg-white shadow-sm relative" data-section="moisture-equipment">
             <PageHeader title="Moisture & Equipment Report" />
             
             <div className="px-8 pb-20">
@@ -744,7 +802,7 @@ const ReportPreview = () => {
           </div>
 
           {/* Page 12: Mitigation Scope (Sample) */}
-          <div className="rr-page bg-white shadow-sm relative">
+          <div className="rr-page bg-white shadow-sm relative" data-section="mitigation-scope">
             <PageHeader title="Mitigation Scope (Sample)" />
             
             <div className="px-8 pb-20">
@@ -765,7 +823,7 @@ const ReportPreview = () => {
           </div>
 
           {/* Page 13: Work Authorization (Sample) */}
-          <div className="rr-page bg-white shadow-sm relative">
+          <div className="rr-page bg-white shadow-sm relative" data-section="work-authorization">
             <PageHeader title="Work Authorization (Sample)" />
             
             <div className="px-8 pb-20">
@@ -844,7 +902,7 @@ const ReportPreview = () => {
           </div>
 
           {/* Page 14: Health & Safety Consent (Sample) */}
-          <div className="rr-page bg-white shadow-sm relative">
+          <div className="rr-page bg-white shadow-sm relative" data-section="health-safety">
             <PageHeader title="Health & Safety Consent (Sample)" />
             
             <div className="px-8 pb-20">

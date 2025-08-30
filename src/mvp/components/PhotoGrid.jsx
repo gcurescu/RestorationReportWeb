@@ -13,8 +13,17 @@ export const PhotoGrid = ({ photos, cols = { mobile: 2, desktop: 3 }, className 
     );
   }
 
+  // Map dynamic values to static Tailwind classes to avoid purging
+  const mobileCols = cols.mobile === 3 ? 'grid-cols-3' : 
+                     cols.mobile === 4 ? 'grid-cols-4' :
+                     cols.mobile === 1 ? 'grid-cols-1' : 'grid-cols-2';
+  const desktopCols = cols.desktop === 4 ? 'md:grid-cols-4' :
+                      cols.desktop === 5 ? 'md:grid-cols-5' :
+                      cols.desktop === 2 ? 'md:grid-cols-2' :
+                      cols.desktop === 1 ? 'md:grid-cols-1' : 'md:grid-cols-3';
+
   return (
-    <div className={`grid grid-cols-${cols.mobile} md:grid-cols-${cols.desktop} gap-4 ${className}`}>
+    <div className={`grid ${mobileCols} ${desktopCols} gap-4 ${className}`}>
       {photos.map((photo, index) => (
         <div key={index} className="relative group">
           <div className="aspect-w-4 aspect-h-3 bg-gray-200 rounded-lg overflow-hidden">

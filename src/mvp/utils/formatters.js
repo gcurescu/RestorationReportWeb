@@ -44,8 +44,24 @@ export const formatTime = (isoString, format = 'h:mm A') => {
  * @returns {string} Formatted energy with units
  */
 export const formatEnergy = (kwh, decimals = 1) => {
-  if (!kwh && kwh !== 0) return '0.0 kWh';
-  return `${kwh.toFixed(decimals)} kWh`;
+  if (kwh === null || kwh === undefined || kwh === '') return '—';
+  const numValue = Number(kwh);
+  if (isNaN(numValue)) return '—';
+  return `${numValue.toFixed(decimals)} kWh`;
+};
+
+/**
+ * Format number with fallback for undefined/null values
+ * @param {number} value - Number value
+ * @param {number} decimals - Number of decimal places (default: 1) 
+ * @param {string} fallback - Fallback text for undefined/null (default: '—')
+ * @returns {string} Formatted number or fallback
+ */
+export const formatNumber = (value, decimals = 1, fallback = '—') => {
+  if (value === null || value === undefined || value === '') return fallback;
+  const numValue = Number(value);
+  if (isNaN(numValue)) return fallback;
+  return numValue.toFixed(decimals);
 };
 
 /**
@@ -60,13 +76,15 @@ export const formatPower = (kw, decimals = 1) => {
 };
 
 /**
- * Format days with proper pluralization
+ * Format days
  * @param {number} days - Number of days
  * @returns {string} Formatted days
  */
 export const formatDays = (days) => {
-  if (!days && days !== 0) return '0 days';
-  return days === 1 ? `${days} day` : `${days} days`;
+  if (days === null || days === undefined || days === '') return '—';
+  const numValue = Number(days);
+  if (isNaN(numValue)) return '—';
+  return numValue === 1 ? `${numValue} day` : `${numValue} days`;
 };
 
 /**
@@ -76,8 +94,10 @@ export const formatDays = (days) => {
  * @returns {string} Formatted temperature with unit
  */
 export const formatTemperature = (temp, decimals = 1) => {
-  if (temp === null || temp === undefined) return '-- °F';
-  return `${temp.toFixed(decimals)}°F`;
+  if (temp === null || temp === undefined || temp === '') return '— °F';
+  const numValue = Number(temp);
+  if (isNaN(numValue)) return '— °F';
+  return `${numValue.toFixed(decimals)}°F`;
 };
 
 /**
@@ -87,8 +107,10 @@ export const formatTemperature = (temp, decimals = 1) => {
  * @returns {string} Formatted RH with unit
  */
 export const formatRH = (rh, decimals = 1) => {
-  if (rh === null || rh === undefined) return '-- %';
-  return `${rh.toFixed(decimals)}%`;
+  if (rh === null || rh === undefined || rh === '') return '— %';
+  const numValue = Number(rh);
+  if (isNaN(numValue)) return '— %';
+  return `${numValue.toFixed(decimals)}%`;
 };
 
 /**
@@ -98,8 +120,10 @@ export const formatRH = (rh, decimals = 1) => {
  * @returns {string} Formatted GPP with unit
  */
 export const formatGPP = (gpp, decimals = 1) => {
-  if (gpp === null || gpp === undefined) return '-- GPP';
-  return `${gpp.toFixed(decimals)} GPP`;
+  if (gpp === null || gpp === undefined || gpp === '') return '— GPP';
+  const numValue = Number(gpp);
+  if (isNaN(numValue)) return '— GPP';
+  return `${numValue.toFixed(decimals)} GPP`;
 };
 
 /**
