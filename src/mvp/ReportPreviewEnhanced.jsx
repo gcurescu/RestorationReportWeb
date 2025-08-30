@@ -1,12 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
 import { getJob } from './storage';
-import { formatDate, formatDateTime, formatEnergy, formatDays, formatTemperature, formatRH, formatGPP, formatNumber } from './utils/formatters';
-import SectionHeader from './components/SectionHeader';
-import KeyValuePanel, { TwoPanelLayout } from './components/KeyValuePanel';
-import PhotoGrid, { PhotoSingle } from './components/PhotoGrid';
+import { formatDateTime } from './utils/formatters';
+import PhotoGrid from './components/PhotoGrid';
 
 const ReportPreview = () => {
   const { id } = useParams();
@@ -75,6 +71,12 @@ const ReportPreview = () => {
     setPdfProgress({ current: 0, total: 0 });
     
     try {
+      // Lazy load the PDF generation libraries
+      const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
+        import('html2canvas'),
+        import('jspdf')
+      ]);
+      
       const pdf = new jsPDF('p', 'pt', 'letter');
       const pages = reportRef.current.querySelectorAll('.rr-page');
       

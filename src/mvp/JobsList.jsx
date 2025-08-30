@@ -50,22 +50,32 @@ const JobsList = () => {
     setFilteredJobs(filtered);
   };
 
-  const handleDelete = (jobId, event) => {
+  const handleDelete = async (jobId, event) => {
     event.stopPropagation();
     if (window.confirm('Are you sure you want to delete this job?')) {
-      deleteJob(jobId);
-      loadJobs();
+      try {
+        await deleteJob(jobId);
+        loadJobs();
+      } catch (error) {
+        console.error('Error deleting job:', error);
+        alert('Error deleting job. Please try again.');
+      }
     }
   };
 
-  const handleDuplicate = (jobId, event) => {
+  const handleDuplicate = async (jobId, event) => {
     event.stopPropagation();
     if (window.confirm('Create a duplicate of this job?')) {
-      const newJobId = duplicateJob(jobId);
-      if (newJobId) {
-        loadJobs();
-        // Optionally navigate to the duplicated job
-        navigate(`/app/job/${newJobId}`);
+      try {
+        const newJobId = await duplicateJob(jobId);
+        if (newJobId) {
+          loadJobs();
+          // Optionally navigate to the duplicated job
+          navigate(`/app/job/${newJobId}`);
+        }
+      } catch (error) {
+        console.error('Error duplicating job:', error);
+        alert('Error duplicating job. Please try again.');
       }
     }
   };

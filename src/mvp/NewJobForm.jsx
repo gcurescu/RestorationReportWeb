@@ -6,7 +6,8 @@ import SignatureCanvas from 'signature_pad';
 import { reportSchema, defaultValues } from './ReportSchema';
 import { saveJob } from './storage';
 import { calculateDehuPintsPerDay, calculateAirMovers, calculateEnergyConsumption, calculateDaysBetween } from './utils/calculators';
-import { formatDate, formatDateTime } from './utils/formatters';
+import { formatDateTime } from './utils/formatters';
+import { processAndStorePhoto } from './imageStore';
 
 const NewJobForm = () => {
   const navigate = useNavigate();
@@ -124,35 +125,37 @@ const NewJobForm = () => {
     }
   }, [healthConsentSig]);
 
-  const handlePhotoUpload = (e, sectionName, roomIndex = null, index = 0) => {
+  const handlePhotoUpload = async (e, sectionName, roomIndex = null, index = 0) => {
     const files = e.target.files;
     if (files && files.length > 0) {
-      Array.from(files).forEach((file, fileIndex) => {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const newPhoto = {
-            caption: `${sectionName} Photo ${index + fileIndex + 1}`,
-            file: event.target.result,
-            timeISO: new Date().toISOString(),
-          };
+      for (let fileIndex = 0; fileIndex < files.length; fileIndex++) {
+        const file = files[fileIndex];
+        try {
+          // Process and store the photo using IndexedDB
+          const photoMetadata = await processAndStorePhoto(
+            file, 
+            `${sectionName} Photo ${index + fileIndex + 1}`
+          );
 
           if (roomIndex !== null) {
             // Room-specific photo
             const currentRooms = watch('rooms') || [];
             if (currentRooms[roomIndex]) {
               const currentPhotos = currentRooms[roomIndex].photos || [];
-              currentPhotos.push(newPhoto);
+              currentPhotos.push(photoMetadata);
               setValue(`rooms.${roomIndex}.photos`, currentPhotos);
             }
           } else {
             // General photos
             const currentPhotos = watch('photos') || [];
-            currentPhotos.push(newPhoto);
+            currentPhotos.push(photoMetadata);
             setValue('photos', currentPhotos);
           }
-        };
-        reader.readAsDataURL(file);
-      });
+        } catch (error) {
+          console.error('Error uploading photo:', error);
+          // You might want to show a user-friendly error message here
+        }
+      }
     }
   };
 
