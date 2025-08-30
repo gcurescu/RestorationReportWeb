@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/LandingPage.jsx';
-import NewJobForm from './mvp/NewJobForm.jsx';
+import { JobWizard } from './features/job-wizard/JobWizard.jsx';
 import JobsList from './mvp/JobsList.jsx';
 import ReportPreview from './mvp/ReportPreviewEnhanced.jsx';
 import './App.css';
@@ -12,7 +12,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/app/new" element={<NewJobForm />} />
+          <Route path="/app/new" element={<JobWizard />} />
           <Route path="/app/jobs" element={<JobsList />} />
           <Route path="/app/job/:id" element={<ReportPreview />} />
         </Routes>
