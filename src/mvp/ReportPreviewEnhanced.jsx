@@ -113,14 +113,11 @@ const ReportPreview = () => {
         });
         
         const canvas = await html2canvas(page, {
-          scale: 2, // Higher quality
+          scale: 1, // Use 1:1 scale to avoid zoom issues
           useCORS: true,
-          windowWidth: 816,
           logging: false, // Disable console logs
           allowTaint: false,
           backgroundColor: '#ffffff',
-          width: 816,
-          height: 1056,
         });
         
         // Use JPEG for photo-heavy pages to reduce file size
@@ -130,8 +127,32 @@ const ReportPreview = () => {
         
         const imgData = canvas.toDataURL(`image/${format.toLowerCase()}`, quality);
         
+        // Letter size in points: 612x792
+        const pdfWidth = 612;
+        const pdfHeight = 792;
+        
+        // Calculate proper dimensions maintaining aspect ratio
+        const canvasAspectRatio = canvas.width / canvas.height;
+        const pdfAspectRatio = pdfWidth / pdfHeight;
+        
+        let finalWidth, finalHeight;
+        
+        if (canvasAspectRatio > pdfAspectRatio) {
+          // Canvas is wider relative to its height
+          finalWidth = pdfWidth;
+          finalHeight = pdfWidth / canvasAspectRatio;
+        } else {
+          // Canvas is taller relative to its width
+          finalHeight = pdfHeight;
+          finalWidth = pdfHeight * canvasAspectRatio;
+        }
+        
+        // Center the content
+        const x = (pdfWidth - finalWidth) / 2;
+        const y = (pdfHeight - finalHeight) / 2;
+        
         if (i > 0) pdf.addPage();
-        pdf.addImage(imgData, format, 0, 0, 816, 1056);
+        pdf.addImage(imgData, format, x, y, finalWidth, finalHeight);
       }
       
       const fileName = `restoration-report-${job.claim?.claimId || 'untitled'}.pdf`;
@@ -326,9 +347,19 @@ const ReportPreview = () => {
             page-break-after: always;
           }
         }
+        @media print {
+          .rr-page {
+            width: 8.5in !important;
+            height: 11in !important;
+            page-break-after: always;
+          }
+        }
         .rr-page {
-          width: 816px;
-          height: 1056px;
+          width: 100%;
+          max-width: 612px;
+          min-height: 792px;
+          margin: 0 auto;
+          box-sizing: border-box;
         }
       `}</style>
       

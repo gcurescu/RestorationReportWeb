@@ -37,23 +37,47 @@ const ReportPreview = () => {
     
     setGenerating(true);
     try {
-      const pdf = new jsPDF('p', 'mm', 'letter');
+      const pdf = new jsPDF('p', 'pt', 'letter');
       const pages = reportRef.current.querySelectorAll('.rr-page');
       
       for (let i = 0; i < pages.length; i++) {
         const page = pages[i];
+        
         const canvas = await html2canvas(page, {
-          scale: 2,
+          scale: 1, // Use 1:1 scale to avoid zoom issues
           useCORS: true,
           allowTaint: true,
+          backgroundColor: '#ffffff',
         });
         
         const imgData = canvas.toDataURL('image/png');
-        const imgWidth = 210; // A4 width in mm
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        
+        // Letter size in points: 612x792
+        const pdfWidth = 612;
+        const pdfHeight = 792;
+        
+        // Calculate proper dimensions maintaining aspect ratio
+        const canvasAspectRatio = canvas.width / canvas.height;
+        const pdfAspectRatio = pdfWidth / pdfHeight;
+        
+        let finalWidth, finalHeight;
+        
+        if (canvasAspectRatio > pdfAspectRatio) {
+          // Canvas is wider relative to its height
+          finalWidth = pdfWidth;
+          finalHeight = pdfWidth / canvasAspectRatio;
+        } else {
+          // Canvas is taller relative to its width
+          finalHeight = pdfHeight;
+          finalWidth = pdfHeight * canvasAspectRatio;
+        }
+        
+        // Center the content
+        const x = (pdfWidth - finalWidth) / 2;
+        const y = (pdfHeight - finalHeight) / 2;
         
         if (i > 0) pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+        pdf.addImage(imgData, 'PNG', x, y, finalWidth, finalHeight);
       }
       
       const fileName = `restoration-report-${job.claim?.claimId || 'untitled'}.pdf`;
@@ -156,6 +180,23 @@ const ReportPreview = () => {
 
   return (
     <div className="min-h-screen bg-slate-100">
+      <style jsx>{`
+        @media print {
+          .rr-page {
+            width: 8.5in !important;
+            height: 11in !important;
+            page-break-after: always;
+          }
+        }
+        .rr-page {
+          width: 100%;
+          max-width: 612px;
+          min-height: 792px;
+          margin: 0 auto;
+          box-sizing: border-box;
+        }
+      `}</style>
+      
       {/* Sticky Header */}
       <div className="bg-white border-b sticky top-0 z-10">
         <div className="px-4 py-3 flex items-center justify-between">
@@ -184,7 +225,7 @@ const ReportPreview = () => {
       <div className="p-4">
         <div ref={reportRef} className="max-w-4xl mx-auto">
           {/* Page 1: Cover/Claim Summary */}
-          <div className="rr-page bg-white rounded-lg shadow-sm mb-6 p-8" style={{ minHeight: '11in' }}>
+          <div className="rr-page bg-white shadow-sm mb-6 p-8">
             <div className="mb-8">
               <h1 className="text-3xl font-bold text-slate-900 mb-2">
                 Restoration Report
@@ -234,7 +275,7 @@ const ReportPreview = () => {
           </div>
 
           {/* Page 2: Notes and Photos */}
-          <div className="rr-page bg-white rounded-lg shadow-sm mb-6 p-8" style={{ minHeight: '11in' }}>
+          <div className="rr-page bg-white shadow-sm mb-6 p-8">
             <h1 className="text-2xl font-bold text-slate-900 mb-6">Notes & Overview</h1>
 
             {/* Notes Sections */}
@@ -268,7 +309,7 @@ const ReportPreview = () => {
           </div>
 
           {/* Page 3: Moisture Data */}
-          <div className="rr-page bg-white rounded-lg shadow-sm mb-6 p-8" style={{ minHeight: '11in' }}>
+          <div className="rr-page bg-white shadow-sm mb-6 p-8">
             <h1 className="text-2xl font-bold text-slate-900 mb-6">Moisture Assessment</h1>
 
             <ReportTable
@@ -290,7 +331,7 @@ const ReportPreview = () => {
           </div>
 
           {/* Page 4: Equipment */}
-          <div className="rr-page bg-white rounded-lg shadow-sm mb-6 p-8" style={{ minHeight: '11in' }}>
+          <div className="rr-page bg-white shadow-sm mb-6 p-8">
             <h1 className="text-2xl font-bold text-slate-900 mb-6">Equipment</h1>
 
             <ReportTable
@@ -318,7 +359,7 @@ const ReportPreview = () => {
           </div>
 
           {/* Page 5: Scope and Additional Photos */}
-          <div className="rr-page bg-white rounded-lg shadow-sm mb-6 p-8" style={{ minHeight: '11in' }}>
+          <div className="rr-page bg-white shadow-sm mb-6 p-8">
             <h1 className="text-2xl font-bold text-slate-900 mb-6">Scope & Documentation</h1>
 
             <div className="mb-8">
