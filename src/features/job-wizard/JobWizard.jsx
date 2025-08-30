@@ -149,16 +149,24 @@ export const JobWizard = () => {
     
     try {
       // Validate entire form
+      console.log('Starting full form validation...');
       const isValid = await trigger();
+      console.log('Form validation result:', isValid);
+      
       if (!isValid) {
+        console.log('Form validation failed. Errors:', form.formState.errors);
         setIsSubmitting(false);
+        // The errors will now be displayed in the ReviewSubmitStep component
+        alert('Please check the form for errors and fix them before submitting.');
         return;
       }
 
       const formData = getValues();
+      console.log('Submitting form data:', formData);
       
       // Save the job
       const jobId = await saveJob(formData);
+      console.log('Job saved with ID:', jobId);
       
       // Clear the draft
       clearDraft();
@@ -210,6 +218,7 @@ export const JobWizard = () => {
         <div className="min-h-96">
           <CurrentStepComponent 
             onEditStep={currentStep === 7 ? handleEditStep : undefined}
+            onValidate={currentStep === 7 ? validateCurrentStep : undefined}
           />
         </div>
 

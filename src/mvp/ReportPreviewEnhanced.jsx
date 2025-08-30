@@ -34,13 +34,23 @@ const ReportPreview = () => {
   ];
 
   useEffect(() => {
-    const jobData = getJob(id);
-    if (!jobData) {
-      navigate('/app/jobs');
-      return;
-    }
-    setJob(jobData);
-    setLoading(false);
+    const loadJob = async () => {
+      try {
+        const jobData = await getJob(id);
+        if (!jobData) {
+          navigate('/app/jobs');
+          return;
+        }
+        setJob(jobData);
+      } catch (error) {
+        console.error('Error loading job:', error);
+        navigate('/app/jobs');
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadJob();
   }, [id, navigate]);
 
   useEffect(() => {

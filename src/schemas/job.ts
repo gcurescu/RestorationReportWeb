@@ -13,7 +13,7 @@ const requiredNumber = z.preprocess(
 
 // Define the main job schema
 export const JobSchema = z.object({
-  // Case Info fields
+  // Case Info fields - Essential ones required
   jobName: z.string().min(1, 'Job name is required'),
   claimNumber: z.string().min(1, 'Claim number is required'),
   lossType: z.enum(['Water', 'Fire', 'Mold']),
@@ -26,121 +26,121 @@ export const JobSchema = z.object({
     address: z.string().min(1, 'Address is required'),
   }),
 
-  // Property & Policy fields
+  // Property & Policy fields - Made more flexible
   property: z.object({
     address: z.string().min(1, 'Property address is required'),
     insured: z.string().min(1, 'Insured name is required'),
-    insurer: z.string().min(1, 'Insurance company is required'),
-    policyNumber: z.string().min(1, 'Policy number is required'),
-    deductible: requiredNumber,
-    coverage: z.string().min(1, 'Coverage details required'),
-    adjuster: z.string().min(1, 'Adjuster name is required'),
+    insurer: z.string().optional(),
+    policyNumber: z.string().optional(),
+    deductible: optionalNumber,
+    coverage: z.string().optional(),
+    adjuster: z.string().optional(),
   }),
 
-  // Affected Areas
+  // Affected Areas - Make optional for MVP
   areas: z.array(z.object({
-    name: z.string().min(1, 'Area name is required'),
-    category: z.enum(['1', '2', '3']),
-    class: z.enum(['1', '2', '3', '4']),
-    materials: z.string().min(1, 'Materials affected is required'),
-    cause: z.string().min(1, 'Cause description is required'),
+    name: z.string().optional(),
+    category: z.enum(['1', '2', '3']).optional(),
+    class: z.enum(['1', '2', '3', '4']).optional(),
+    materials: z.string().optional(),
+    cause: z.string().optional(),
     overviewNotes: z.string().optional(),
-  })).min(1, 'At least one affected area is required'),
+  })).optional().default([]),
 
-  // Equipment & Readings
+  // Equipment & Readings - Make more optional for MVP
   equipment: z.object({
     dehus: z.array(z.object({
-      name: z.string().min(1, 'Equipment name is required'),
-      placedISO: z.string().min(1, 'Placement date is required'),
+      name: z.string().optional(),
+      placedISO: z.string().optional(),
       removedISO: z.string().optional(),
       powerKw: optionalNumber,
       energyKwh: optionalNumber,
       days: optionalNumber,
       area: z.string().optional(),
-    })),
+    })).optional().default([]),
     movers: z.array(z.object({
-      name: z.string().min(1, 'Equipment name is required'),
-      placedISO: z.string().min(1, 'Placement date is required'),
+      name: z.string().optional(),
+      placedISO: z.string().optional(),
       removedISO: z.string().optional(),
       energyKwh: optionalNumber,
       days: optionalNumber,
       area: z.string().optional(),
-    })),
+    })).optional().default([]),
     scrubbers: z.array(z.object({
-      name: z.string().min(1, 'Equipment name is required'),
-      placedISO: z.string().min(1, 'Placement date is required'),
+      name: z.string().optional(),
+      placedISO: z.string().optional(),
       removedISO: z.string().optional(),
       energyKwh: optionalNumber,
       days: optionalNumber,
       area: z.string().optional(),
-    })),
+    })).optional().default([]),
     totals: z.object({
       dehusKwh: optionalNumber,
       moversKwh: optionalNumber,
       scrubbersKwh: optionalNumber,
       days: optionalNumber,
     }).optional(),
-  }),
+  }).optional(),
   moisture: z.object({
     psychrometrics: z.array(z.object({
-      dateISO: z.string(),
-      location: z.string(),
-      tempF: requiredNumber,
-      rh: requiredNumber,
-      gpp: requiredNumber,
+      dateISO: z.string().optional(),
+      location: z.string().optional(),
+      tempF: optionalNumber,
+      rh: optionalNumber,
+      gpp: optionalNumber,
       grainDepression: optionalNumber,
-    })),
+    })).optional().default([]),
     points: z.array(z.object({
-      point: requiredNumber,
-      room: z.string(),
-      surface: z.string(),
-      reading: z.string(),
+      point: optionalNumber,
+      room: z.string().optional(),
+      surface: z.string().optional(),
+      reading: z.string().optional(),
       notes: z.string().optional(),
-    })),
+    })).optional().default([]),
     unaffected: z.array(z.object({
-      dateISO: z.string(),
-      room: z.string(),
-      rh: requiredNumber,
-      gpp: requiredNumber,
-      tempF: requiredNumber,
-    })).optional(),
+      dateISO: z.string().optional(),
+      room: z.string().optional(),
+      rh: optionalNumber,
+      gpp: optionalNumber,
+      tempF: optionalNumber,
+    })).optional().default([]),
     hvac: z.array(z.object({
-      dateISO: z.string(),
-      room: z.string(),
-      rh: requiredNumber,
-      gpp: requiredNumber,
-      tempF: requiredNumber,
-    })).optional(),
-  }),
+      dateISO: z.string().optional(),
+      room: z.string().optional(),
+      rh: optionalNumber,
+      gpp: optionalNumber,
+      tempF: optionalNumber,
+    })).optional().default([]),
+  }).optional(),
 
-  // Photos & Notes
+  // Photos & Notes - Make more optional
   photos: z.array(z.object({
     caption: z.string().optional(),
     file: z.string(), // base64 dataURL
     time: z.string().optional(),
-  })).optional(),
+  })).optional().default([]),
   notes: z.object({
     general: z.string().optional(),
     scope: z.string().optional(),
     kitchen: z.string().optional(),
     basement: z.string().optional(),
-  }),
+  }).optional(),
   logNotes: z.object({
     items: z.array(z.object({
-      atISO: z.string(),
+      atISO: z.string().optional(),
       author: z.string().optional(),
       source: z.enum(['email', 'call', 'note']).optional(),
-      text: z.string(),
-    })),
-  }),
+      text: z.string().optional(),
+    })).optional().default([]),
+  }).optional(),
 
-  // Costs & Signoff
+  // Costs & Signoff - Make optional
   costs: z.object({
     labor: optionalNumber,
     materials: optionalNumber,
     equipment: optionalNumber,
     total: optionalNumber,
-  }),
+  }).optional(),
   signoff: z.object({
     workAuth: z.object({
       customerName: z.string().optional(),
@@ -154,25 +154,25 @@ export const JobSchema = z.object({
     }).optional(),
   }).optional(),
 
-  // Additional fields from original schema
+  // Additional fields from original schema - Make all optional
   calculators: z.object({
     dehu: z.array(z.object({
-      atmosphere: z.string(),
-      classOfWater: z.enum(['1', '2', '3', '4']),
-      volumeFt3: requiredNumber,
-      recommendedPintsPerDay: requiredNumber,
-    })),
+      atmosphere: z.string().optional(),
+      classOfWater: z.enum(['1', '2', '3', '4']).optional(),
+      volumeFt3: optionalNumber,
+      recommendedPintsPerDay: optionalNumber,
+    })).optional().default([]),
     airMovers: z.array(z.object({
-      area: z.string(),
-      floorFt2: requiredNumber,
+      area: z.string().optional(),
+      floorFt2: optionalNumber,
       insetsOrOffsets: optionalNumber,
-      recommendedMovers: requiredNumber,
-    })),
+      recommendedMovers: optionalNumber,
+    })).optional().default([]),
   }).optional(),
   attachments: z.array(z.object({
-    title: z.string(),
+    title: z.string().optional(),
     note: z.string().optional(),
-  })).optional(),
+  })).optional().default([]),
   floorPlan: z.object({
     image: z.string().optional(),
     legend: z.string().optional(),
@@ -182,7 +182,7 @@ export const JobSchema = z.object({
     file: z.string().optional(),
     thumbnail: z.string().optional(),
     timeISO: z.string().optional(),
-  })).optional(),
+  })).optional().default([]),
 });
 
 // Per-step validation schemas
@@ -218,7 +218,7 @@ export const StepSchemas = {
   full: JobSchema
 };
 
-// Default values for the wizard
+// Default values for the wizard - Only essential fields have values
 export const defaultJobValues = {
   jobName: '',
   claimNumber: '',
@@ -240,26 +240,11 @@ export const defaultJobValues = {
     coverage: '',
     adjuster: '',
   },
-  areas: [
-    {
-      name: 'Kitchen',
-      category: '1' as const,
-      class: '1' as const,
-      materials: '',
-      cause: '',
-      overviewNotes: '',
-    }
-  ],
+  areas: [],
   equipment: {
-    dehus: [
-      { name: '', placedISO: '', removedISO: '', powerKw: 0, energyKwh: 0, days: 0, area: '' }
-    ],
-    movers: [
-      { name: '', placedISO: '', removedISO: '', energyKwh: 0, days: 0, area: '' }
-    ],
-    scrubbers: [
-      { name: '', placedISO: '', removedISO: '', energyKwh: 0, days: 0, area: '' }
-    ],
+    dehus: [],
+    movers: [],
+    scrubbers: [],
     totals: {
       dehusKwh: 0,
       moversKwh: 0,
@@ -268,12 +253,8 @@ export const defaultJobValues = {
     },
   },
   moisture: {
-    psychrometrics: [
-      { dateISO: '', location: '', tempF: 0, rh: 0, gpp: 0, grainDepression: 0 }
-    ],
-    points: [
-      { point: 1, room: '', surface: '', reading: '', notes: '' }
-    ],
+    psychrometrics: [],
+    points: [],
     unaffected: [],
     hvac: [],
   },
@@ -309,13 +290,7 @@ export const defaultJobValues = {
     dehu: [],
     airMovers: [],
   },
-  attachments: [
-    { title: 'Moisture Full Report', note: '' },
-    { title: 'Moisture & Equipment Report', note: '' },
-    { title: 'Mitigation Scope', note: '' },
-    { title: 'Work Authorization', note: '' },
-    { title: 'Health & Safety Consent', note: '' },
-  ],
+  attachments: [],
   floorPlan: {
     image: '',
     legend: '',
