@@ -4,10 +4,11 @@ import { Job } from '../../../schemas/job';
 
 interface ReviewSubmitStepProps {
   onEditStep: (stepIndex: number) => void;
-  onValidate: () => boolean;
+  onValidate: () => void;
+  onSubmit?: () => void;
 }
 
-export const ReviewSubmitStep = ({ onEditStep, onValidate }: ReviewSubmitStepProps) => {
+export const ReviewSubmitStep = ({ onEditStep, onValidate, onSubmit }: ReviewSubmitStepProps) => {
   const { getValues, formState: { errors }, trigger } = useFormContext<Job>();
   const data = getValues();
 
@@ -15,7 +16,7 @@ export const ReviewSubmitStep = ({ onEditStep, onValidate }: ReviewSubmitStepPro
   const getAllErrors = (errors: any, path = ''): any[] => {
     let allErrors: any[] = [];
     
-    for (const [key, value] of Object.entries(errors)) {
+    Object.entries(errors).forEach(([key, value]) => {
       const currentPath = path ? `${path}.${key}` : key;
       
       if ((value as any)?.message) {
@@ -32,7 +33,7 @@ export const ReviewSubmitStep = ({ onEditStep, onValidate }: ReviewSubmitStepPro
       } else if (value && typeof value === 'object') {
         allErrors = [...allErrors, ...getAllErrors(value, currentPath)];
       }
-    }
+    });
     
     return allErrors;
   };
@@ -45,6 +46,41 @@ export const ReviewSubmitStep = ({ onEditStep, onValidate }: ReviewSubmitStepPro
     const result = await trigger();
     console.log('Validation result:', result);
     console.log('Form errors:', errors);
+  };
+
+  const handleExportToPDF = async () => {
+    try {
+      // Lazy-load html2canvas and jspdf
+      const [html2canvas, jsPDF] = await Promise.all([
+        import('html2canvas'),
+        import('jspdf')
+      ]);
+      
+      const canvas = await html2canvas.default(document.body);
+      const imgData = canvas.toDataURL('image/png');
+      
+      const pdf = new jsPDF.jsPDF();
+      const imgWidth = 210;
+      const pageHeight = 295;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      
+      let position = 0;
+      
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+      
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+      
+      pdf.save(`job-${data.jobName || 'report'}.pdf`);
+    } catch (error) {
+      console.error('Export failed:', error);
+    }
   };
 
   return (
@@ -67,7 +103,7 @@ export const ReviewSubmitStep = ({ onEditStep, onValidate }: ReviewSubmitStepPro
                 <ul className="list-disc pl-5 space-y-1">
                   {allErrors.map((error, index) => (
                     <li key={index}>
-                      <strong>{error.field.replace(/\./g, ' → ')}:</strong> {error.message}
+                      <strong>{error.path.replace(/\./g, ' → ')}:</strong> {error.message}
                     </li>
                   ))}
                 </ul>
@@ -86,13 +122,22 @@ export const ReviewSubmitStep = ({ onEditStep, onValidate }: ReviewSubmitStepPro
               {hasErrors ? `${allErrors.length} validation errors found` : 'Form validation passed'}
             </p>
           </div>
-          <button
-            type="button"
-            onClick={handleManualValidation}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700"
-          >
-            Check Validation
-          </button>
+          <div className="flex space-x-2">
+            <button
+              type="button"
+              onClick={handleManualValidation}
+              className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700"
+            >
+              Check Validation
+            </button>
+            <button
+              type="button"
+              onClick={handleExportToPDF}
+              className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-green-700"
+            >
+              Export PDF
+            </button>
+          </div>
         </div>
       </div>
       

@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
 import { debounce } from '../../lib/utils';
 
-import { JobSchema, defaultJobValues, Job } from '../../schemas/job';
+import { JobSchema, defaultJobValues } from '../../schemas/job';
 import { saveDraft, loadDraft, clearDraft, hasDraft } from '../../lib/drafts';
 import { saveJob } from '../../mvp/storage';
 
@@ -33,7 +33,7 @@ const stepComponents: Record<number, React.ComponentType<any>> = {
 };
 
 // Field mapping matching actual job.ts schema
-const getStepFields = (step: number): string[] => {
+const fieldsForStep = (step: number): string[] => {
   switch (step) {
     case 1: // Case Info
       return [
@@ -93,7 +93,20 @@ export const JobWizard = () => {
     mode: 'onBlur', // Changed from 'onChange' to reduce re-renders
   });
 
-  const { watch, trigger, getValues } = form;
+  const { watch, trigger, getValues, formState } = form;
+
+  // Add unload guard when form is dirty
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (formState.isDirty) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [formState.isDirty]);
 
   // Create a stable debounced function
   const debouncedSaveDraft = useMemo(
@@ -123,7 +136,7 @@ export const JobWizard = () => {
       setCanGoNext(isValid);
     } else {
       // Get fields to validate for current step
-      const fieldsToValidate = getStepFields(currentStep);
+      const fieldsToValidate = fieldsForStep(currentStep);
       console.log('Validating fields:', fieldsToValidate);
       if (fieldsToValidate.length > 0) {
         const isValid = await trigger(fieldsToValidate as any);
@@ -142,10 +155,10 @@ export const JobWizard = () => {
   }, [currentStep, validateCurrentStep]);
 
   const handleNext = async () => {
-    const fieldsToValidate = getStepFields(currentStep);
+    const fieldsToValidate = fieldsForStep(currentStep);
     
     if (fieldsToValidate.length > 0) {
-      const isValid = await trigger(fieldsToValidate as any);
+      const isValid = await trigger(fieldsToValidate as any, { shouldFocus: true });
       if (!isValid) {
         // Re-validate to update canGoNext state
         validateCurrentStep();
@@ -237,6 +250,7 @@ export const JobWizard = () => {
           <CurrentStepComponent 
             onEditStep={currentStep === 7 ? handleEditStep : undefined}
             onValidate={currentStep === 7 ? validateCurrentStep : undefined}
+            onSubmit={currentStep === 7 ? handleJobSubmit : undefined}
           />
         </div>
 
