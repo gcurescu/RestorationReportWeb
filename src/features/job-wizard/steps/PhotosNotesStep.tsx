@@ -16,17 +16,19 @@ export const PhotosNotesStep = () => {
     name: 'logNotes.items',
   });
 
-  const handlePhotoUpload = (event) => {
-    const files = Array.from(event.target.files);
+  const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files ? Array.from(event.target.files) : [];
     
     files.forEach((file) => {
       const reader = new FileReader();
       reader.onload = (e) => {
-        appendPhoto({
-          caption: '',
-          file: e.target.result,
-          time: new Date().toISOString(),
-        });
+        if (e.target?.result) {
+          appendPhoto({
+            caption: '',
+            file: e.target.result as string,
+            time: new Date().toISOString(),
+          });
+        }
       };
       reader.readAsDataURL(file);
     });
@@ -107,7 +109,15 @@ export const PhotosNotesStep = () => {
   );
 };
 
-const PhotosSection = ({ fields, onUpload, onRemove, register, errors }) => (
+interface PhotosSectionProps {
+  fields: any[];
+  onUpload: any;
+  onRemove: any;
+  register: any;
+  errors: any;
+}
+
+const PhotosSection: React.FC<PhotosSectionProps> = ({ fields, onUpload, onRemove, register, errors }) => (
   <div className="space-y-4">
     <div className="flex justify-between items-center">
       <h3 className="text-lg font-medium text-gray-900">Project Photos</h3>
@@ -186,7 +196,12 @@ const PhotosSection = ({ fields, onUpload, onRemove, register, errors }) => (
   </div>
 );
 
-const NotesSection = ({ register, errors }) => (
+interface NotesSectionProps {
+  register: any;
+  errors: any;
+}
+
+const NotesSection: React.FC<NotesSectionProps> = ({ register, errors }) => (
   <div className="space-y-6">
     <h3 className="text-lg font-medium text-gray-900">Project Notes</h3>
     
@@ -242,7 +257,15 @@ const NotesSection = ({ register, errors }) => (
   </div>
 );
 
-const LogSection = ({ fields, onAdd, onRemove, register, errors }) => (
+interface LogSectionProps {
+  fields: any[];
+  onAdd: () => void;
+  onRemove: (index: number) => void;
+  register: any;
+  errors: any;
+}
+
+const LogSection: React.FC<LogSectionProps> = ({ fields, onAdd, onRemove, register, errors }) => (
   <div className="space-y-4">
     <div className="flex justify-between items-center">
       <h3 className="text-lg font-medium text-gray-900">Log Entries</h3>

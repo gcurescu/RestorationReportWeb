@@ -12,9 +12,9 @@ export const CostsSignoffStep = () => {
 
   // Calculate total automatically
   useEffect(() => {
-    const labor = parseFloat(costs.labor || 0);
-    const materials = parseFloat(costs.materials || 0);
-    const equipment = parseFloat(costs.equipment || 0);
+    const labor = parseFloat(String(costs.labor || 0));
+    const materials = parseFloat(String(costs.materials || 0));
+    const equipment = parseFloat(String(costs.equipment || 0));
     const total = labor + materials + equipment;
     setValue('costs.total', total);
   }, [costs.labor, costs.materials, costs.equipment, setValue]);
@@ -56,7 +56,7 @@ export const CostsSignoffStep = () => {
     }
   }, [setValue]);
 
-  const clearSignature = (type) => {
+  const clearSignature = (type: 'workAuth' | 'healthConsent') => {
     if (type === 'workAuth' && workAuthCanvasRef.current) {
       const signaturePad = new SignatureCanvas(workAuthCanvasRef.current);
       signaturePad.clear();

@@ -1,8 +1,9 @@
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
+import { Job } from '../../../schemas/job';
 
-export const PropertyPolicyStep = () => {
-  const { register, formState: { errors } } = useFormContext();
+export const PropertyPolicyStep: React.FC = () => {
+  const { register, formState: { errors } } = useFormContext<Job>();
 
   return (
     <div className="space-y-6">
@@ -48,7 +49,7 @@ export const PropertyPolicyStep = () => {
         {/* Insurance Company */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Insurance Company *
+            Insurance Company
           </label>
           <input
             type="text"
@@ -66,7 +67,7 @@ export const PropertyPolicyStep = () => {
         {/* Policy Number */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Policy Number *
+            Policy Number
           </label>
           <input
             type="text"
@@ -84,7 +85,7 @@ export const PropertyPolicyStep = () => {
         {/* Deductible */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Deductible *
+            Deductible
           </label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -108,7 +109,7 @@ export const PropertyPolicyStep = () => {
         {/* Adjuster */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Adjuster Name *
+            Adjuster Name
           </label>
           <input
             type="text"
@@ -126,7 +127,7 @@ export const PropertyPolicyStep = () => {
         {/* Coverage Details */}
         <div className="md:col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Coverage Details *
+            Coverage Details
           </label>
           <textarea
             {...register('property.coverage')}

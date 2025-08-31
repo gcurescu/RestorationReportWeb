@@ -33,7 +33,7 @@ export const EquipmentReadingsStep = () => {
     name: 'moisture.points',
   });
 
-  const addEquipment = (type) => {
+  const addEquipment = (type: 'dehu' | 'mover' | 'scrubber') => {
     const baseEquipment = {
       name: '',
       placedISO: '',
@@ -166,7 +166,18 @@ export const EquipmentReadingsStep = () => {
   );
 };
 
-const EquipmentSection = ({ title, fields, onAdd, onRemove, register, errors, fieldPath, includeFields = [] }) => (
+interface EquipmentSectionProps {
+  title: string;
+  fields: any[];
+  onAdd: () => void;
+  onRemove: (index: number) => void;
+  register: any;
+  errors: any;
+  fieldPath: string;
+  includeFields?: string[];
+}
+
+const EquipmentSection: React.FC<EquipmentSectionProps> = ({ title, fields, onAdd, onRemove, register, errors, fieldPath, includeFields = [] }) => (
   <div className="space-y-4">
     <div className="flex justify-between items-center">
       <h3 className="text-lg font-medium text-gray-900">{title}</h3>
@@ -267,7 +278,15 @@ const EquipmentSection = ({ title, fields, onAdd, onRemove, register, errors, fi
   </div>
 );
 
-const PsychrometricSection = ({ fields, onAdd, onRemove, register, errors }) => (
+interface PsychrometricSectionProps {
+  fields: any[];
+  onAdd: () => void;
+  onRemove: (index: number) => void;
+  register: any;
+  errors: any;
+}
+
+const PsychrometricSection: React.FC<PsychrometricSectionProps> = ({ fields, onAdd, onRemove, register, errors }) => (
   <div className="space-y-4">
     <div className="flex justify-between items-center">
       <h3 className="text-lg font-medium text-gray-900">Psychrometric Readings</h3>
@@ -358,7 +377,15 @@ const PsychrometricSection = ({ fields, onAdd, onRemove, register, errors }) => 
   </div>
 );
 
-const MoisturePointsSection = ({ fields, onAdd, onRemove, register, errors }) => (
+interface MoisturePointsSectionProps {
+  fields: any[];
+  onAdd: () => void;
+  onRemove: (index: number) => void;
+  register: any;
+  errors: any;
+}
+
+const MoisturePointsSection: React.FC<MoisturePointsSectionProps> = ({ fields, onAdd, onRemove, register, errors }) => (
   <div className="space-y-4">
     <div className="flex justify-between items-center">
       <h3 className="text-lg font-medium text-gray-900">Moisture Points</h3>

@@ -22,7 +22,7 @@ import { ReviewSubmitStep } from './steps/ReviewSubmitStep';
 
 const TOTAL_STEPS = 7;
 
-const stepComponents = {
+const stepComponents: Record<number, React.ComponentType<any>> = {
   1: CaseInfoStep,
   2: PropertyPolicyStep,
   3: AffectedAreasStep,
@@ -32,23 +32,41 @@ const stepComponents = {
   7: ReviewSubmitStep,
 };
 
-// Simplified field mapping - just use the field names directly
-const getStepFields = (step) => {
+// Field mapping matching actual job.ts schema
+const getStepFields = (step: number): string[] => {
   switch (step) {
-    case 1:
-      return ['jobName', 'claimNumber', 'lossType', 'dateOfLoss', 'inspectorName', 'companyName', 'contact.phone', 'contact.email', 'contact.address'];
-    case 2:
-      return ['property.address', 'property.insured', 'property.insurer', 'property.policyNumber', 'property.deductible', 'property.adjuster', 'property.coverage'];
-    case 3:
-      return ['areas'];
-    case 4:
-      return []; // Skip validation for equipment step as it's optional
-    case 5:
-      return []; // Skip validation for photos/notes as they're optional
-    case 6:
-      return []; // Skip validation for costs/signoff as they're optional
-    case 7:
-      return []; // Full validation handled separately
+    case 1: // Case Info
+      return [
+        'jobName',
+        'claimNumber',
+        'lossType',
+        'dateOfLoss',
+        'inspectorName',
+        'companyName',
+        'contact.phone',
+        'contact.email',
+        'contact.address',
+      ];
+    case 2: // Property & Policy
+      return [
+        'property.address',
+        'property.insured',
+        // Optional fields are okay to include; they won't block next if valid-or-empty:
+        'property.insurer',
+        'property.policyNumber',
+        'property.deductible',
+        'property.coverage',
+        'property.adjuster',
+      ];
+    case 3: // Affected Areas
+      return ['areas']; // (Your schema currently makes this optional; gating still works.)
+    case 4: // Equipment & Readings
+      return ['equipment', 'moisture']; // both are optional in schema; gating will pass if empty
+    case 5: // Photos & Notes
+      return ['photos', 'notes'];
+    case 6: // Costs & Signoff
+      return ['costs', 'signoff'];
+    case 7: // Review (full form validation happens on submit)
     default:
       return [];
   }
@@ -69,7 +87,7 @@ export const JobWizard = () => {
     };
   };
 
-  const form = useForm({
+  const form = useForm<any>({
     resolver: zodResolver(JobSchema),
     defaultValues: initializeForm(),
     mode: 'onBlur', // Changed from 'onChange' to reduce re-renders
@@ -79,7 +97,7 @@ export const JobWizard = () => {
 
   // Create a stable debounced function
   const debouncedSaveDraft = useMemo(
-    () => debounce((data) => {
+    () => debounce((data: any) => {
       console.log('Auto-saving draft...', Object.keys(data));
       saveDraft(data);
     }, 2000), // Increased to 2 seconds
@@ -108,7 +126,7 @@ export const JobWizard = () => {
       const fieldsToValidate = getStepFields(currentStep);
       console.log('Validating fields:', fieldsToValidate);
       if (fieldsToValidate.length > 0) {
-        const isValid = await trigger(fieldsToValidate);
+        const isValid = await trigger(fieldsToValidate as any);
         console.log('Step validation result:', isValid);
         setCanGoNext(isValid);
       } else {
@@ -127,7 +145,7 @@ export const JobWizard = () => {
     const fieldsToValidate = getStepFields(currentStep);
     
     if (fieldsToValidate.length > 0) {
-      const isValid = await trigger(fieldsToValidate);
+      const isValid = await trigger(fieldsToValidate as any);
       if (!isValid) {
         // Re-validate to update canGoNext state
         validateCurrentStep();
@@ -181,7 +199,7 @@ export const JobWizard = () => {
     }
   };
 
-  const handleEditStep = (step) => {
+  const handleEditStep = (step: number) => {
     setCurrentStep(step);
   };
 

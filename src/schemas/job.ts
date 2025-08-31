@@ -2,7 +2,11 @@ import { z } from 'zod';
 
 // Helper for numeric fields that converts empty strings to undefined
 const optionalNumber = z.preprocess(
-  (v) => v === '' || v === null || v === undefined ? undefined : Number(v), 
+  (v) => {
+    if (v === '' || v === null || v === undefined) return undefined;
+    const num = Number(v);
+    return isNaN(num) ? undefined : num;
+  }, 
   z.number().optional()
 );
 
@@ -231,7 +235,7 @@ export const defaultJobValues = {
     insured: '',
     insurer: '',
     policyNumber: '',
-    deductible: 0,
+    deductible: undefined,
     coverage: '',
     adjuster: '',
   },
@@ -241,10 +245,10 @@ export const defaultJobValues = {
     movers: [],
     scrubbers: [],
     totals: {
-      dehusKwh: 0,
-      moversKwh: 0,
-      scrubbersKwh: 0,
-      days: 0,
+      dehusKwh: undefined,
+      moversKwh: undefined,
+      scrubbersKwh: undefined,
+      days: undefined,
     },
   },
   moisture: {
@@ -264,10 +268,10 @@ export const defaultJobValues = {
     items: [],
   },
   costs: {
-    labor: 0,
-    materials: 0,
-    equipment: 0,
-    total: 0,
+    labor: undefined,
+    materials: undefined,
+    equipment: undefined,
+    total: undefined,
   },
   signoff: {
     workAuth: {

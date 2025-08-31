@@ -12,24 +12,24 @@ export const ReviewSubmitStep = ({ onEditStep, onValidate }: ReviewSubmitStepPro
   const data = getValues();
 
   // Helper function to get all errors recursively
-  const getAllErrors = (errors, path = '') => {
-    let allErrors = [];
+  const getAllErrors = (errors: any, path = ''): any[] => {
+    let allErrors: any[] = [];
     
     for (const [key, value] of Object.entries(errors)) {
       const currentPath = path ? `${path}.${key}` : key;
       
-      if (value?.message) {
+      if ((value as any)?.message) {
         allErrors.push({
-          field: currentPath,
-          message: value.message
+          path: currentPath,
+          message: (value as any).message
         });
       } else if (Array.isArray(value)) {
-        value.forEach((item, index) => {
+        value.forEach((item: any, index: number) => {
           if (item && typeof item === 'object') {
             allErrors = [...allErrors, ...getAllErrors(item, `${currentPath}[${index}]`)];
           }
         });
-      } else if (typeof value === 'object' && value !== null) {
+      } else if (value && typeof value === 'object') {
         allErrors = [...allErrors, ...getAllErrors(value, currentPath)];
       }
     }
@@ -339,7 +339,13 @@ export const ReviewSubmitStep = ({ onEditStep, onValidate }: ReviewSubmitStepPro
   );
 };
 
-const ReviewSection = ({ title, children, onEdit }) => (
+interface ReviewSectionProps {
+  title: string;
+  children: React.ReactNode;
+  onEdit?: () => void;
+}
+
+const ReviewSection: React.FC<ReviewSectionProps> = ({ title, children, onEdit }) => (
   <div className="border border-gray-200 rounded-lg p-6">
     <div className="flex justify-between items-center mb-4">
       <h3 className="text-lg font-medium text-gray-900">{title}</h3>
