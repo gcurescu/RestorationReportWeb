@@ -1,6 +1,11 @@
 import React from 'react';
 
-export const WizardLayout = ({ children, title }) => {
+interface WizardLayoutProps {
+  children: React.ReactNode;
+  title: string;
+}
+
+export const WizardLayout = ({ children, title }: WizardLayoutProps) => {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">

@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
 import { debounce } from '../../lib/utils';
 
-import { JobSchema, defaultJobValues } from '../../schemas/job';
+import { JobSchema, defaultJobValues, Job } from '../../schemas/job';
 import { saveDraft, loadDraft, clearDraft, hasDraft } from '../../lib/drafts';
 import { saveJob } from '../../mvp/storage';
 

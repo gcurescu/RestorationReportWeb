@@ -6,11 +6,6 @@ const optionalNumber = z.preprocess(
   z.number().optional()
 );
 
-const requiredNumber = z.preprocess(
-  (v) => v === '' || v === null || v === undefined ? undefined : Number(v), 
-  z.number({ message: 'Must be a number' })
-);
-
 // Define the main job schema
 export const JobSchema = z.object({
   // Case Info fields - Essential ones required

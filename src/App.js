@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/LandingPage.jsx';
-import { JobWizard } from './features/job-wizard/JobWizard.jsx';
+import { JobWizard } from './features/job-wizard/JobWizard';
 import JobsList from './mvp/JobsList.jsx';
 import ReportPreview from './mvp/ReportPreviewEnhanced.jsx';
 import './App.css';

@@ -1,8 +1,9 @@
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
+import { Job } from '../../../schemas/job';
 
 export const CaseInfoStep = () => {
-  const { register, formState: { errors } } = useFormContext();
+  const { register, formState: { errors } } = useFormContext<Job>();
 
   return (
     <div className="space-y-6">
@@ -48,7 +49,7 @@ export const CaseInfoStep = () => {
         {/* Loss Type */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Type of Loss *
+            Loss Type *
           </label>
           <select
             {...register('lossType')}
@@ -56,6 +57,7 @@ export const CaseInfoStep = () => {
               errors.lossType ? 'border-red-500' : 'border-gray-300'
             }`}
           >
+            <option value="">Select loss type</option>
             <option value="Water">Water</option>
             <option value="Fire">Fire</option>
             <option value="Mold">Mold</option>
@@ -119,8 +121,8 @@ export const CaseInfoStep = () => {
         </div>
       </div>
 
-      {/* Contact Information */}
-      <div className="border-t pt-6">
+      {/* Contact Information Section */}
+      <div className="mt-8">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Contact Information</h3>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -135,7 +137,7 @@ export const CaseInfoStep = () => {
               className={`w-full px-3 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${
                 errors.contact?.phone ? 'border-red-500' : 'border-gray-300'
               }`}
-              placeholder="Enter phone number"
+              placeholder="(555) 123-4567"
             />
             {errors.contact?.phone && (
               <p className="mt-1 text-sm text-red-600">{errors.contact.phone.message}</p>
@@ -153,30 +155,30 @@ export const CaseInfoStep = () => {
               className={`w-full px-3 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${
                 errors.contact?.email ? 'border-red-500' : 'border-gray-300'
               }`}
-              placeholder="Enter email address"
+              placeholder="john@example.com"
             />
             {errors.contact?.email && (
               <p className="mt-1 text-sm text-red-600">{errors.contact.email.message}</p>
             )}
           </div>
-        </div>
 
-        {/* Address */}
-        <div className="mt-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Business Address *
-          </label>
-          <textarea
-            {...register('contact.address')}
-            rows={3}
-            className={`w-full px-3 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${
-              errors.contact?.address ? 'border-red-500' : 'border-gray-300'
-            }`}
-            placeholder="Enter business address"
-          />
-          {errors.contact?.address && (
-            <p className="mt-1 text-sm text-red-600">{errors.contact.address.message}</p>
-          )}
+          {/* Address */}
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Address *
+            </label>
+            <textarea
+              {...register('contact.address')}
+              rows={3}
+              className={`w-full px-3 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${
+                errors.contact?.address ? 'border-red-500' : 'border-gray-300'
+              }`}
+              placeholder="Enter full address"
+            />
+            {errors.contact?.address && (
+              <p className="mt-1 text-sm text-red-600">{errors.contact.address.message}</p>
+            )}
+          </div>
         </div>
       </div>
     </div>
