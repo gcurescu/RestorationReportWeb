@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getJobs, deleteJob, duplicateJob } from './storage';
 import { formatDate, formatDateTime } from './utils/formatters';
@@ -15,10 +15,6 @@ const JobsList = () => {
     loadJobs();
   }, []);
 
-  useEffect(() => {
-    filterJobs();
-  }, [jobs, searchTerm, filterType]);
-
   const loadJobs = () => {
     try {
       const jobsList = getJobs();
@@ -30,7 +26,7 @@ const JobsList = () => {
     }
   };
 
-  const filterJobs = () => {
+  const filterJobs = useCallback(() => {
     let filtered = jobs;
 
     // Filter by search term
@@ -48,7 +44,11 @@ const JobsList = () => {
     }
 
     setFilteredJobs(filtered);
-  };
+  }, [jobs, searchTerm, filterType]);
+
+  useEffect(() => {
+    filterJobs();
+  }, [filterJobs]);
 
   const handleDelete = async (jobId, event) => {
     event.stopPropagation();

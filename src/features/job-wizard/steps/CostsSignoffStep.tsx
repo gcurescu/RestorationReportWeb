@@ -97,8 +97,8 @@ export const CostsSignoffStep = () => {
                 placeholder="0.00"
               />
             </div>
-            {errors.costs?.labor && (
-              <p className="mt-1 text-sm text-red-600">{errors.costs.labor.message}</p>
+            {errors.costs?.labor?.message && (
+              <p className="mt-1 text-sm text-red-600">{String(errors.costs?.labor?.message)}</p>
             )}
           </div>
 
@@ -120,8 +120,8 @@ export const CostsSignoffStep = () => {
                 placeholder="0.00"
               />
             </div>
-            {errors.costs?.materials && (
-              <p className="mt-1 text-sm text-red-600">{errors.costs.materials.message}</p>
+            {errors.costs?.materials?.message && (
+              <p className="mt-1 text-sm text-red-600">{String(errors.costs?.materials?.message)}</p>
             )}
           </div>
 
@@ -143,8 +143,8 @@ export const CostsSignoffStep = () => {
                 placeholder="0.00"
               />
             </div>
-            {errors.costs?.equipment && (
-              <p className="mt-1 text-sm text-red-600">{errors.costs.equipment.message}</p>
+            {errors.costs?.equipment?.message && (
+              <p className="mt-1 text-sm text-red-600">{String(errors.costs?.equipment?.message)}</p>
             )}
           </div>
 

@@ -23,8 +23,8 @@ export const PropertyPolicyStep: React.FC = () => {
             }`}
             placeholder="Enter property address"
           />
-          {errors.property?.address && (
-            <p className="mt-1 text-sm text-red-600">{errors.property.address.message}</p>
+          {errors.property?.address?.message && (
+            <p className="mt-1 text-sm text-red-600">{String(errors.property?.address?.message)}</p>
           )}
         </div>
 
@@ -41,8 +41,8 @@ export const PropertyPolicyStep: React.FC = () => {
             }`}
             placeholder="Enter insured name"
           />
-          {errors.property?.insured && (
-            <p className="mt-1 text-sm text-red-600">{errors.property.insured.message}</p>
+          {errors.property?.insured?.message && (
+            <p className="mt-1 text-sm text-red-600">{String(errors.property?.insured?.message)}</p>
           )}
         </div>
 
@@ -59,8 +59,8 @@ export const PropertyPolicyStep: React.FC = () => {
             }`}
             placeholder="Enter insurance company"
           />
-          {errors.property?.insurer && (
-            <p className="mt-1 text-sm text-red-600">{errors.property.insurer.message}</p>
+          {errors.property?.insurer?.message && (
+            <p className="mt-1 text-sm text-red-600">{String(errors.property?.insurer?.message)}</p>
           )}
         </div>
 
@@ -77,8 +77,8 @@ export const PropertyPolicyStep: React.FC = () => {
             }`}
             placeholder="Enter policy number"
           />
-          {errors.property?.policyNumber && (
-            <p className="mt-1 text-sm text-red-600">{errors.property.policyNumber.message}</p>
+          {errors.property?.policyNumber?.message && (
+            <p className="mt-1 text-sm text-red-600">{String(errors.property?.policyNumber?.message)}</p>
           )}
         </div>
 
@@ -101,8 +101,8 @@ export const PropertyPolicyStep: React.FC = () => {
               placeholder="0.00"
             />
           </div>
-          {errors.property?.deductible && (
-            <p className="mt-1 text-sm text-red-600">{errors.property.deductible.message}</p>
+          {errors.property?.deductible?.message && (
+            <p className="mt-1 text-sm text-red-600">{String(errors.property?.deductible?.message)}</p>
           )}
         </div>
 
@@ -119,8 +119,8 @@ export const PropertyPolicyStep: React.FC = () => {
             }`}
             placeholder="Enter adjuster name"
           />
-          {errors.property?.adjuster && (
-            <p className="mt-1 text-sm text-red-600">{errors.property.adjuster.message}</p>
+          {errors.property?.adjuster?.message && (
+            <p className="mt-1 text-sm text-red-600">{String(errors.property?.adjuster?.message)}</p>
           )}
         </div>
 
@@ -137,8 +137,8 @@ export const PropertyPolicyStep: React.FC = () => {
             }`}
             placeholder="Describe the coverage details, limits, and any special provisions"
           />
-          {errors.property?.coverage && (
-            <p className="mt-1 text-sm text-red-600">{errors.property.coverage.message}</p>
+          {errors.property?.coverage?.message && (
+            <p className="mt-1 text-sm text-red-600">{String(errors.property?.coverage?.message)}</p>
           )}
         </div>
       </div>

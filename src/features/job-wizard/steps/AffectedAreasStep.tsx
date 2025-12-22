@@ -70,8 +70,8 @@ export const AffectedAreasStep = () => {
                 }`}
                 placeholder="e.g., Kitchen, Living Room"
               />
-              {errors.areas?.[index]?.name && (
-                <p className="mt-1 text-sm text-red-600">{errors.areas[index].name.message}</p>
+              {errors.areas?.[index]?.name?.message && (
+                <p className="mt-1 text-sm text-red-600">{String(errors.areas?.[index]?.name?.message)}</p>
               )}
             </div>
 
@@ -90,8 +90,8 @@ export const AffectedAreasStep = () => {
                 <option value="2">Category 2 - Gray Water</option>
                 <option value="3">Category 3 - Black Water</option>
               </select>
-              {errors.areas?.[index]?.category && (
-                <p className="mt-1 text-sm text-red-600">{errors.areas[index].category.message}</p>
+              {errors.areas?.[index]?.category?.message && (
+                <p className="mt-1 text-sm text-red-600">{String(errors.areas?.[index]?.category?.message)}</p>
               )}
             </div>
 
@@ -111,8 +111,8 @@ export const AffectedAreasStep = () => {
                 <option value="3">Class 3 - Maximum Absorption</option>
                 <option value="4">Class 4 - Specialty Drying</option>
               </select>
-              {errors.areas?.[index]?.class && (
-                <p className="mt-1 text-sm text-red-600">{errors.areas[index].class.message}</p>
+              {errors.areas?.[index]?.class?.message && (
+                <p className="mt-1 text-sm text-red-600">{String(errors.areas?.[index]?.class?.message)}</p>
               )}
             </div>
 
@@ -129,8 +129,8 @@ export const AffectedAreasStep = () => {
                 }`}
                 placeholder="e.g., Burst pipe, Roof leak"
               />
-              {errors.areas?.[index]?.cause && (
-                <p className="mt-1 text-sm text-red-600">{errors.areas[index].cause.message}</p>
+              {errors.areas?.[index]?.cause?.message && (
+                <p className="mt-1 text-sm text-red-600">{String(errors.areas?.[index]?.cause?.message)}</p>
               )}
             </div>
 
@@ -147,8 +147,8 @@ export const AffectedAreasStep = () => {
                 }`}
                 placeholder="List affected materials (e.g., hardwood flooring, drywall, cabinets)"
               />
-              {errors.areas?.[index]?.materials && (
-                <p className="mt-1 text-sm text-red-600">{errors.areas[index].materials.message}</p>
+              {errors.areas?.[index]?.materials?.message && (
+                <p className="mt-1 text-sm text-red-600">{String(errors.areas?.[index]?.materials?.message)}</p>
               )}
             </div>
 

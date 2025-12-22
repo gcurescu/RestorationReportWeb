@@ -1,7 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getJob } from './storage';
-import { formatDateTime } from './utils/formatters';
 import PhotoGrid from './components/PhotoGrid';
 
 const ReportPreview = () => {
@@ -15,8 +14,8 @@ const ReportPreview = () => {
   const [tocSections, setTocSections] = useState([]);
   const [pdfProgress, setPdfProgress] = useState({ current: 0, total: 0 });
 
-  // Define sections for Table of Contents
-  const sections = [
+  // Define sections for Table of Contents (stable reference)
+  const sections = useMemo(() => ([
     { title: 'Claim Summary', dataSection: 'claim-summary' },
     { title: 'Table of Contents', dataSection: 'table-of-contents' },
     { title: 'General Notes', dataSection: 'general-notes' },
@@ -31,7 +30,7 @@ const ReportPreview = () => {
     { title: 'Mitigation Scope (Sample)', dataSection: 'mitigation-scope' },
     { title: 'Work Authorization (Sample)', dataSection: 'work-authorization' },
     { title: 'Health & Safety Consent (Sample)', dataSection: 'health-safety' },
-  ];
+  ]), []);
 
   useEffect(() => {
     const loadJob = async () => {
@@ -72,7 +71,7 @@ const ReportPreview = () => {
         setTocSections(updatedSections);
       }, 100);
     }
-  }, [job]);
+  }, [job, sections]);
 
   const generatePDF = async () => {
     if (!reportRef.current) return;
@@ -275,46 +274,7 @@ const ReportPreview = () => {
     </div>
   );
 
-  const EnhancedPhotoGrid = ({ photos = [], columns = 3, showPlaceholders = 6, title }) => {
-    const allPhotos = photos.filter(p => p && p.file);
-    const totalSlots = Math.max(allPhotos.length, showPlaceholders);
-    const items = [];
-    
-    for (let i = 0; i < totalSlots; i++) {
-      const photo = allPhotos[i];
-      items.push(
-        <div key={i} className="aspect-video bg-slate-100 rounded border overflow-hidden">
-          {photo?.file ? (
-            <div className="h-full">
-              <img
-                src={photo.file}
-                alt={photo.caption || `${title} Photo ${i + 1}`}
-                className="w-full h-4/5 object-cover"
-                loading="lazy"
-              />
-              <div className="p-1 bg-white text-xs text-center">
-                <p className="text-slate-600 truncate">{photo.caption || `${title} Photo`}</p>
-                <p className="text-slate-400">{photo.timeISO ? formatDateTime(photo.timeISO, 'MM/DD/YY HH:mm') : '--'}</p>
-              </div>
-            </div>
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-slate-400 bg-gradient-to-br from-slate-100 to-slate-200">
-              <div className="text-center">
-                <div className="text-lg mb-1">📷</div>
-                <div className="text-xs">Placeholder</div>
-              </div>
-            </div>
-          )}
-        </div>
-      );
-    }
-
-    return (
-      <div className={`grid grid-cols-${columns} gap-3 mb-6`}>
-        {items}
-      </div>
-    );
-  };
+  
 
   const ScopeTable = () => {
     const scopeData = [

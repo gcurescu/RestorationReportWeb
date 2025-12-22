@@ -23,8 +23,8 @@ export const CaseInfoStep = () => {
             }`}
             placeholder="Enter job name"
           />
-          {errors.jobName && (
-            <p className="mt-1 text-sm text-red-600">{errors.jobName.message}</p>
+          {errors.jobName?.message && (
+            <p className="mt-1 text-sm text-red-600">{String(errors.jobName?.message)}</p>
           )}
         </div>
 
@@ -41,8 +41,8 @@ export const CaseInfoStep = () => {
             }`}
             placeholder="Enter claim number"
           />
-          {errors.claimNumber && (
-            <p className="mt-1 text-sm text-red-600">{errors.claimNumber.message}</p>
+          {errors.claimNumber?.message && (
+            <p className="mt-1 text-sm text-red-600">{String(errors.claimNumber?.message)}</p>
           )}
         </div>
 
@@ -62,8 +62,8 @@ export const CaseInfoStep = () => {
             <option value="Fire">Fire</option>
             <option value="Mold">Mold</option>
           </select>
-          {errors.lossType && (
-            <p className="mt-1 text-sm text-red-600">{errors.lossType.message}</p>
+          {errors.lossType?.message && (
+            <p className="mt-1 text-sm text-red-600">{String(errors.lossType?.message)}</p>
           )}
         </div>
 
@@ -79,8 +79,8 @@ export const CaseInfoStep = () => {
               errors.dateOfLoss ? 'border-red-500' : 'border-gray-300'
             }`}
           />
-          {errors.dateOfLoss && (
-            <p className="mt-1 text-sm text-red-600">{errors.dateOfLoss.message}</p>
+          {errors.dateOfLoss?.message && (
+            <p className="mt-1 text-sm text-red-600">{String(errors.dateOfLoss?.message)}</p>
           )}
         </div>
 
@@ -97,8 +97,8 @@ export const CaseInfoStep = () => {
             }`}
             placeholder="Enter inspector name"
           />
-          {errors.inspectorName && (
-            <p className="mt-1 text-sm text-red-600">{errors.inspectorName.message}</p>
+          {errors.inspectorName?.message && (
+            <p className="mt-1 text-sm text-red-600">{String(errors.inspectorName?.message)}</p>
           )}
         </div>
 
@@ -115,8 +115,8 @@ export const CaseInfoStep = () => {
             }`}
             placeholder="Enter company name"
           />
-          {errors.companyName && (
-            <p className="mt-1 text-sm text-red-600">{errors.companyName.message}</p>
+          {errors.companyName?.message && (
+            <p className="mt-1 text-sm text-red-600">{String(errors.companyName?.message)}</p>
           )}
         </div>
       </div>
@@ -139,8 +139,8 @@ export const CaseInfoStep = () => {
               }`}
               placeholder="(555) 123-4567"
             />
-            {errors.contact?.phone && (
-              <p className="mt-1 text-sm text-red-600">{errors.contact.phone.message}</p>
+            {errors.contact?.phone?.message && (
+              <p className="mt-1 text-sm text-red-600">{String(errors.contact?.phone?.message)}</p>
             )}
           </div>
 
@@ -157,8 +157,8 @@ export const CaseInfoStep = () => {
               }`}
               placeholder="john@example.com"
             />
-            {errors.contact?.email && (
-              <p className="mt-1 text-sm text-red-600">{errors.contact.email.message}</p>
+            {errors.contact?.email?.message && (
+              <p className="mt-1 text-sm text-red-600">{String(errors.contact?.email?.message)}</p>
             )}
           </div>
 
@@ -175,8 +175,8 @@ export const CaseInfoStep = () => {
               }`}
               placeholder="Enter full address"
             />
-            {errors.contact?.address && (
-              <p className="mt-1 text-sm text-red-600">{errors.contact.address.message}</p>
+            {errors.contact?.address?.message && (
+              <p className="mt-1 text-sm text-red-600">{String(errors.contact?.address?.message)}</p>
             )}
           </div>
         </div>

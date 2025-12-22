@@ -15,7 +15,7 @@ export const JobSchema = z.object({
   // Case Info fields - Essential ones required
   jobName: z.string().min(1, 'Job name is required'),
   claimNumber: z.string().min(1, 'Claim number is required'),
-  lossType: z.enum(['Water', 'Fire', 'Mold']),
+  lossType: z.string().min(1, 'Loss type is required').refine((v) => ['Water', 'Fire', 'Mold'].includes(v as string), { message: 'Invalid loss type' }),
   dateOfLoss: z.string().min(1, 'Date of loss is required'),
   inspectorName: z.string().min(1, 'Inspector name is required'),
   companyName: z.string().min(1, 'Company name is required'),
@@ -39,8 +39,8 @@ export const JobSchema = z.object({
   // Affected Areas - Make optional for MVP
   areas: z.array(z.object({
     name: z.string().optional(),
-    category: z.enum(['1', '2', '3']).optional(),
-    class: z.enum(['1', '2', '3', '4']).optional(),
+    category: z.string().optional(),
+    class: z.string().optional(),
     materials: z.string().optional(),
     cause: z.string().optional(),
     overviewNotes: z.string().optional(),
@@ -128,7 +128,7 @@ export const JobSchema = z.object({
     items: z.array(z.object({
       atISO: z.string().optional(),
       author: z.string().optional(),
-      source: z.enum(['email', 'call', 'note']).optional(),
+      source: z.string().optional(),
       text: z.string().optional(),
     })).optional().default([]),
   }).optional(),
@@ -157,7 +157,7 @@ export const JobSchema = z.object({
   calculators: z.object({
     dehu: z.array(z.object({
       atmosphere: z.string().optional(),
-      classOfWater: z.enum(['1', '2', '3', '4']).optional(),
+      classOfWater: z.string().optional(),
       volumeFt3: optionalNumber,
       recommendedPintsPerDay: optionalNumber,
     })).optional().default([]),
