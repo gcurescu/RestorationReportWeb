@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import LandingPage from './pages/LandingPage.jsx';
 import { JobWizard } from './features/job-wizard/JobWizard';
 import JobsList from './mvp/JobsList.jsx';
@@ -17,6 +18,7 @@ function App() {
           <Route path="/app/job/:id" element={<ReportPreview />} />
         </Routes>
       </BrowserRouter>
+      <Analytics />
     </div>
   );
 }
