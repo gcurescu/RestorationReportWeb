@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { getJobs, deleteJob, duplicateJob } from './storage';
 import { formatDate, formatDateTime } from './utils/formatters';
 import { normalizeJob } from './normalizeJob';
+import { isDemoMode, ensureDemoSeed, resetDemo } from './demoSeed';
 
 const JobsList = () => {
   const navigate = useNavigate();
@@ -11,10 +12,15 @@ const JobsList = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
+  const [demoMode] = useState(isDemoMode());
 
   useEffect(() => {
+    // Seed demo data if in demo mode
+    if (demoMode) {
+      ensureDemoSeed();
+    }
     loadJobs();
-  }, []);
+  }, [demoMode]);
 
   const loadJobs = () => {
     try {
@@ -91,6 +97,13 @@ const JobsList = () => {
     );
   }
 
+  const handleResetDemo = () => {
+    if (window.confirm('Reset demo data? This will restore the 3 sample jobs.')) {
+      resetDemo();
+      loadJobs();
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
@@ -103,14 +116,32 @@ const JobsList = () => {
             >
               ← Back to Home
             </button>
-            <h1 className="text-lg font-bold text-slate-900 mt-1">My Jobs</h1>
+            <div className="flex items-center gap-2 mt-1">
+              <h1 className="text-lg font-bold text-slate-900">My Jobs</h1>
+              {demoMode && (
+                <span className="inline-flex items-center px-2 py-1 rounded-md bg-amber-100 text-amber-800 text-xs font-medium">
+                  Demo Mode
+                </span>
+              )}
+            </div>
           </div>
-          <button
-            onClick={() => navigate('/app/new')}
-            className="px-3 py-2 rounded-md bg-blue-600 text-white text-sm font-medium min-h-[44px] hover:bg-blue-700 transition-colors"
-          >
-            + New Job
-          </button>
+          <div className="flex gap-2">
+            {demoMode && (
+              <button
+                onClick={handleResetDemo}
+                className="px-3 py-2 rounded-md bg-slate-600 text-white text-sm font-medium min-h-[44px] hover:bg-slate-700 transition-colors"
+                title="Reset to original demo data"
+              >
+                Reset Demo
+              </button>
+            )}
+            <button
+              onClick={() => navigate('/app/new')}
+              className="px-3 py-2 rounded-md bg-blue-600 text-white text-sm font-medium min-h-[44px] hover:bg-blue-700 transition-colors"
+            >
+              + New Job
+            </button>
+          </div>
         </div>
       </div>
 
