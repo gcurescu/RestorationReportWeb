@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { SlimNav } from '../components/nav/SlimNav';
 import { Hero } from '../components/hero/Hero';
 import { SocialProof } from '../components/proof/SocialProof';
-import { SectionCTA } from '../components/shared/SectionCTA';
 import SampleReport from '../components/shared/SampleReport.jsx';
 
 // Reusable components from original (keeping for backward compatibility)
@@ -68,10 +67,7 @@ function MockReportPreview() {
 export default function LandingPage() {
   // UTM state
   const [utmParams, setUtmParams] = useState({});
-  // ROI calculator state
-  const [claimsPerMonth, setClaimsPerMonth] = useState(10);
-  // Hours saved per claim is a fixed default (not editable in the form)
-  const hoursPerClaim = 2;
+  // ROI calculator state removed for demo landing page
 
   useEffect(() => {
     // Parse UTM parameters
@@ -126,20 +122,7 @@ export default function LandingPage() {
     }))
   };
 
-  const derivedHours = (claimsPerMonth * hoursPerClaim) || 0;
-
-  function scrollToSignup() {
-    const el = document.getElementById('signup');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      setTimeout(() => {
-        const input = el.querySelector && (el.querySelector('#signup-email') || el.querySelector('input[type="email"]'));
-        if (input && typeof input.focus === 'function') {
-          try { input.focus({ preventScroll: true }); } catch { input.focus(); }
-        }
-      }, 400);
-    }
-  }
+  
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800" data-utm={JSON.stringify(utmParams)}>
@@ -244,13 +227,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Section CTA after Features */}
-      <section className="py-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionCTA ctaHref="#signup" data-cta="signup" />
-        </div>
-      </section>
-
       {/* How it works */}
       <section id="how-it-works" className="py-16 bg-white" aria-labelledby="how-heading">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -266,54 +242,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Section CTA after How it Works */}
-      <section className="py-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionCTA 
-            title="Ready to transform your reporting?"
-            description="Join restoration professionals who are saving hours on every claim."
-            ctaHref="#signup" data-cta="signup"
-          />
-        </div>
-      </section>
-
-      {/* ROI calculator */}
-      <section id="roi" className="py-16 bg-white" aria-labelledby="roi-heading">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-slate-50 rounded-xl border border-slate-200 p-8 shadow-sm">
-            <div className="text-center mb-8">
-              <h2 id="roi-heading" className="text-2xl font-bold text-slate-900 mb-2">Calculate your time savings</h2>
-              <p className="text-slate-600 text-sm sm:text-base">Estimated hours saved per month = claims * hours saved per claim.</p>
-            </div>
-            <div className="mb-6">
-              <div>
-                <label htmlFor="claims" className="block text-sm font-medium text-slate-700 mb-2">Claims per month</label>
-                <input
-                  id="claims"
-                  type="number"
-                  min="0"
-                  value={claimsPerMonth}
-                  onChange={e => setClaimsPerMonth(Number(e.target.value))}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm bg-white"
-                />
-              </div>
-            </div>
-            <div className="bg-blue-50 rounded-lg p-6 text-center mb-8">
-              <div className="text-3xl font-bold text-blue-600 mb-1">{derivedHours} hours</div>
-              <div className="text-slate-600 text-sm">Estimated hours saved per month</div>
-            </div>
-            <div className="text-center">
-              <button 
-                type="button" 
-                onClick={scrollToSignup} 
-                className="inline-flex items-center bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 font-medium shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-600"
-              >
-                Join waitlist
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Removed waitlist CTAs and ROI calculator for demo-ready landing page */}
 
       {/* FAQ */}
       <section id="faq" className="py-16" aria-labelledby="faq-heading">
@@ -330,16 +259,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section className="py-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionCTA 
-            title="Ready to get started?"
-            description="Join the waitlist and be among the first to create professional reports that adjusters love."
-            ctaHref="#signup" data-cta="signup"
-          />
-        </div>
-      </section>
+      {/* Final CTA removed (waitlist) */}
 
       {/* Footer */}
       <footer className="bg-slate-900 text-white py-12 mt-12" aria-labelledby="footer-heading">
