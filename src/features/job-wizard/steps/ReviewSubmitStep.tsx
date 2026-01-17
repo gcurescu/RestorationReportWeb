@@ -2,6 +2,8 @@ import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { Job } from '../../../schemas/job';
 
+const DEBUG = false; // Set to true for development debugging
+
 interface ReviewSubmitStepProps {
   onEditStep: (stepIndex: number) => void;
   onValidate: () => void;
@@ -42,10 +44,10 @@ export const ReviewSubmitStep = ({ onEditStep, onValidate, onSubmit }: ReviewSub
   const hasErrors = allErrors.length > 0;
 
   const handleManualValidation = async () => {
-    console.log('Manual validation triggered');
+    if (DEBUG) console.log('Manual validation triggered');
     const result = await trigger();
-    console.log('Validation result:', result);
-    console.log('Form errors:', errors);
+    if (DEBUG) console.log('Validation result:', result);
+    if (DEBUG) console.log('Form errors:', errors);
   };
 
   const handleExportToPDF = async () => {
@@ -79,7 +81,7 @@ export const ReviewSubmitStep = ({ onEditStep, onValidate, onSubmit }: ReviewSub
       
       pdf.save(`job-${data.jobName || 'report'}.pdf`);
     } catch (error) {
-      console.error('Export failed:', error);
+      if (DEBUG) console.error('Export failed:', error);
     }
   };
 

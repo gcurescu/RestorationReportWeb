@@ -3,6 +3,7 @@
  * Provides seeded data when URL includes ?demo=1
  */
 
+const DEBUG = false; // Set to true for development debugging
 const JOBS_KEY = 'rr_jobs';
 const DEMO_FLAG_KEY = 'rr_demo_mode';
 
@@ -398,10 +399,10 @@ export const ensureDemoSeed = () => {
       const demoJobs = createDemoJobs();
       localStorage.setItem(JOBS_KEY, JSON.stringify(demoJobs));
       localStorage.setItem(DEMO_FLAG_KEY, 'true');
-      console.log('Demo jobs seeded successfully');
+      if (DEBUG) console.log('Demo jobs seeded successfully');
     }
   } catch (error) {
-    console.error('Error seeding demo jobs:', error);
+    if (DEBUG) console.error('Error seeding demo jobs:', error);
   }
 };
 
@@ -411,7 +412,7 @@ export const ensureDemoSeed = () => {
  */
 export const resetDemo = () => {
   if (!isDemoMode()) {
-    console.warn('Reset demo only works in demo mode');
+    if (DEBUG) console.warn('Reset demo only works in demo mode');
     return;
   }
 
@@ -424,10 +425,10 @@ export const resetDemo = () => {
     localStorage.setItem(JOBS_KEY, JSON.stringify(demoJobs));
     localStorage.setItem(DEMO_FLAG_KEY, 'true');
     
-    console.log('Demo reset successfully');
+    if (DEBUG) console.log('Demo reset successfully');
     return true;
   } catch (error) {
-    console.error('Error resetting demo:', error);
+    if (DEBUG) console.error('Error resetting demo:', error);
     return false;
   }
 };

@@ -20,6 +20,7 @@ import { PhotosNotesStep } from './steps/PhotosNotesStep';
 import { CostsSignoffStep } from './steps/CostsSignoffStep';
 import { ReviewSubmitStep } from './steps/ReviewSubmitStep';
 
+const DEBUG = false; // Set to true for development debugging
 const TOTAL_STEPS = 7;
 
 const stepComponents: Record<number, React.ComponentType<any>> = {
@@ -77,6 +78,7 @@ export const JobWizard = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [canGoNext, setCanGoNext] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Initialize form with draft data or defaults
   const initializeForm = () => {
@@ -111,7 +113,7 @@ export const JobWizard = () => {
   // Create a stable debounced function
   const debouncedSaveDraft = useMemo(
     () => debounce((data: any) => {
-      console.log('Auto-saving draft...', Object.keys(data));
+      if (DEBUG) console.log('Auto-saving draft...', Object.keys(data));
       saveDraft(data);
     }, 2000), // Increased to 2 seconds
     []
@@ -120,7 +122,7 @@ export const JobWizard = () => {
   // Watch for form changes and auto-save - but less frequently
   useEffect(() => {
     const subscription = watch((data, { name }) => {
-      console.log('Field changed:', name);
+      if (DEBUG) console.log('Field changed:', name);
       debouncedSaveDraft(data);
     });
     return () => subscription.unsubscribe();
@@ -128,22 +130,22 @@ export const JobWizard = () => {
 
   // Validate current step - only when step changes or on manual trigger
   const validateCurrentStep = useCallback(async () => {
-    console.log('Validating step:', currentStep);
+    if (DEBUG) console.log('Validating step:', currentStep);
     if (currentStep === 7) {
       // Review step - validate everything
       const isValid = await trigger();
-      console.log('Review step validation result:', isValid);
+      if (DEBUG) console.log('Review step validation result:', isValid);
       setCanGoNext(isValid);
     } else {
       // Get fields to validate for current step
       const fieldsToValidate = fieldsForStep(currentStep);
-      console.log('Validating fields:', fieldsToValidate);
+      if (DEBUG) console.log('Validating fields:', fieldsToValidate);
       if (fieldsToValidate.length > 0) {
         const isValid = await trigger(fieldsToValidate as any);
-        console.log('Step validation result:', isValid);
+        if (DEBUG) console.log('Step validation result:', isValid);
         setCanGoNext(isValid);
       } else {
-        console.log('No validation needed for this step');
+        if (DEBUG) console.log('No validation needed for this step');
         setCanGoNext(true);
       }
     }
@@ -177,27 +179,29 @@ export const JobWizard = () => {
 
   const handleJobSubmit = async () => {
     setIsSubmitting(true);
+    setErrorMessage(null);
     
     try {
       // Validate entire form
-      console.log('Starting full form validation...');
+      if (DEBUG) console.log('Starting full form validation...');
       const isValid = await trigger();
-      console.log('Form validation result:', isValid);
+      if (DEBUG) console.log('Form validation result:', isValid);
       
       if (!isValid) {
-        console.log('Form validation failed. Errors:', form.formState.errors);
+        if (DEBUG) console.log('Form validation failed. Errors:', form.formState.errors);
         setIsSubmitting(false);
-        // The errors will now be displayed in the ReviewSubmitStep component
-        alert('Please check the form for errors and fix them before submitting.');
+        setErrorMessage('Please check the form for errors and fix them before submitting.');
+        // Scroll to top to show error
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         return;
       }
 
       const formData = getValues();
-      console.log('Submitting form data:', formData);
+      if (DEBUG) console.log('Submitting form data:', formData);
       
       // Save the job
       const jobId = await saveJob(formData);
-      console.log('Job saved with ID:', jobId);
+      if (DEBUG) console.log('Job saved with ID:', jobId);
       
       // Clear the draft
       clearDraft();
@@ -205,8 +209,9 @@ export const JobWizard = () => {
       // Navigate to job detail
       navigate(`/app/job/${jobId}`);
     } catch (error) {
-      console.error('Failed to save job:', error);
-      alert('Failed to save job. Please try again.');
+      if (DEBUG) console.error('Failed to save job:', error);
+      setErrorMessage('Failed to save job. Please try again.');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } finally {
       setIsSubmitting(false);
     }
@@ -224,6 +229,38 @@ export const JobWizard = () => {
   return (
     <FormProvider {...form}>
       <WizardLayout title="New Restoration Job">
+        {errorMessage && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-md">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3 flex-1">
+                <h3 className="text-sm font-medium text-red-800">
+                  Error
+                </h3>
+                <div className="mt-2 text-sm text-red-700">
+                  <p>{errorMessage}</p>
+                </div>
+              </div>
+              <div className="ml-3">
+                <button
+                  type="button"
+                  onClick={() => setErrorMessage(null)}
+                  className="inline-flex rounded-md bg-red-50 p-1.5 text-red-500 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:ring-offset-red-50"
+                >
+                  <span className="sr-only">Dismiss</span>
+                  <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+        
         {showDraftPrompt && (
           <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-md">
             <div className="flex">
