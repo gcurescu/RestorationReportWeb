@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getJob } from './storage';
 import PhotoGrid from './components/PhotoGrid';
+import { normalizeJob } from './normalizeJob';
 
 const ReportPreview = () => {
   const { id } = useParams();
@@ -40,7 +41,8 @@ const ReportPreview = () => {
           navigate('/app/jobs');
           return;
         }
-        setJob(jobData);
+        // Normalize job data to ensure consistent schema
+        setJob(normalizeJob(jobData));
       } catch (error) {
         console.error('Error loading job:', error);
         navigate('/app/jobs');

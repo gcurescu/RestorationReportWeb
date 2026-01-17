@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getJobs, deleteJob, duplicateJob } from './storage';
 import { formatDate, formatDateTime } from './utils/formatters';
+import { normalizeJob } from './normalizeJob';
 
 const JobsList = () => {
   const navigate = useNavigate();
@@ -18,7 +19,9 @@ const JobsList = () => {
   const loadJobs = () => {
     try {
       const jobsList = getJobs();
-      setJobs(jobsList.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)));
+      // Normalize all jobs to ensure consistent schema
+      const normalizedJobs = jobsList.map(normalizeJob);
+      setJobs(normalizedJobs.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)));
     } catch (error) {
       console.error('Error loading jobs:', error);
     } finally {
