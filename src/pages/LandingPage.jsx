@@ -162,12 +162,24 @@ export default function LandingPage() {
             <p className="text-green-100 mb-4">
               Skip the waitlist. Start creating professional reports today.
             </p>
-            <a 
-              href="/app/jobs"
-              className="inline-flex items-center bg-white text-green-600 px-6 py-3 rounded-lg hover:bg-green-50 font-medium shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white text-sm transition-colors"
-            >
-              Access Beta (Free) →
-            </a>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <a 
+                href="/app/jobs?demo=1"
+                className="inline-flex items-center justify-center bg-white text-green-600 px-6 py-3 rounded-lg hover:bg-green-50 font-medium shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white text-sm transition-colors"
+              >
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                View Demo
+              </a>
+              <a 
+                href="/app/jobs"
+                className="inline-flex items-center justify-center bg-green-800 text-white px-6 py-3 rounded-lg hover:bg-green-900 font-medium shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white text-sm transition-colors"
+              >
+                Access Beta (Free) →
+              </a>
+            </div>
           </div>
         </div>
       </section>
@@ -188,18 +200,22 @@ export default function LandingPage() {
                     if (viewButton) viewButton.click();
                   }
                 }}
-                className="inline-flex items-center bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-medium shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-600 text-sm"
+                className="inline-flex items-center justify-center bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-medium shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-600 text-sm"
               >
                 View Full Sample Report →
               </button>
               <a 
-                href="/app/jobs"
-                className="inline-flex items-center bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 font-medium shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-600 text-sm"
+                href="/app/jobs?demo=1"
+                className="inline-flex items-center justify-center bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 font-medium shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-600 text-sm"
               >
-                Try Beta Now (Free) →
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Try Demo Now →
               </a>
             </div>
-            </div>
+          </div>
         </section>
 
       {/* Features */}
