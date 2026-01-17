@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react';
-import { EmailSignup } from '../forms/EmailSignup';
 
 function AppImages({ prefersReducedMotion = false }) {
   const [isVisible, setIsVisible] = useState(false);

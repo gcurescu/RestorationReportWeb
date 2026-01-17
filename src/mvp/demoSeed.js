@@ -433,8 +433,10 @@ export const resetDemo = () => {
   }
 };
 
-export default {
+const demoSeed = {
   isDemoMode,
   ensureDemoSeed,
   resetDemo,
 };
+
+export default demoSeed;
