@@ -87,10 +87,92 @@ const PhotoRenderer = ({ photo, alt, className, loading = "lazy" }) => {
 };
 
 /**
- * Photo Grid component for displaying photos in a responsive grid
+ * Placeholder tile component for empty photo slots
  */
-export const PhotoGrid = ({ photos, cols = { mobile: 2, desktop: 3 }, className = '' }) => {
-  if (!photos || photos.length === 0) {
+const PhotoPlaceholder = ({ index, className = '' }) => {
+  return (
+    <div className={`relative group ${className}`}>
+      <div className="aspect-w-4 aspect-h-3 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg overflow-hidden">
+        <div className="w-full h-full flex flex-col items-center justify-center text-gray-400">
+          <svg 
+            className="w-12 h-12 mb-2" 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24" 
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path 
+              strokeLinecap="round" 
+              strokeLinejoin="round" 
+              strokeWidth={1.5} 
+              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" 
+            />
+          </svg>
+          <span className="text-sm font-medium">Photo</span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/**
+ * Photo Grid component for displaying photos in a responsive grid
+ * 
+ * Supports two prop styles for backward compatibility:
+ * 1. Legacy: cols={{ mobile: 2, desktop: 3 }}
+ * 2. New: columns={3} (uses responsive defaults)
+ * 
+ * Also supports placeholder tiles to fill up to a specific count
+ */
+export const PhotoGrid = ({ 
+  photos, 
+  cols, 
+  columns, 
+  showPlaceholders,
+  className = '' 
+}) => {
+  // Determine column configuration
+  let mobileCols, desktopCols;
+  
+  if (cols) {
+    // Legacy cols prop - use as-is
+    mobileCols = cols.mobile === 3 ? 'grid-cols-3' : 
+                 cols.mobile === 4 ? 'grid-cols-4' :
+                 cols.mobile === 1 ? 'grid-cols-1' : 'grid-cols-2';
+    desktopCols = cols.desktop === 4 ? 'md:grid-cols-4' :
+                  cols.desktop === 5 ? 'md:grid-cols-5' :
+                  cols.desktop === 2 ? 'md:grid-cols-2' :
+                  cols.desktop === 1 ? 'md:grid-cols-1' : 'md:grid-cols-3';
+  } else if (columns) {
+    // New columns prop - use for desktop, calculate mobile
+    const mobileCount = columns >= 3 ? 2 : columns; // Use 2 cols on mobile for 3+ desktop cols
+    mobileCols = mobileCount === 3 ? 'grid-cols-3' : 
+                 mobileCount === 4 ? 'grid-cols-4' :
+                 mobileCount === 1 ? 'grid-cols-1' : 'grid-cols-2';
+    desktopCols = columns === 4 ? 'md:grid-cols-4' :
+                  columns === 5 ? 'md:grid-cols-5' :
+                  columns === 2 ? 'md:grid-cols-2' :
+                  columns === 1 ? 'md:grid-cols-1' : 'md:grid-cols-3';
+  } else {
+    // Default fallback
+    mobileCols = 'grid-cols-2';
+    desktopCols = 'md:grid-cols-3';
+  }
+
+  // Prepare items array with photos and placeholders
+  const photoArray = photos || [];
+  const items = [...photoArray];
+  
+  // Add placeholders if needed
+  if (showPlaceholders && items.length < showPlaceholders) {
+    const placeholderCount = showPlaceholders - items.length;
+    for (let i = 0; i < placeholderCount; i++) {
+      items.push({ isPlaceholder: true, index: items.length + i });
+    }
+  }
+
+  // Handle empty state
+  if (items.length === 0) {
     return (
       <div className="flex items-center justify-center h-32 bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg">
         <p className="text-gray-500">No photos available</p>
@@ -98,43 +180,41 @@ export const PhotoGrid = ({ photos, cols = { mobile: 2, desktop: 3 }, className 
     );
   }
 
-  // Map dynamic values to static Tailwind classes to avoid purging
-  const mobileCols = cols.mobile === 3 ? 'grid-cols-3' : 
-                     cols.mobile === 4 ? 'grid-cols-4' :
-                     cols.mobile === 1 ? 'grid-cols-1' : 'grid-cols-2';
-  const desktopCols = cols.desktop === 4 ? 'md:grid-cols-4' :
-                      cols.desktop === 5 ? 'md:grid-cols-5' :
-                      cols.desktop === 2 ? 'md:grid-cols-2' :
-                      cols.desktop === 1 ? 'md:grid-cols-1' : 'md:grid-cols-3';
-
   return (
     <div className={`grid ${mobileCols} ${desktopCols} gap-4 ${className}`}>
-      {photos.map((photo, index) => (
-        <div key={index} className="relative group">
-          <div className="aspect-w-4 aspect-h-3 bg-gray-200 rounded-lg overflow-hidden">
-            <PhotoRenderer
-              photo={photo}
-              alt={photo.caption || `Photo ${index + 1}`}
-              className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
-              loading="lazy"
-            />
-          </div>
-          {(photo.caption || photo.timeISO) && (
-            <div className="mt-2 text-sm">
-              {photo.caption && (
-                <p className="text-gray-700 font-medium truncate" title={photo.caption}>
-                  {photo.caption}
-                </p>
-              )}
-              {photo.timeISO && (
-                <p className="text-gray-500 text-xs">
-                  {formatDateTime(photo.timeISO)}
-                </p>
-              )}
+      {items.map((item, index) => {
+        if (item.isPlaceholder) {
+          return <PhotoPlaceholder key={`placeholder-${item.index}`} index={item.index} />;
+        }
+        
+        const photo = item;
+        return (
+          <div key={index} className="relative group">
+            <div className="aspect-w-4 aspect-h-3 bg-gray-200 rounded-lg overflow-hidden">
+              <PhotoRenderer
+                photo={photo}
+                alt={photo.caption || `Photo ${index + 1}`}
+                className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
+                loading="lazy"
+              />
             </div>
-          )}
-        </div>
-      ))}
+            {(photo.caption || photo.timeISO) && (
+              <div className="mt-2 text-sm">
+                {photo.caption && (
+                  <p className="text-gray-700 font-medium truncate" title={photo.caption}>
+                    {photo.caption}
+                  </p>
+                )}
+                {photo.timeISO && (
+                  <p className="text-gray-500 text-xs">
+                    {formatDateTime(photo.timeISO)}
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 };
