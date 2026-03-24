@@ -3,12 +3,17 @@ import { SlimNav } from '../components/nav/SlimNav';
 import { Hero } from '../components/hero/Hero';
 import { SocialProof } from '../components/proof/SocialProof';
 import SampleReport from '../components/shared/SampleReport.jsx';
+import { DemoRequestForm } from '../components/forms/DemoRequestForm';
 
-// Reusable components from original (keeping for backward compatibility)
-function FeatureCard({ title, description }) {
+function FeatureCard({ icon, title, description }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h3 className="font-semibold text-slate-900 mb-2 text-base">{title}</h3>
+    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
+      <div className="flex items-center gap-3 mb-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+          {icon}
+        </div>
+        <h3 className="font-semibold text-slate-900 text-base">{title}</h3>
+      </div>
       <p className="text-slate-600 text-sm leading-relaxed">{description}</p>
     </div>
   );
@@ -36,10 +41,10 @@ function Faq({ q, a }) {
         className="flex w-full items-center justify-between text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
         aria-expanded={open}
         aria-controls={id}
-        onClick={() => setOpen(o => !o)}
+        onClick={() => setOpen((o) => !o)}
       >
         <span className="font-medium text-slate-900 pr-4 text-sm md:text-base">{q}</span>
-        <span className="text-slate-500" aria-hidden>{open ? '-' : '+'}</span>
+        <span className="text-slate-500 text-lg font-light" aria-hidden>{open ? '−' : '+'}</span>
       </button>
       {open && (
         <div id={id} className="mt-3 text-sm text-slate-600 leading-relaxed">
@@ -52,204 +57,261 @@ function Faq({ q, a }) {
 
 function LogoMark() {
   return (
-    <img 
-      src="/RR_Icon.png" 
-      alt="Restoration Report Logo" 
+    <img
+      src="/RR_Icon.png"
+      alt="Restoration Report Logo"
       className="h-8 w-8 object-contain"
     />
   );
 }
 
-function MockReportPreview() {
-  return <SampleReport />;
+function StatBadge({ value, label }) {
+  return (
+    <div className="text-center">
+      <div className="text-3xl font-bold text-blue-600">{value}</div>
+      <div className="text-sm text-slate-600 mt-1">{label}</div>
+    </div>
+  );
 }
 
 export default function LandingPage() {
-  // UTM state
   const [utmParams, setUtmParams] = useState({});
-  // ROI calculator state removed for demo landing page
 
   useEffect(() => {
-    // Parse UTM parameters
     const urlParams = new URLSearchParams(window.location.search);
     const params = {};
-    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].forEach(param => {
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].forEach((param) => {
       const value = urlParams.get(param);
       if (value) params[param] = value;
     });
     setUtmParams(params);
   }, []);
 
-  // Global handler: smooth-scroll any link/button that points to #signup
-  useEffect(() => {
-    function handleClick(e) {
-      // Find closest anchor or button with href or data-href
-      const target = e.target.closest && e.target.closest('a[href="#signup"], button[data-href="#signup"], [data-cta="signup"]');
-      if (target) {
-        e.preventDefault();
-        const el = document.getElementById('signup');
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          // Focus the first input (email) inside the signup form after scrolling
-          setTimeout(() => {
-            const input = el.querySelector && (el.querySelector('#signup-email') || el.querySelector('input[type="email"]'));
-            if (input && typeof input.focus === 'function') {
-              try { input.focus({ preventScroll: true }); } catch { input.focus(); }
-            }
-          }, 400);
-        }
-      }
-    }
-
-    document.addEventListener('click', handleClick, { capture: true });
-    return () => document.removeEventListener('click', handleClick, { capture: true });
-  }, []);
-
   const faqData = [
-    { q: 'Who is this for?', a: 'Water, fire, and mold mitigation contractors who need professional reports for insurance adjusters. Especially helpful for crews handling multiple claims per week.' },
-    { q: 'Do you integrate with adjuster portals?', a: 'We generate clean PDFs that work with any portal - Xactimate, CoreLogic, or email. No complex integrations needed.' },
-    { q: 'Will my data be private?', a: 'Yes. Your job data stays private and secure. We do not share information with competitors or insurance companies.' },
-    { q: 'How do invites work?', a: 'We are rolling out to Chicagoland first, then expanding. ZIP codes help us prioritize. Beta is free - no credit card required.' }
+    {
+      q: 'What size companies is this built for?',
+      a: 'Restoration Report works best for mitigation and restoration companies handling 5–200 jobs per month — from owner-operators running their own crews to regional firms with multiple project managers. If your team is documenting water, fire, or mold jobs for insurance claims, this is built for you.',
+    },
+    {
+      q: 'How does it integrate with our existing workflow?',
+      a: 'No complex integrations required. Your crews capture data on-site using any phone or tablet, and the platform generates clean PDFs that work with any adjuster portal — Xactimate, CoreLogic, or a simple email attachment. Setup takes minutes, not weeks.',
+    },
+    {
+      q: 'What does the demo look like?',
+      a: 'We\'ll walk you through a 20-minute screen share showing real job workflows: capturing moisture readings, attaching photos, and generating a complete, adjuster-ready PDF. You can also explore the live demo right now at no cost.',
+    },
+    {
+      q: 'Is our job data kept private and secure?',
+      a: 'Yes. Your job data is private and never shared with insurance companies, competitors, or third parties. We follow industry-standard security practices and give you full control over your data.',
+    },
+    {
+      q: 'What does it cost?',
+      a: 'We\'re currently in early access. Demo participants get priority pricing and input on the roadmap. Reach out via the form and we\'ll share current pricing based on your team size.',
+    },
+    {
+      q: 'Can we try it before committing?',
+      a: 'Absolutely. Hit "View Live Demo" above to explore the full app with sample jobs — no sign-up needed. The demo request is for companies that want a guided walkthrough with one of our team members.',
+    },
   ];
 
   const faqSchema = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    mainEntity: faqData.map(item => ({
+    mainEntity: faqData.map((item) => ({
       '@type': 'Question',
       name: item.q,
-      acceptedAnswer: { '@type': 'Answer', text: item.a }
-    }))
+      acceptedAnswer: { '@type': 'Answer', text: item.a },
+    })),
   };
-
-  
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800" data-utm={JSON.stringify(utmParams)}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
-      
-      {/* Slim Navigation */}
+
+      {/* Navigation */}
       <SlimNav />
 
-  {/* Hero Section */}
-  <Hero subcopy="Generate Water, Fire, and Mold reports your adjuster can approve on first pass." />
+      {/* Hero */}
+      <Hero />
 
-      {/* Social Proof */}
+      {/* Social Proof — Testimonials */}
       <SocialProof />
 
-      {/* Beta Access Banner */}
-      <section className="py-12 bg-gradient-to-r from-green-600 to-green-700">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="text-white">
-            <h2 className="text-xl sm:text-2xl font-bold mb-2">🎉 Beta Now Live!</h2>
-            <p className="text-green-100 mb-4">
-              Skip the waitlist. Start creating professional reports today.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <a 
-                href="/app/jobs?demo=1"
-                className="inline-flex items-center justify-center bg-white text-green-600 px-6 py-3 rounded-lg hover:bg-green-50 font-medium shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white text-sm transition-colors"
-              >
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                View Demo
-              </a>
-              <a 
-                href="/app/jobs"
-                className="inline-flex items-center justify-center bg-green-800 text-white px-6 py-3 rounded-lg hover:bg-green-900 font-medium shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white text-sm transition-colors"
-              >
-                Access Beta (Free) →
-              </a>
+      {/* Stats Bar */}
+      <section className="py-10 bg-white border-y border-slate-100">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-3 gap-6 sm:gap-12">
+            <StatBadge value="80%" label="Less time on reports" />
+            <StatBadge value="1st pass" label="Adjuster approval rate" />
+            <StatBadge value="< 5 min" label="To generate a PDF" />
+          </div>
+        </div>
+      </section>
+
+      {/* Demo Request — Primary Conversion Section */}
+      <section className="py-16 sm:py-20 bg-gradient-to-br from-blue-700 to-blue-900" aria-labelledby="demo-heading">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-start">
+            {/* Left — pitch copy */}
+            <div className="text-white">
+              <h2 id="demo-heading" className="text-3xl sm:text-4xl font-bold mb-4 leading-tight">
+                See how much time your team can save.
+              </h2>
+              <p className="text-blue-100 text-lg mb-8 leading-relaxed">
+                Book a 20-minute walkthrough and we'll show you exactly how Restoration Report fits into your operation — from the first job to the final PDF.
+              </p>
+
+              <ul className="space-y-4 mb-8">
+                {[
+                  'Watch a real job get documented and exported in under 5 minutes',
+                  'See moisture readings, photos, and scope notes auto-organized',
+                  'Get a sample adjuster-ready PDF for your team to review',
+                  'Ask questions about your specific workflow and claim types',
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-3 text-blue-50 text-sm">
+                    <svg className="w-5 h-5 text-blue-300 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+
+              <div className="border-t border-blue-600 pt-6">
+                <p className="text-blue-200 text-sm italic">
+                  "Adjusters approve our reports on first pass now. Less back-and-forth, faster payments."
+                </p>
+                <p className="text-blue-300 text-xs mt-2">— Sarah Chen, Restoration Project Manager</p>
+              </div>
+            </div>
+
+            {/* Right — form card */}
+            <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8">
+              <h3 className="text-xl font-bold text-slate-900 mb-1">Request a Demo</h3>
+              <p className="text-slate-500 text-sm mb-6">We'll reach out within 1 business day.</p>
+              <DemoRequestForm id="demo" />
             </div>
           </div>
         </div>
       </section>
 
-            {/* Sample */}
-        <section id="sample" className="py-16 bg-white" aria-labelledby="sample-heading">
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 id="sample-heading" className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">Sample Report</h2>
-            <p className="text-lg text-slate-600 mb-8">See what your reports will look like</p>
-            <div className="flex justify-center"><MockReportPreview /></div>
-            <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-              <button 
-                onClick={() => {
-                  // Trigger the modal in the SampleReport component
-                  const sampleReportElement = document.querySelector('[data-sample-report]');
-                  if (sampleReportElement) {
-                    const viewButton = sampleReportElement.querySelector('button');
-                    if (viewButton) viewButton.click();
-                  }
-                }}
-                className="inline-flex items-center justify-center bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-medium shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-600 text-sm"
-              >
-                View Full Sample Report →
-              </button>
-              <a 
-                href="/app/jobs?demo=1"
-                className="inline-flex items-center justify-center bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 font-medium shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-600 text-sm"
-              >
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                Try Demo Now →
-              </a>
-            </div>
+      {/* Sample Report */}
+      <section id="sample" className="py-16 bg-white" aria-labelledby="sample-heading">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 id="sample-heading" className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">
+            See what your reports will look like
+          </h2>
+          <p className="text-lg text-slate-600 mb-8">
+            Clean, professional PDFs that adjusters can approve without a single follow-up call.
+          </p>
+          <div className="flex justify-center">
+            <SampleReport />
           </div>
-        </section>
+          <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+            <button
+              onClick={() => {
+                const el = document.querySelector('[data-sample-report]');
+                if (el) {
+                  const btn = el.querySelector('button');
+                  if (btn) btn.click();
+                }
+              }}
+              className="inline-flex items-center justify-center bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-medium shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-600 text-sm transition-colors"
+            >
+              View Full Sample Report →
+            </button>
+            <a
+              href="/app/jobs?demo=1"
+              className="inline-flex items-center justify-center bg-slate-100 text-slate-700 px-6 py-3 rounded-lg hover:bg-slate-200 font-medium shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slate-600 text-sm transition-colors"
+            >
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Explore Live Demo
+            </a>
+          </div>
+        </div>
+      </section>
 
       {/* Features */}
-      <section id="features" className="py-16 bg-white" aria-labelledby="features-heading">
+      <section id="features" className="py-16 bg-slate-50" aria-labelledby="features-heading">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 id="features-heading" className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">
-            Everything you need for professional reports
+              Everything your team needs on every job
             </h2>
-            <p className="text-lg text-slate-600">Stop juggling multiple apps and spreadsheets</p>
-            </div>
-            <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+            <p className="text-lg text-slate-600">Stop juggling multiple apps, spreadsheets, and photo folders</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
             <FeatureCard
-                title="Moisture and Equipment Logs"
-                description="Capture readings as you go — auto roll-up into tables."
+              icon={
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              }
+              title="Moisture &amp; Equipment Logs"
+              description="Capture readings as you go — auto roll-up into tables your adjusters recognize. No more manual entry after the fact."
             />
             <FeatureCard
-                title="Before/After and Scope"
-                description="Attach photos and scope notes side by side for adjusters."
+              icon={
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              }
+              title="Before/After Photo Documentation"
+              description="Attach photos and scope notes side by side. Adjusters get the visual context they need without a single phone call."
             />
             <FeatureCard
-                title="One-tap Export"
-                description="Generate polished PDFs you can email or upload to claim portals."
+              icon={
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              }
+              title="One-Tap PDF Export"
+              description="Generate polished, claim-ready PDFs in seconds. Upload to any portal, email directly, or print on-site."
             />
-            </div>
+          </div>
         </div>
       </section>
 
-      {/* How it works */}
+      {/* How it Works */}
       <section id="how-it-works" className="py-16 bg-white" aria-labelledby="how-heading">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 id="how-heading" className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">How it works</h2>
-            <p className="text-lg text-slate-600">Simple workflow that fits your process</p>
+            <h2 id="how-heading" className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">
+              A workflow your crews will actually use
+            </h2>
+            <p className="text-lg text-slate-600">Simple enough for technicians, powerful enough for project managers</p>
           </div>
           <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
-            <StepCard number="1" title="Capture on site" description="Take photos, record moisture readings, and add equipment as you work the job." />
-            <StepCard number="2" title="Auto-organize" description="Everything gets sorted into the right sections automatically - photos, logs, scope." />
-            <StepCard number="3" title="Export and share" description="One tap generates a clean PDF ready for adjusters, claim portals, or email." />
+            <StepCard
+              number="1"
+              title="Capture on-site"
+              description="Take photos, record moisture readings, and log equipment as you work the job — all from any phone or tablet."
+            />
+            <StepCard
+              number="2"
+              title="Auto-organize"
+              description="Everything gets sorted into the right sections automatically — photos, logs, scope, and affected areas."
+            />
+            <StepCard
+              number="3"
+              title="Export and submit"
+              description="One tap generates a clean, complete PDF. Upload to your portal, email the adjuster, or share a link."
+            />
           </div>
         </div>
       </section>
 
-      {/* Removed waitlist CTAs and ROI calculator for demo-ready landing page */}
-
       {/* FAQ */}
-      <section id="faq" className="py-16" aria-labelledby="faq-heading">
+      <section id="faq" className="py-16 bg-slate-50" aria-labelledby="faq-heading">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 id="faq-heading" className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">Frequently asked questions</h2>
-            <p className="text-lg text-slate-600">Everything you need to know about Restoration Report</p>
+            <h2 id="faq-heading" className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">
+              Frequently asked questions
+            </h2>
+            <p className="text-lg text-slate-600">Everything you need to know before booking a demo</p>
           </div>
           <div className="space-y-4">
             {faqData.map((f, i) => (
@@ -259,10 +321,39 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Final CTA removed (waitlist) */}
+      {/* Final CTA Section */}
+      <section className="py-16 bg-white" aria-labelledby="final-cta-heading">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 id="final-cta-heading" className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">
+            Ready to cut your report time by 80%?
+          </h2>
+          <p className="text-lg text-slate-600 mb-8">
+            Join restoration companies already using Restoration Report to close claims faster and get paid without the back-and-forth.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button
+              type="button"
+              onClick={() => {
+                const el = document.getElementById('demo');
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+              className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-600"
+            >
+              Request a Demo →
+            </button>
+            <a
+              href="/app/jobs?demo=1"
+              className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slate-600"
+            >
+              Explore Live Demo
+            </a>
+          </div>
+          <p className="mt-4 text-sm text-slate-500">No commitment required &nbsp;·&nbsp; 20-minute walkthrough &nbsp;·&nbsp; Respond within 1 business day</p>
+        </div>
+      </section>
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-white py-12 mt-12" aria-labelledby="footer-heading">
+      <footer className="bg-slate-900 text-white py-12" aria-labelledby="footer-heading">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 id="footer-heading" className="sr-only">Footer</h2>
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
@@ -270,11 +361,16 @@ export default function LandingPage() {
               <LogoMark />
               <span className="font-bold text-sm sm:text-base">Restoration Report</span>
             </div>
-            <div className="flex gap-6 text-sm">
+            <nav className="flex gap-6 text-sm">
+              <a href="#demo" className="text-slate-400 hover:text-white transition-colors">Request a Demo</a>
+              <a href="#features" className="text-slate-400 hover:text-white transition-colors">Features</a>
+              <a href="#faq" className="text-slate-400 hover:text-white transition-colors">FAQ</a>
               <a href="/privacy.html" className="text-slate-400 hover:text-white transition-colors">Privacy</a>
-            </div>
+            </nav>
           </div>
-          <p className="mt-4 text-sm text-slate-400 max-w-2xl">Made for Water, Fire, and Mold mitigation teams. Not affiliated with Encircle or Xactimate.</p>
+          <p className="mt-6 text-sm text-slate-400 max-w-2xl">
+            Purpose-built for water, fire, and mold mitigation teams. Not affiliated with Encircle or Xactimate.
+          </p>
         </div>
       </footer>
     </div>

@@ -5,7 +5,6 @@ function AppImages({ prefersReducedMotion = false }) {
   const containerRef = useRef(null);
 
   useEffect(() => {
-    // If the user prefers reduced motion, skip intersection animations and show immediately.
     if (prefersReducedMotion) {
       setIsVisible(true);
       return;
@@ -56,23 +55,17 @@ export function Hero() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {
-    // Check for reduced motion preference
     if (typeof window !== 'undefined' && window.matchMedia) {
-      // matchMedia may exist but return undefined in some test environments
       const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
       if (mediaQuery) {
         try {
           setPrefersReducedMotion(!!mediaQuery.matches);
-
           const handleChange = (e) => setPrefersReducedMotion(!!e.matches);
-
-          // Support both modern and older APIs
           if (typeof mediaQuery.addEventListener === 'function') {
             mediaQuery.addEventListener('change', handleChange);
           } else if (typeof mediaQuery.addListener === 'function') {
             mediaQuery.addListener(handleChange);
           }
-
           return () => {
             if (typeof mediaQuery.removeEventListener === 'function') {
               mediaQuery.removeEventListener('change', handleChange);
@@ -81,65 +74,98 @@ export function Hero() {
             }
           };
         } catch (err) {
-          // Defensive: if reading matches throws, ignore and leave default
-          // (tests and older browsers may behave differently)
-          // eslint-disable-next-line no-console
           console.warn('matchMedia check failed', err);
         }
       }
     }
   }, []);
 
+  const scrollToDemo = (e) => {
+    e.preventDefault();
+    const el = document.getElementById('demo');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(() => {
+        const input = el.querySelector('input[name="name"]');
+        if (input && typeof input.focus === 'function') {
+          try { input.focus({ preventScroll: true }); } catch { input.focus(); }
+        }
+      }, 400);
+    }
+  };
+
   return (
     <section className="relative bg-white py-16 lg:py-24 overflow-hidden">
       {/* Background SVG */}
       <div className="absolute inset-0 z-0">
-        <img 
-          src="/HeroBackground.svg" 
+        <img
+          src="/HeroBackground.svg"
           alt=""
           className="w-full h-full object-cover object-center sm:object-right-top opacity-30 sm:opacity-50"
-          onLoad={() => console.log('Background image loaded successfully')}
-          onError={(e) => console.error('Background image failed to load:', e)}
         />
       </div>
-      
+
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Left Column - Content */}
           <div className="max-w-lg">
+            {/* B2B badge */}
+            <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 text-blue-700 text-xs font-semibold px-3 py-1.5 rounded-full mb-6 uppercase tracking-wide">
+              <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+              Purpose-built for restoration companies
+            </div>
+
             <h1 className="text-4xl lg:text-5xl font-bold text-slate-900 leading-tight mb-6">
-              Create claim-ready restoration reports in minutes.
+              Stop losing money to slow, rejected insurance reports.
             </h1>
-            
+
             <p className="text-xl text-slate-600 mb-8 leading-relaxed">
-              Generate Water, Fire, and Mold reports your adjuster can approve on first pass.
+              Restoration Report gives your crews a faster way to document water, fire, and mold jobs — generating clean, professional reports that adjusters approve on the first pass.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
-              <a
-                href="/app/jobs?demo=1"
+              <button
+                onClick={scrollToDemo}
                 className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-600"
               >
-                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                Request a Demo →
+              </button>
+              <a
+                href="/app/jobs?demo=1"
+                className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-blue-700 bg-blue-50 border-2 border-blue-200 rounded-lg hover:bg-blue-100 hover:border-blue-300 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-600"
+              >
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                View Demo
-              </a>
-              <a
-                href="/app/jobs"
-                className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-blue-700 bg-blue-50 border-2 border-blue-200 rounded-lg hover:bg-blue-100 hover:border-blue-300 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-600"
-              >
-                Open App →
+                View Live Demo
               </a>
             </div>
 
-            <p className="text-sm text-slate-500">
-              No signup required • View 3 sample restoration jobs • Try it now
-            </p>
+            {/* Trust signals */}
+            <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-500">
+              <span className="flex items-center gap-1.5">
+                <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                No credit card required
+              </span>
+              <span className="flex items-center gap-1.5">
+                <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                Setup in minutes
+              </span>
+              <span className="flex items-center gap-1.5">
+                <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                Works with any claim portal
+              </span>
+            </div>
           </div>
 
-          {/* Right Column - Product Preview (App images) */}
+          {/* Right Column - Product Preview */}
           <div className="order-first lg:order-last">
             <div className="relative max-w-md mx-auto lg:max-w-none">
               <AppImages prefersReducedMotion={prefersReducedMotion} />
