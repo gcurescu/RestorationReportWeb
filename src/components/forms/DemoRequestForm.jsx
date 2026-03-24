@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { analytics } from '../../lib/analytics';
 
 // Replace YOUR_FORM_ID with your actual Formspree form ID after signing up at https://formspree.io
-const FORMSPREE_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID';
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mlgpqwzo';
 
 const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -50,12 +50,7 @@ export function DemoRequestForm({ id = 'demo' }) {
       });
 
       if (!res.ok) {
-        // If the placeholder endpoint is still in place, treat it as a soft success in dev
-        if (FORMSPREE_ENDPOINT.includes('YOUR_FORM_ID')) {
-          console.log('Demo form: Formspree endpoint not configured yet — simulating success.');
-        } else {
-          throw new Error('Submission failed');
-        }
+        throw new Error('Submission failed');
       }
 
       analytics.waitlistSubmit(fields.email.split('@')[1] || 'unknown');
