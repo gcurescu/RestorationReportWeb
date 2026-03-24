@@ -6,24 +6,16 @@ const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mlgpqwzo';
 const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
 export function DemoRequestForm({ id = 'demo' }) {
-  const [fields, setFields] = useState({ company: '', email: '', jobs_per_month: '' });
+  const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState('');
-
-  const handleChange = (e) => {
-    setFields((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
-    if (!fields.company.trim()) {
-      setError('Please enter your company name.');
-      return;
-    }
-    if (!isValidEmail(fields.email)) {
+    if (!isValidEmail(email)) {
       setError('Please enter a valid work email address.');
       return;
     }
@@ -37,18 +29,14 @@ export function DemoRequestForm({ id = 'demo' }) {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          company: fields.company.trim(),
-          email: fields.email.trim(),
-          jobs_per_month: fields.jobs_per_month || 'Not specified',
-        }),
+        body: JSON.stringify({ email: email.trim() }),
       });
 
       if (!res.ok) {
         throw new Error('Submission failed');
       }
 
-      analytics.waitlistSubmit(fields.email.split('@')[1] || 'unknown');
+      analytics.waitlistSubmit(email.split('@')[1] || 'unknown');
       setIsSuccess(true);
     } catch (err) {
       console.error('Demo form submission error:', err);
@@ -68,8 +56,7 @@ export function DemoRequestForm({ id = 'demo' }) {
         </div>
         <h3 className="text-xl font-bold text-green-900 mb-2">You're on the list!</h3>
         <p className="text-green-800 text-sm leading-relaxed max-w-sm mx-auto">
-          We'll reach out to <strong>{fields.company}</strong> within 1 business day to schedule your walkthrough.
-          Keep an eye on <strong>{fields.email}</strong>.
+          We'll be in touch at <strong>{email}</strong> within 1 business day to schedule your walkthrough.
         </p>
       </div>
     );
@@ -78,23 +65,6 @@ export function DemoRequestForm({ id = 'demo' }) {
   return (
     <form id={id} onSubmit={handleSubmit} className="space-y-4" noValidate>
       <div>
-        <label htmlFor="demo-company" className="block text-sm font-medium text-slate-700 mb-1">
-          Company Name
-        </label>
-        <input
-          type="text"
-          id="demo-company"
-          name="company"
-          value={fields.company}
-          onChange={handleChange}
-          placeholder="Acme Restoration"
-          required
-          disabled={isSubmitting}
-          className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-60 transition"
-        />
-      </div>
-
-      <div>
         <label htmlFor="demo-email" className="block text-sm font-medium text-slate-700 mb-1">
           Work Email
         </label>
@@ -102,33 +72,13 @@ export function DemoRequestForm({ id = 'demo' }) {
           type="email"
           id="demo-email"
           name="email"
-          value={fields.email}
-          onChange={handleChange}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           placeholder="jane@yourcompany.com"
           required
           disabled={isSubmitting}
           className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-60 transition"
         />
-      </div>
-
-      <div>
-        <label htmlFor="demo-jobs" className="block text-sm font-medium text-slate-700 mb-1">
-          How many jobs/month?
-        </label>
-        <select
-          id="demo-jobs"
-          name="jobs_per_month"
-          value={fields.jobs_per_month}
-          onChange={handleChange}
-          disabled={isSubmitting}
-          className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-60 transition bg-white"
-        >
-          <option value="">Select volume…</option>
-          <option value="1–10 jobs">1–10 jobs</option>
-          <option value="11–30 jobs">11–30 jobs</option>
-          <option value="31–100 jobs">31–100 jobs</option>
-          <option value="100+ jobs">100+ jobs</option>
-        </select>
       </div>
 
       {error && (
