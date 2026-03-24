@@ -86,7 +86,7 @@ export function Hero() {
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       setTimeout(() => {
-        const input = el.querySelector('input[name="name"]');
+        const input = el.querySelector('input[name="company"]');
         if (input && typeof input.focus === 'function') {
           try { input.focus({ preventScroll: true }); } catch { input.focus(); }
         }
@@ -116,11 +116,11 @@ export function Hero() {
             </div>
 
             <h1 className="text-4xl lg:text-5xl font-bold text-slate-900 leading-tight mb-6">
-              Stop losing money to slow, rejected insurance reports.
+              Insurance-Ready Reports in 15 Minutes, Not 3 Hours.
             </h1>
 
             <p className="text-xl text-slate-600 mb-8 leading-relaxed">
-              Restoration Report gives your crews a faster way to document water, fire, and mold jobs — generating clean, professional reports that adjusters approve on the first pass.
+              Restoration Report lets your crews document water, fire, and mold jobs on-site — and generates adjuster-ready PDFs that clear on the first pass. No more back-and-forth.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
@@ -128,7 +128,7 @@ export function Hero() {
                 onClick={scrollToDemo}
                 className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-600"
               >
-                Request a Demo →
+                Get Early Access →
               </button>
               <a
                 href="/app/jobs?demo=1"
@@ -143,7 +143,7 @@ export function Hero() {
             </div>
 
             {/* Trust signals */}
-            <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-500">
+            <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-500 mb-4">
               <span className="flex items-center gap-1.5">
                 <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
@@ -163,6 +163,11 @@ export function Hero() {
                 Works with any claim portal
               </span>
             </div>
+
+            {/* Urgency / scarcity signal */}
+            <p className="text-xs text-slate-400">
+              🔒 Founding member pricing available for the first 50 companies — 12 spots remaining.
+            </p>
           </div>
 
           {/* Right Column - Product Preview */}

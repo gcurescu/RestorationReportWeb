@@ -1,13 +1,12 @@
 import { useState } from 'react';
 import { analytics } from '../../lib/analytics';
 
-// Replace YOUR_FORM_ID with your actual Formspree form ID after signing up at https://formspree.io
 const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mlgpqwzo';
 
 const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
 export function DemoRequestForm({ id = 'demo' }) {
-  const [fields, setFields] = useState({ name: '', company: '', email: '' });
+  const [fields, setFields] = useState({ company: '', email: '', jobs_per_month: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState('');
@@ -20,10 +19,6 @@ export function DemoRequestForm({ id = 'demo' }) {
     e.preventDefault();
     setError('');
 
-    if (!fields.name.trim()) {
-      setError('Please enter your name.');
-      return;
-    }
     if (!fields.company.trim()) {
       setError('Please enter your company name.');
       return;
@@ -43,9 +38,9 @@ export function DemoRequestForm({ id = 'demo' }) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name: fields.name.trim(),
           company: fields.company.trim(),
           email: fields.email.trim(),
+          jobs_per_month: fields.jobs_per_month || 'Not specified',
         }),
       });
 
@@ -73,8 +68,7 @@ export function DemoRequestForm({ id = 'demo' }) {
         </div>
         <h3 className="text-xl font-bold text-green-900 mb-2">You're on the list!</h3>
         <p className="text-green-800 text-sm leading-relaxed max-w-sm mx-auto">
-          Thanks, <strong>{fields.name.split(' ')[0]}</strong>. We'll reach out to{' '}
-          <strong>{fields.company}</strong> within 1 business day to schedule your walkthrough.
+          We'll reach out to <strong>{fields.company}</strong> within 1 business day to schedule your walkthrough.
           Keep an eye on <strong>{fields.email}</strong>.
         </p>
       </div>
@@ -83,23 +77,6 @@ export function DemoRequestForm({ id = 'demo' }) {
 
   return (
     <form id={id} onSubmit={handleSubmit} className="space-y-4" noValidate>
-      <div>
-        <label htmlFor="demo-name" className="block text-sm font-medium text-slate-700 mb-1">
-          Your Name
-        </label>
-        <input
-          type="text"
-          id="demo-name"
-          name="name"
-          value={fields.name}
-          onChange={handleChange}
-          placeholder="Jane Smith"
-          required
-          disabled={isSubmitting}
-          className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-60 transition"
-        />
-      </div>
-
       <div>
         <label htmlFor="demo-company" className="block text-sm font-medium text-slate-700 mb-1">
           Company Name
@@ -132,6 +109,26 @@ export function DemoRequestForm({ id = 'demo' }) {
           disabled={isSubmitting}
           className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-60 transition"
         />
+      </div>
+
+      <div>
+        <label htmlFor="demo-jobs" className="block text-sm font-medium text-slate-700 mb-1">
+          How many jobs/month?
+        </label>
+        <select
+          id="demo-jobs"
+          name="jobs_per_month"
+          value={fields.jobs_per_month}
+          onChange={handleChange}
+          disabled={isSubmitting}
+          className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-60 transition bg-white"
+        >
+          <option value="">Select volume…</option>
+          <option value="1–10 jobs">1–10 jobs</option>
+          <option value="11–30 jobs">11–30 jobs</option>
+          <option value="31–100 jobs">31–100 jobs</option>
+          <option value="100+ jobs">100+ jobs</option>
+        </select>
       </div>
 
       {error && (

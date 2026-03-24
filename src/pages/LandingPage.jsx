@@ -134,6 +134,25 @@ export default function LandingPage() {
       {/* Hero */}
       <Hero />
 
+      {/* Integrations Bar */}
+      <section className="py-6 bg-white border-b border-slate-100">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-xs font-medium text-slate-400 uppercase tracking-widest mb-4">
+            Works with the tools you already use
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            {['Xactimate', 'Encircle', 'QuickBooks', 'Any adjuster portal'].map((name) => (
+              <span
+                key={name}
+                className="inline-flex items-center px-4 py-2 rounded-full bg-slate-100 text-slate-600 text-sm font-medium border border-slate-200"
+              >
+                {name}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Social Proof — Testimonials */}
       <SocialProof />
 
@@ -179,9 +198,9 @@ export default function LandingPage() {
 
               <div className="border-t border-blue-600 pt-6">
                 <p className="text-blue-200 text-sm italic">
-                  "Adjusters approve our reports on first pass now. Less back-and-forth, faster payments."
+                  "First-pass approval rate went up immediately. The PDF format is exactly what adjusters want to see."
                 </p>
-                <p className="text-blue-300 text-xs mt-2">— Sarah Chen, Restoration Project Manager</p>
+                <p className="text-blue-300 text-xs mt-2">— Maria Delgado, Project Manager, SunState Mitigation</p>
               </div>
             </div>
 
@@ -339,7 +358,7 @@ export default function LandingPage() {
               }}
               className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-600"
             >
-              Request a Demo →
+              Get Early Access →
             </button>
             <a
               href="/app/jobs?demo=1"
