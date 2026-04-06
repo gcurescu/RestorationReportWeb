@@ -6,7 +6,7 @@ const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
 // ─── Shared sub-components ───────────────────────────────────────────────────
 
-function EmailCaptureForm({ id, variant = 'dark', buttonLabel = 'Claim My Spot →' }) {
+function EmailCaptureForm({ id, variant = 'dark', buttonLabel = 'Send Me the Template →' }) {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -309,7 +309,7 @@ export default function AdLandingPage() {
               {/* Badge */}
               <div className="inline-flex items-center gap-2 bg-amber-400/10 border border-amber-400/25 rounded-full px-4 py-1.5 text-sm font-semibold text-amber-400 mb-7">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-                🔒 Founding Member — 12 spots remaining
+                📋 Free Download — Insurance-Ready Report Template
               </div>
 
               <h1 className="text-5xl sm:text-6xl font-extrabold text-white leading-[1.05] tracking-tight mb-5">
@@ -318,21 +318,21 @@ export default function AdLandingPage() {
               </h1>
 
               <p className="text-lg text-slate-300 leading-relaxed mb-8 max-w-md">
-                Restoration contractors lose thousands every month to adjuster kickbacks, slow payments, and
-                reports that take 3 hours to write. RestorationReport generates a complete, adjuster-ready
-                report in 15 minutes — right from the job site.
+                Most restoration contractors lose thousands every year to adjuster kickbacks and underpaid
+                claims — because their documentation doesn't hold up. Download our free Insurance-Ready
+                Report Template and start submitting reports that get approved on the first pass.
               </p>
 
               {/* Form label */}
               <p className="text-xs font-semibold uppercase tracking-widest text-amber-400/80 mb-3">
-                Get early access — free for founding members
+                Get the free template — instant download
               </p>
               <div className="mb-5 max-w-lg">
-                <EmailCaptureForm id="hero-form" variant="dark" buttonLabel="Claim My Spot →" />
+                <EmailCaptureForm id="hero-form" variant="dark" buttonLabel="Send Me the Template →" />
               </div>
 
               <p className="text-sm text-slate-500">
-                No credit card &nbsp;·&nbsp; Cancel anytime &nbsp;·&nbsp; 12 founding spots left
+                No credit card &nbsp;·&nbsp; Instant download &nbsp;·&nbsp; Used by contractors in 14 states
               </p>
 
               {/* Inline trust signals */}
@@ -611,22 +611,22 @@ export default function AdLandingPage() {
         <div className="relative max-w-2xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 bg-amber-400/10 border border-amber-400/25 rounded-full px-4 py-1.5 text-sm font-semibold text-amber-400 mb-6">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-            Only 12 founding spots remaining
+            Free Download — No Credit Card Required
           </div>
 
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4 leading-tight">
-            Stop leaving money<br />on completed jobs.
+            Get the Free Report Template
           </h2>
           <p className="text-slate-300 mb-8 text-lg">
-            Join restoration contractors already getting paid faster with cleaner documentation.
+            The exact format adjusters want to see — free for restoration contractors.
           </p>
 
           <div className="max-w-lg mx-auto">
-            <EmailCaptureForm id="bottom-form" variant="dark" buttonLabel="Claim My Founding Spot →" />
+            <EmailCaptureForm id="bottom-form" variant="dark" buttonLabel="Download the Free Template →" />
           </div>
 
           <p className="mt-5 text-sm text-slate-500">
-            No credit card &nbsp;·&nbsp; Setup in 5 minutes &nbsp;·&nbsp; 12 founding spots remaining
+            No credit card &nbsp;·&nbsp; Instant download &nbsp;·&nbsp; Used by contractors in 14 states
           </p>
         </div>
       </section>
