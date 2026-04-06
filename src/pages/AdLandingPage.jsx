@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import SampleReport from '../components/shared/SampleReport.jsx';
 import { useNavigate } from 'react-router-dom';
 
 const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mlgpqwzo';
@@ -279,6 +280,24 @@ const gridOverlay = {
 // ─── Page ────────────────────────────────────────────────────────────────────
 
 export default function AdLandingPage() {
+  const [isVisible, setIsVisible] = useState(false);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) setIsVisible(true);
+      },
+      { threshold: 0.1, rootMargin: '50px' }
+    );
+
+    if (containerRef.current) observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  const transitionClass = 'transition-all duration-700 ease-out';
+  const visibleClass = 'opacity-100 translate-y-0';
+  const hiddenClass = 'opacity-0 translate-y-8';
   return (
     <div className="min-h-screen bg-white antialiased">
 
@@ -302,7 +321,7 @@ export default function AdLandingPage() {
         />
 
         <div className="relative max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-end">
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
 
             {/* Left: copy + form */}
             <div className="pb-16 lg:pb-24">
@@ -336,17 +355,19 @@ export default function AdLandingPage() {
                 </p>
               </div>
 
-              {/* Form label */}
-              <p className="text-xs font-semibold uppercase tracking-widest text-amber-400/80 mb-3">
-                Get the free bundle — instant download
-              </p>
-              <div className="mb-5 max-w-lg">
-                <EmailCaptureForm id="hero-form" variant="dark" buttonLabel="Send Me the Free Bundle →" />
-              </div>
+              {/* Form label (mobile only — desktop version lives in the right column) */}
+              <div className="lg:hidden">
+                <p className="text-xs font-semibold uppercase tracking-widest text-amber-400/80 mb-3">
+                  Get the free bundle — instant download
+                </p>
+                <div className="mb-5 max-w-lg">
+                  <EmailCaptureForm id="hero-form" variant="dark" buttonLabel="Send Me the Free Bundle →" />
+                </div>
 
-              <p className="text-sm text-slate-500">
-                No credit card &nbsp;·&nbsp; Instant download &nbsp;·&nbsp; Used by contractors in 14 states
-              </p>
+                <p className="text-sm text-slate-500">
+                  No credit card &nbsp;·&nbsp; Instant download &nbsp;·&nbsp; Used by contractors in 14 states
+                </p>
+              </div>
 
               {/* Inline trust signals */}
               <div className="mt-5 flex flex-col sm:flex-row gap-2 text-sm text-slate-400">
@@ -384,23 +405,48 @@ export default function AdLandingPage() {
             </div>
 
             {/* Right: product screenshot */}
-            <div className="relative flex items-end justify-center lg:justify-end">
+            <div className="relative flex flex-col justify-between">
+              {/* Desktop-only form — fills the space above the product images */}
+              <div className="hidden lg:block mb-6">
+                <p className="text-xs font-semibold uppercase tracking-widest text-amber-400/80 mb-3">
+                  Get the free bundle — instant download
+                </p>
+                <div className="mb-4">
+                  <EmailCaptureForm id="hero-form-desktop" variant="dark" buttonLabel="Send Me the Free Bundle →" />
+                </div>
+                <p className="text-sm text-slate-500">
+                  No credit card &nbsp;·&nbsp; Instant download &nbsp;·&nbsp; Used by contractors in 14 states
+                </p>
+              </div>
               <div className="relative w-full max-w-xl">
                 <div
                   className="absolute -inset-6 rounded-3xl pointer-events-none"
                   style={{ background: 'radial-gradient(ellipse, rgba(59,130,246,0.25) 0%, transparent 70%)' }}
                 />
-                <BrowserChrome>
-                  <img
-                    src="/RestorationReportHeroImagePromo.svg"
-                    alt="Adjuster-ready restoration report PDF"
-                    className="w-full block"
-                    loading="eager"
-                  />
-                </BrowserChrome>
+                    <div ref={containerRef} className="relative flex justify-center items-center h-80 sm:h-96">
+      <div
+        className={`absolute ${transitionClass} ${isVisible ? visibleClass : hiddenClass}`}
+        style={{ transitionDelay: isVisible ? '400ms' : '0ms', left: '0%', top: '20%', zIndex: 1 }}
+      >
+        <img src="/ReportPreview.svg" alt="Report Preview" className="w-32 sm:w-40 md:w-48 rounded-lg border-slate-200 transform -rotate-6" loading="lazy" />
+      </div>
+
+      <div
+        className={`absolute ${transitionClass} ${isVisible ? visibleClass : hiddenClass}`}
+        style={{ transitionDelay: isVisible ? '200ms' : '0ms', right: '0%', top: '20%', zIndex: 1 }}
+      >
+        <img src="/Gallary.svg" alt="Gallery Preview" className="w-32 sm:w-40 md:w-48 rounded-lg border-slate-200 transform rotate-6" loading="lazy" />
+      </div>
+
+      <div
+        className={`absolute ${transitionClass} ${isVisible ? visibleClass : hiddenClass}`}
+        style={{ transitionDelay: isVisible ? '0ms' : '0ms', left: '50%', top: '10%', transform: 'translateX(-50%)', zIndex: 2 }}
+      >
+        <img src="/Dashboard.svg" alt="Dashboard Preview" className="w-40 sm:w-48 md:w-56 rounded-lg border-slate-200" loading="lazy" />
+      </div>
+    </div>
               </div>
             </div>
-
           </div>
         </div>
       </section>
@@ -477,39 +523,12 @@ export default function AdLandingPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-5">
-            {screenshots.map((img, i) => (
-              <div
-                key={i}
-                className="group rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 bg-white"
-              >
-                <div className="bg-slate-100 px-4 py-2.5 border-b border-slate-200 flex items-center gap-1.5">
-                  <div className="w-2.5 h-2.5 rounded-full bg-slate-300" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-slate-300" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-slate-300" />
-                  <div className="ml-2 flex-1 bg-white rounded h-4" />
-                </div>
-                <div className="overflow-hidden bg-slate-50">
-                  <img
-                    src={img.src}
-                    alt={img.label}
-                    className="w-full block group-hover:scale-[1.02] transition-transform duration-500"
-                    loading="lazy"
-                  />
-                </div>
-                <div className="px-5 py-4">
-                  <div className="font-semibold text-slate-900 text-sm">{img.label}</div>
-                  <div className="text-slate-500 text-xs mt-0.5">{img.desc}</div>
-                </div>
-              </div>
-            ))}
+          <div className="flex justify-center">
+            <SampleReport />
           </div>
         </div>
       </section>
-
-      {/* ════════════════════════════════════════════════════════
-          BEFORE vs AFTER
-      ════════════════════════════════════════════════════════ */}
+      
       <section className="py-20 px-6 bg-white">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
