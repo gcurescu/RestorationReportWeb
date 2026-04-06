@@ -247,6 +247,7 @@ const gridOverlay = {
 
 export default function AdLandingPage() {
   const [isVisible, setIsVisible] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -259,6 +260,12 @@ export default function AdLandingPage() {
 
     if (containerRef.current) observer.observe(containerRef.current);
     return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 80);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   const transitionClass = 'transition-all duration-700 ease-out';
@@ -292,10 +299,19 @@ export default function AdLandingPage() {
             {/* Left: copy + form */}
             <div className="pb-16 lg:pb-24">
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 bg-amber-400/10 border border-amber-400/25 rounded-full px-4 py-1.5 text-sm font-semibold text-amber-400 mb-7">
+              <button
+                type="button"
+                onClick={() => {
+                  const desktop = document.getElementById('hero-form-desktop');
+                  const mobile = document.getElementById('hero-form');
+                  const target = (desktop && desktop.offsetParent) ? desktop : mobile;
+                  if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }}
+                className="inline-flex items-center gap-2 bg-amber-400/10 border border-amber-400/25 rounded-full px-4 py-1.5 text-sm font-semibold text-amber-400 mb-7 hover:bg-amber-400/20 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+              >
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
                 📦 Free Bundle — 2 Resources for Restoration Contractors
-              </div>
+              </button>
 
               <h1 className="text-5xl sm:text-6xl font-extrabold text-white leading-[1.05] tracking-tight mb-5">
                 You Did the Work.<br />
@@ -415,7 +431,38 @@ export default function AdLandingPage() {
             </div>
           </div>
         </div>
+
+        {/* Scroll indicator — desktop inline */}
+        <div className="hidden lg:flex flex-col items-center pb-8 pt-2 gap-1.5">
+          <span className="text-xs text-white/30 uppercase tracking-widest font-medium">Scroll to learn more</span>
+          <div className="flex flex-col items-center gap-0.5">
+            <svg className="w-5 h-5 text-white/40 animate-bounce" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+            <svg className="w-5 h-5 text-white/20 animate-bounce" style={{ animationDelay: '150ms' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+        </div>
       </section>
+
+      {/* Scroll indicator — mobile fixed overlay, fades on scroll */}
+      <div
+        className={`lg:hidden fixed bottom-0 left-0 right-0 z-30 flex flex-col items-center pb-5 pt-10 gap-1 pointer-events-none transition-opacity duration-500 ${
+          scrolled ? 'opacity-0' : 'opacity-100'
+        }`}
+        style={{ background: 'linear-gradient(to top, #070E1C 0%, #0C2D48 60%, transparent 100%)' }}
+      >
+        <span className="text-xs text-white/40 uppercase tracking-widest font-medium">Scroll to learn more</span>
+        <div className="flex flex-col items-center gap-0.5">
+          <svg className="w-5 h-5 text-white/50 animate-bounce" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+          <svg className="w-5 h-5 text-white/25 animate-bounce" style={{ animationDelay: '150ms' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+      </div>
 
       {/* ════════════════════════════════════════════════════════
           PAIN POINT BANNER — dark stat strip
