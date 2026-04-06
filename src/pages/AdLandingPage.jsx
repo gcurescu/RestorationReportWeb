@@ -87,22 +87,6 @@ function StarRating() {
   );
 }
 
-function BrowserChrome({ children, url = 'restorationreport.com/report/WD-2847' }) {
-  return (
-    <div className="rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/60">
-      <div className="bg-slate-800/80 px-4 py-3 flex items-center gap-2 border-b border-white/10">
-        <div className="w-3 h-3 rounded-full bg-red-500/70" />
-        <div className="w-3 h-3 rounded-full bg-amber-500/70" />
-        <div className="w-3 h-3 rounded-full bg-green-500/70" />
-        <div className="ml-3 flex-1 bg-white/10 rounded-md h-5 flex items-center px-3">
-          <span className="text-white/40 text-xs">{url}</span>
-        </div>
-      </div>
-      {children}
-    </div>
-  );
-}
-
 function CheckIcon({ className = 'w-3 h-3 text-emerald-600' }) {
   return (
     <svg className={className} fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24">
@@ -150,24 +134,6 @@ const painPoints = [
     ),
     title: "The money is there — you just can't touch it.",
     body: 'Small restoration companies wait 60–90 days for payment on completed jobs. Tight documentation cuts that timeline in half. Poor documentation can stretch it to never.',
-  },
-];
-
-const screenshots = [
-  {
-    src: '/Dashboard.svg',
-    label: 'Your jobs, at a glance',
-    desc: 'Track every open job, report status, and pending payment in one place.',
-  },
-  {
-    src: '/ReportPreview.svg',
-    label: 'Adjuster-ready output',
-    desc: 'Line items, photos, measurements, and scope of work — formatted exactly how adjusters want it.',
-  },
-  {
-    src: '/Gallary.svg',
-    label: 'Photo documentation',
-    desc: 'Every photo time-stamped, geo-tagged, and tied to the right line item automatically.',
   },
 ];
 
