@@ -1,4 +1,3 @@
-/* global fbq, gtag */
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SampleReport from '../components/shared/SampleReport.jsx';

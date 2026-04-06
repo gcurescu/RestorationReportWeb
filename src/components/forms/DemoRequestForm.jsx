@@ -1,4 +1,3 @@
-/* global fbq, gtag */
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { analytics } from '../../lib/analytics';
@@ -39,7 +38,9 @@ export function DemoRequestForm({ id = 'demo' }) {
       }
 
       analytics.waitlistSubmit(email.split('@')[1] || 'unknown');
+      // eslint-disable-next-line no-undef
       if (window.fbq) fbq('track', 'Lead');
+      // eslint-disable-next-line no-undef
       if (window.gtag) gtag('event', 'generate_lead', { currency: 'USD', value: 1.0 });
       navigate('/thank-you');
     } catch (err) {
