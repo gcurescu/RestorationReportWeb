@@ -6,7 +6,7 @@ const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
 // ─── Shared sub-components ───────────────────────────────────────────────────
 
-function EmailCaptureForm({ id, variant = 'dark', buttonLabel = 'Send Me the Template →' }) {
+function EmailCaptureForm({ id, variant = 'dark', buttonLabel = 'Send Me the Free Bundle →' }) {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -309,7 +309,7 @@ export default function AdLandingPage() {
               {/* Badge */}
               <div className="inline-flex items-center gap-2 bg-amber-400/10 border border-amber-400/25 rounded-full px-4 py-1.5 text-sm font-semibold text-amber-400 mb-7">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-                📋 Free Download — Insurance-Ready Report Template
+                📦 Free Bundle — 2 Resources for Restoration Contractors
               </div>
 
               <h1 className="text-5xl sm:text-6xl font-extrabold text-white leading-[1.05] tracking-tight mb-5">
@@ -317,18 +317,31 @@ export default function AdLandingPage() {
                 <span className="text-amber-400">Now Get Paid<br />For It.</span>
               </h1>
 
-              <p className="text-lg text-slate-300 leading-relaxed mb-8 max-w-md">
+              <p className="text-lg text-slate-300 leading-relaxed mb-6 max-w-md">
                 Most restoration contractors lose thousands every year to adjuster kickbacks and underpaid
-                claims — because their documentation doesn't hold up. Download our free Insurance-Ready
-                Report Template and start submitting reports that get approved on the first pass.
+                claims. Get our free bundle: the 5 Documentation Mistakes Guide + a ready-to-use
+                Insurance-Ready Report Template — and start submitting reports that get approved on the
+                first pass.
               </p>
+
+              <div className="mb-6 max-w-md space-y-1.5">
+                <p className="text-sm text-slate-300 font-semibold uppercase tracking-wide">You'll get:</p>
+                <p className="text-sm text-slate-300 flex items-start gap-2">
+                  <span className="text-emerald-400 font-bold shrink-0">✓</span>
+                  5 Documentation Mistakes That Get Claims Denied <span className="text-slate-500">(PDF guide)</span>
+                </p>
+                <p className="text-sm text-slate-300 flex items-start gap-2">
+                  <span className="text-emerald-400 font-bold shrink-0">✓</span>
+                  Insurance-Ready Report Template <span className="text-slate-500">(fillable Word doc)</span>
+                </p>
+              </div>
 
               {/* Form label */}
               <p className="text-xs font-semibold uppercase tracking-widest text-amber-400/80 mb-3">
-                Get the free template — instant download
+                Get the free bundle — instant download
               </p>
               <div className="mb-5 max-w-lg">
-                <EmailCaptureForm id="hero-form" variant="dark" buttonLabel="Send Me the Template →" />
+                <EmailCaptureForm id="hero-form" variant="dark" buttonLabel="Send Me the Free Bundle →" />
               </div>
 
               <p className="text-sm text-slate-500">
@@ -611,18 +624,18 @@ export default function AdLandingPage() {
         <div className="relative max-w-2xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 bg-amber-400/10 border border-amber-400/25 rounded-full px-4 py-1.5 text-sm font-semibold text-amber-400 mb-6">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-            Free Download — No Credit Card Required
+            Free Bundle — No Credit Card Required
           </div>
 
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4 leading-tight">
-            Get the Free Report Template
+            Get the Free Documentation Bundle
           </h2>
           <p className="text-slate-300 mb-8 text-lg">
-            The exact format adjusters want to see — free for restoration contractors.
+            The 5 Mistakes Guide + Report Template — free for restoration contractors.
           </p>
 
           <div className="max-w-lg mx-auto">
-            <EmailCaptureForm id="bottom-form" variant="dark" buttonLabel="Download the Free Template →" />
+            <EmailCaptureForm id="bottom-form" variant="dark" buttonLabel="Download the Free Bundle →" />
           </div>
 
           <p className="mt-5 text-sm text-slate-500">
