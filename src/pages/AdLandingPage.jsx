@@ -298,21 +298,6 @@ export default function AdLandingPage() {
 
             {/* Left: copy + form */}
             <div className="pb-16 lg:pb-24">
-              {/* Badge */}
-              <button
-                type="button"
-                onClick={() => {
-                  const desktop = document.getElementById('hero-form-desktop');
-                  const mobile = document.getElementById('hero-form');
-                  const target = (desktop && desktop.offsetParent) ? desktop : mobile;
-                  if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }}
-                className="inline-flex items-center gap-2 bg-amber-400/10 border border-amber-400/25 rounded-full px-4 py-1.5 text-sm font-semibold text-amber-400 mb-7 hover:bg-amber-400/20 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-                📦 Free Bundle — 2 Resources for Restoration Contractors
-              </button>
-
               <h1 className="text-5xl sm:text-6xl font-extrabold text-white leading-[1.05] tracking-tight mb-5">
                 You Did the Work.<br />
                 <span className="text-amber-400">Now Get Paid<br />For It.</span>
@@ -325,18 +310,6 @@ export default function AdLandingPage() {
                 first pass.
               </p>
 
-              <div className="mb-6 max-w-md space-y-1.5">
-                <p className="text-sm text-slate-300 font-semibold uppercase tracking-wide">You'll get:</p>
-                <p className="text-sm text-slate-300 flex items-start gap-2">
-                  <span className="text-emerald-400 font-bold shrink-0">✓</span>
-                  5 Documentation Mistakes That Get Claims Denied <span className="text-slate-500">(PDF guide)</span>
-                </p>
-                <p className="text-sm text-slate-300 flex items-start gap-2">
-                  <span className="text-emerald-400 font-bold shrink-0">✓</span>
-                  Insurance-Ready Report Template <span className="text-slate-500">(fillable Word doc)</span>
-                </p>
-              </div>
-
               {/* Form label (mobile only — desktop version lives in the right column) */}
               <div className="lg:hidden">
                 <p className="text-xs font-semibold uppercase tracking-widest text-amber-400/80 mb-3">
@@ -348,6 +321,18 @@ export default function AdLandingPage() {
 
                 <p className="text-sm text-slate-500">
                   No credit card &nbsp;·&nbsp; Instant download &nbsp;·&nbsp; Used by contractors in 14 states
+                </p>
+              </div>
+
+              <div className="mb-6 max-w-md space-y-1.5">
+                <p className="text-sm text-slate-300 font-semibold uppercase tracking-wide">You'll get:</p>
+                <p className="text-sm text-slate-300 flex items-start gap-2">
+                  <span className="text-emerald-400 font-bold shrink-0">✓</span>
+                  5 Documentation Mistakes That Get Claims Denied <span className="text-slate-500">(PDF guide)</span>
+                </p>
+                <p className="text-sm text-slate-300 flex items-start gap-2">
+                  <span className="text-emerald-400 font-bold shrink-0">✓</span>
+                  Insurance-Ready Report Template <span className="text-slate-500">(fillable Word doc)</span>
                 </p>
               </div>
 
@@ -539,6 +524,22 @@ export default function AdLandingPage() {
           <div className="flex justify-center">
             <SampleReport />
           </div>
+        </div>
+        {/* Badge */}
+        <div className="flex justify-center mt-10 px-4">
+          <button
+            type="button"
+            onClick={() => {
+              const desktop = document.getElementById('hero-form-desktop');
+              const mobile = document.getElementById('hero-form');
+              const target = (desktop && desktop.offsetParent) ? desktop : mobile;
+              if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }}
+            className="inline-flex items-center gap-2 bg-amber-400/10 border border-amber-400/25 rounded-full px-5 py-2 text-sm font-semibold text-amber-400 hover:bg-amber-400/20 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 text-center"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse shrink-0" />
+            📦 Free Bundle — 2 Resources for Restoration Contractors
+          </button>
         </div>
       </section>
       
