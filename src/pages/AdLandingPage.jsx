@@ -305,9 +305,8 @@ export default function AdLandingPage() {
 
               <p className="text-base sm:text-lg text-slate-300 leading-relaxed mb-5 max-w-md">
                 Most restoration contractors lose thousands every year to adjuster kickbacks and underpaid
-                claims. Get our free bundle: the 5 Documentation Mistakes Guide + a ready-to-use
-                Insurance-Ready Report Template — and start submitting reports that get approved on the
-                first pass.
+                claims. Get our free bundle — two resources you can use today — plus early access to the
+                app we're building specifically for restoration contractors, by restoration contractors.
               </p>
 
               {/* Form label (mobile only — desktop version lives in the right column) */}
@@ -319,8 +318,8 @@ export default function AdLandingPage() {
                   <EmailCaptureForm id="hero-form" variant="dark" buttonLabel="Send Me the Free Bundle →" />
                 </div>
 
-                <p className="text-sm text-slate-500">
-                  No credit card &nbsp;·&nbsp; Instant download &nbsp;·&nbsp; Used by contractors in 14 states
+                <p className="text-sm text-slate-500 pb-5">
+                  No credit card &nbsp;·&nbsp; Instant download &nbsp;
                 </p>
               </div>
 
@@ -334,19 +333,26 @@ export default function AdLandingPage() {
                   <span className="text-emerald-400 font-bold shrink-0">✓</span>
                   Insurance-Ready Report Template <span className="text-slate-500">(fillable Word doc)</span>
                 </p>
+                <p className="text-sm text-slate-300 flex items-start gap-2">
+                  <span className="text-emerald-400 font-bold shrink-0">✓</span>
+                  Early access to the RestorationReport app <span className="text-slate-500">(free while we build it with you)</span>
+                </p>
               </div>
 
-              {/* Inline trust signals */}
-              <div className="mt-5 flex flex-col sm:flex-row gap-2 text-sm text-slate-400">
-                <span className="flex items-center gap-1.5">
-                  <CheckIcon className="w-3.5 h-3.5 text-emerald-400" />
-                  Used by restoration contractors in 14 states
-                </span>
-                <span className="hidden sm:inline text-slate-600">·</span>
-                <span className="flex items-center gap-1.5">
-                  <CheckIcon className="w-3.5 h-3.5 text-emerald-400" />
-                  Works with Xactimate, Encircle &amp; any adjuster portal
-                </span>
+              {/* Inline trust signals — app in development */}
+              <div className="mt-5 space-y-2">
+                <p className="text-xs font-semibold uppercase tracking-widest text-amber-400/70">About the app we're building</p>
+                <div className="flex flex-col sm:flex-row gap-2 text-sm text-slate-400">
+                  <span className="flex items-center gap-1.5">
+                    <CheckIcon className="w-3.5 h-3.5 text-emerald-400" />
+                    Building with contractors in 14+ states
+                  </span>
+                  <span className="hidden sm:inline text-slate-600">·</span>
+                  <span className="flex items-center gap-1.5">
+                    <CheckIcon className="w-3.5 h-3.5 text-emerald-400" />
+                    Designed for Xactimate, Symbility &amp; any adjuster portal
+                  </span>
+                </div>
               </div>
 
               {/* Social proof avatars */}
@@ -382,7 +388,7 @@ export default function AdLandingPage() {
                   <EmailCaptureForm id="hero-form-desktop" variant="dark" buttonLabel="Send Me the Free Bundle →" />
                 </div>
                 <p className="text-sm text-slate-500">
-                  No credit card &nbsp;·&nbsp; Instant download &nbsp;·&nbsp; Used by contractors in 14 states
+                  No credit card &nbsp;·&nbsp; Instant download &nbsp;
                 </p>
               </div>
               <div className="relative w-full max-w-xl">
@@ -496,12 +502,12 @@ export default function AdLandingPage() {
       <section className="bg-slate-50 py-20 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <p className="text-xs font-bold uppercase tracking-widest text-blue-600 mb-3">The Product</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-blue-600 mb-3">What We're Building</p>
             <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-3">
-              What your adjuster gets.
+              Built by contractors. For contractors.
             </h2>
             <p className="text-slate-500 max-w-lg mx-auto">
-              Every report includes everything they need — no follow-up calls, no kickbacks, no delays.
+              We're building RestorationReport with real restoration contractors — so every report includes exactly what adjusters need. No follow-up calls, no kickbacks, no delays.
             </p>
           </div>
 
@@ -587,7 +593,7 @@ export default function AdLandingPage() {
           <div className="text-center mb-12">
             <p className="text-xs font-bold uppercase tracking-widest text-blue-600 mb-3">Social Proof</p>
             <h2 className="text-3xl sm:text-4xl font-bold text-slate-900">
-              Contractors are already saving hours every week.
+              Why contractors are joining us early.
             </h2>
           </div>
 
@@ -645,10 +651,10 @@ export default function AdLandingPage() {
           </div>
 
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4 leading-tight">
-            Get the Free Documentation Bundle
+            Get the Free Bundle + Early Access
           </h2>
           <p className="text-slate-300 mb-8 text-lg">
-            The 5 Mistakes Guide + Report Template — free for restoration contractors.
+            Two resources you can use today — plus a founding member seat as we build the app with you, free while we're in beta.
           </p>
 
           <div className="max-w-lg mx-auto">
@@ -656,7 +662,7 @@ export default function AdLandingPage() {
           </div>
 
           <p className="mt-5 text-sm text-slate-500">
-            No credit card &nbsp;·&nbsp; Instant download &nbsp;·&nbsp; Used by contractors in 14 states
+            No credit card &nbsp;·&nbsp; Instant download &nbsp;
           </p>
         </div>
       </section>
