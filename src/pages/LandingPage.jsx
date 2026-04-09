@@ -93,8 +93,8 @@ export default function LandingPage() {
       a: 'Restoration Report works best for mitigation and restoration companies handling 5–200 jobs per month — from owner-operators running their own crews to regional firms with multiple project managers. If your team is documenting water, fire, or mold jobs for insurance claims, this is built for you.',
     },
     {
-      q: 'How does it integrate with our existing workflow?',
-      a: 'No complex integrations required. Your crews capture data on-site using any phone or tablet, and the platform generates clean PDFs that work with any adjuster portal — Xactimate, CoreLogic, or a simple email attachment. Setup takes minutes, not weeks.',
+      q: 'How will it integrate with our existing workflow?',
+      a: 'No complex integrations planned. Your crews will capture data on-site using any phone or tablet, and the app will generate clean PDFs that work with any adjuster portal — Xactimate, CoreLogic, or a simple email attachment. We\'re building this to be up and running in minutes, not weeks.',
     },
     {
       q: 'What does the demo look like?',
@@ -106,11 +106,11 @@ export default function LandingPage() {
     },
     {
       q: 'What does it cost?',
-      a: 'We\'re currently in early access. Demo participants get priority pricing and input on the roadmap. Reach out via the form and we\'ll share current pricing based on your team size.',
+      a: 'Free while we\'re in beta. Founding members who join early access will lock in their rate when we launch publicly — so there\'s no downside to getting in now.'
     },
     {
-      q: 'Can we try it before committing?',
-      a: 'Absolutely. Hit "View Live Demo" above to explore the full app with sample jobs — no sign-up needed. The demo request is for companies that want a guided walkthrough with one of our team members.',
+      q: 'Can we see it before we commit?',
+      a: 'Yes — we\'ll walk you through the current state of the app and a sample job in the demo. No sign-up needed. The early access request is for contractors who want a guided walkthrough and want to give input on what we build next.',
     },
   ];
 
@@ -138,10 +138,10 @@ export default function LandingPage() {
       <section className="py-6 bg-white border-b border-slate-100">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <p className="text-center text-xs font-medium text-slate-400 uppercase tracking-widest mb-4">
-            Works with the tools you already use
+            Being built to work with the tools you already rely on
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
-            {['Xactimate', 'Encircle', 'QuickBooks', 'Any adjuster portal'].map((name) => (
+            {['Xactimate', 'Symbility', 'QuickBooks', 'Any adjuster portal'].map((name) => (
               <span
                 key={name}
                 className="inline-flex items-center px-4 py-2 rounded-full bg-slate-100 text-slate-600 text-sm font-medium border border-slate-200"
@@ -159,9 +159,10 @@ export default function LandingPage() {
       {/* Stats Bar */}
       <section className="py-10 bg-white border-y border-slate-100">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-xs font-medium text-slate-400 uppercase tracking-widest mb-6">What we&apos;re designing to deliver</p>
           <div className="grid grid-cols-3 gap-6 sm:gap-12">
             <StatBadge value="80%" label="Less time on reports" />
-            <StatBadge value="1st pass" label="Adjuster approval rate" />
+            <StatBadge value="1st pass" label="Adjuster approval target" />
             <StatBadge value="< 5 min" label="To generate a PDF" />
           </div>
         </div>
@@ -174,18 +175,18 @@ export default function LandingPage() {
             {/* Left — pitch copy */}
             <div className="text-white">
               <h2 id="demo-heading" className="text-3xl sm:text-4xl font-bold mb-4 leading-tight">
-                See how much time your team can save.
+                See what we're building — and get early access.
               </h2>
               <p className="text-blue-100 text-lg mb-8 leading-relaxed">
-                Book a 20-minute walkthrough and we'll show you exactly how Restoration Report fits into your operation — from the first job to the final PDF.
+                Join as an early access member and we'll walk you through the app as it stands today — then gather your input to make sure it fits your exact workflow before we launch.
               </p>
 
               <ul className="space-y-4 mb-8">
                 {[
-                  'Watch a real job get documented and exported in under 5 minutes',
-                  'See moisture readings, photos, and scope notes auto-organized',
-                  'Get a sample adjuster-ready PDF for your team to review',
-                  'Ask questions about your specific workflow and claim types',
+                  'See a real job documented and exported in under 5 minutes',
+                  'Review moisture readings, photos, and scope notes auto-organized',
+                  'Get a sample adjuster-ready PDF to share with your team',
+                  'Give feedback on your specific workflow — we build based on what you tell us',
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3 text-blue-50 text-sm">
                     <svg className="w-5 h-5 text-blue-300 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
@@ -206,8 +207,8 @@ export default function LandingPage() {
 
             {/* Right — form card */}
             <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8">
-              <h3 className="text-xl font-bold text-slate-900 mb-1">Request a Demo</h3>
-              <p className="text-slate-500 text-sm mb-6">We'll reach out within 1 business day.</p>
+              <h3 className="text-xl font-bold text-slate-900 mb-1">Get Early Access</h3>
+              <p className="text-slate-500 text-sm mb-6">We'll reach out within 1 business day to set up a walkthrough.</p>
               <DemoRequestForm id="demo" />
             </div>
           </div>
@@ -344,10 +345,10 @@ export default function LandingPage() {
       <section className="py-16 bg-white" aria-labelledby="final-cta-heading">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 id="final-cta-heading" className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">
-            Ready to cut your report time by 80%?
+            Done doing reports at midnight?
           </h2>
           <p className="text-lg text-slate-600 mb-8">
-            Join restoration companies already using Restoration Report to close claims faster and get paid without the back-and-forth.
+            Join the contractors helping us build this right. Free during beta — founding member pricing locked in when we launch publicly.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
@@ -367,7 +368,7 @@ export default function LandingPage() {
               Explore Live Demo
             </a>
           </div>
-          <p className="mt-4 text-sm text-slate-500">No commitment required &nbsp;·&nbsp; 20-minute walkthrough &nbsp;·&nbsp; Respond within 1 business day</p>
+          <p className="mt-4 text-sm text-slate-500">No commitment &nbsp;·&nbsp; Free during beta &nbsp;·&nbsp; We respond within 1 business day</p>
         </div>
       </section>
 
@@ -381,7 +382,7 @@ export default function LandingPage() {
               <span className="font-bold text-sm sm:text-base">Restoration Report</span>
             </div>
             <nav className="flex gap-6 text-sm">
-              <a href="#demo" className="text-slate-400 hover:text-white transition-colors">Request a Demo</a>
+              <a href="#demo" className="text-slate-400 hover:text-white transition-colors">Request Early Access</a>
               <a href="#features" className="text-slate-400 hover:text-white transition-colors">Features</a>
               <a href="#faq" className="text-slate-400 hover:text-white transition-colors">FAQ</a>
               <a href="/privacy.html" className="text-slate-400 hover:text-white transition-colors">Privacy</a>

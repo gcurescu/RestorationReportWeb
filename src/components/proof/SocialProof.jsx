@@ -27,7 +27,7 @@ export function SocialProof() {
     <section className="py-12 bg-slate-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-center text-slate-600 text-sm font-medium mb-8">
-          Trusted by restoration professionals
+          Why contractors are joining us early
         </h2>
         <div className="grid md:grid-cols-3 gap-6">
           {testimonials.map((testimonial, index) => (

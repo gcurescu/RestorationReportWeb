@@ -90,7 +90,7 @@ export function DemoRequestForm({ id = 'demo' }) {
             Sending…
           </span>
         ) : (
-          'Request a Demo →'
+          'Request Early Access →'
         )}
       </button>
 

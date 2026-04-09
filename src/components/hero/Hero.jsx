@@ -110,9 +110,9 @@ export function Hero() {
           {/* Left Column - Content */}
           <div className="max-w-lg">
             {/* B2B badge */}
-            <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 text-blue-700 text-xs font-semibold px-3 py-1.5 rounded-full mb-6 uppercase tracking-wide">
-              <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
-              Purpose-built for restoration companies
+            <div className="inline-flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 text-xs font-semibold px-3 py-1.5 rounded-full mb-6 uppercase tracking-wide">
+              <span className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse"></span>
+              Now Building · Join Early Access
             </div>
 
             <h1 className="text-4xl lg:text-5xl font-bold text-slate-900 leading-tight mb-6">
@@ -120,7 +120,7 @@ export function Hero() {
             </h1>
 
             <p className="text-xl text-slate-600 mb-8 leading-relaxed">
-              Restoration Report lets your crews document water, fire, and mold jobs on-site — and generates adjuster-ready PDFs that clear on the first pass. No more back-and-forth.
+              We're building Restoration Report with real restoration contractors — so your crews can document water, fire, and mold jobs on-site and generate adjuster-ready PDFs that clear on the first pass. Free during beta, founding rate when we launch.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
@@ -154,13 +154,13 @@ export function Hero() {
                 <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
-                Setup in minutes
+                Free while we're in beta
               </span>
               <span className="flex items-center gap-1.5">
                 <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
-                Works with any claim portal
+                Designed for Xactimate, Symbility &amp; any adjuster portal
               </span>
             </div>
 
