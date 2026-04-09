@@ -49,7 +49,7 @@ function EmailCaptureForm({ id, variant = 'dark', buttonLabel = 'Send Me the Fre
           name="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Your work email"
+          placeholder="Your email"
           required
           disabled={isSubmitting}
           className={`flex-1 px-5 py-4 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-amber-400 disabled:opacity-60 transition ${
@@ -298,12 +298,12 @@ export default function AdLandingPage() {
 
             {/* Left: copy + form */}
             <div className="pb-16 lg:pb-24">
-              <h1 className="text-5xl sm:text-6xl font-extrabold text-white leading-[1.05] tracking-tight mb-5">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-[1.05] tracking-tight mb-4">
                 You Did the Work.<br />
                 <span className="text-amber-400">Now Get Paid<br />For It.</span>
               </h1>
 
-              <p className="text-lg text-slate-300 leading-relaxed mb-6 max-w-md">
+              <p className="text-base sm:text-lg text-slate-300 leading-relaxed mb-5 max-w-md">
                 Most restoration contractors lose thousands every year to adjuster kickbacks and underpaid
                 claims. Get our free bundle: the 5 Documentation Mistakes Guide + a ready-to-use
                 Insurance-Ready Report Template — and start submitting reports that get approved on the
@@ -431,23 +431,7 @@ export default function AdLandingPage() {
         </div>
       </section>
 
-      {/* Scroll indicator — mobile fixed overlay, fades on scroll */}
-      <div
-        className={`lg:hidden fixed bottom-0 left-0 right-0 z-30 flex flex-col items-center pb-5 pt-10 gap-1 pointer-events-none transition-opacity duration-500 ${
-          scrolled ? 'opacity-0' : 'opacity-100'
-        }`}
-        style={{ background: 'linear-gradient(to top, #070E1C 0%, #0C2D48 60%, transparent 100%)' }}
-      >
-        <span className="text-xs text-white/40 uppercase tracking-widest font-medium">Scroll to learn more</span>
-        <div className="flex flex-col items-center gap-0.5">
-          <svg className="w-5 h-5 text-white/50 animate-bounce" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-          </svg>
-          <svg className="w-5 h-5 text-white/25 animate-bounce" style={{ animationDelay: '150ms' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-          </svg>
-        </div>
-      </div>
+
 
       {/* ════════════════════════════════════════════════════════
           PAIN POINT BANNER — dark stat strip
@@ -677,12 +661,30 @@ export default function AdLandingPage() {
         </div>
       </section>
 
+      {/* Sticky mobile CTA — appears after scrolling past hero */}
+      <div
+        className={`lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 backdrop-blur-sm border-t border-slate-700 px-4 py-3 transition-all duration-300 ${
+          scrolled ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
+        }`}
+      >
+        <button
+          type="button"
+          onClick={() => {
+            const target = document.getElementById('hero-form');
+            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }}
+          className="w-full py-3.5 bg-amber-400 hover:bg-amber-300 active:bg-amber-500 text-slate-900 font-bold text-base rounded-xl transition-colors shadow-lg"
+        >
+          Get the Free Bundle →
+        </button>
+      </div>
+
       {/* ── Footer ── */}
-      <footer className="bg-slate-950 text-slate-500 py-8 px-6">
+      <footer className="bg-slate-950 text-slate-500 py-8 pb-24 lg:pb-8 px-6">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
           <div className="flex items-center gap-2">
             <img src="/RR_Icon.png" alt="" className="h-5 w-5 opacity-40" />
-            <span>© 2025 Restoration Report</span>
+            <span>© 2026 Restoration Report</span>
           </div>
           <a href="/privacy.html" className="hover:text-white transition-colors">
             Privacy Policy
