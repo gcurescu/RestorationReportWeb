@@ -209,7 +209,7 @@ export default function LandingPage() {
             <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8">
               <h3 className="text-xl font-bold text-slate-900 mb-1">Get Early Access</h3>
               <p className="text-slate-500 text-sm mb-6">We'll reach out within 1 business day to set up a walkthrough.</p>
-              <DemoRequestForm id="demo" />
+              <DemoRequestForm id="demo" source="organic-demo-section" />
             </div>
           </div>
         </div>

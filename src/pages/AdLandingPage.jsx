@@ -7,7 +7,16 @@ const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
 // ─── Shared sub-components ───────────────────────────────────────────────────
 
-function EmailCaptureForm({ id, variant = 'dark', buttonLabel = 'Send Me the Free Bundle →' }) {
+function getUtmParams() {
+  const p = new URLSearchParams(window.location.search);
+  const utm = {};
+  for (const key of ['utm_source', 'utm_medium', 'utm_campaign']) {
+    if (p.get(key)) utm[key] = p.get(key);
+  }
+  return utm;
+}
+
+function EmailCaptureForm({ id, variant = 'dark', buttonLabel = 'Send Me the Free Bundle →', source = 'ad-lp-unknown' }) {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -25,7 +34,7 @@ function EmailCaptureForm({ id, variant = 'dark', buttonLabel = 'Send Me the Fre
       const res = await fetch(FORMSPREE_ENDPOINT, {
         method: 'POST',
         headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim() }),
+        body: JSON.stringify({ email: email.trim(), source, page: 'ad-landing', ...getUtmParams() }),
       });
       if (!res.ok) throw new Error('Submission failed');
       if (window.fbq) window.fbq('track', 'Lead');
@@ -71,6 +80,9 @@ function EmailCaptureForm({ id, variant = 'dark', buttonLabel = 'Send Me the Fre
           {error}
         </p>
       )}
+      <p className={`text-xs mt-3 text-center ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+        🔒 Joined by 47+ restoration contractors
+      </p>
     </form>
   );
 }
@@ -315,7 +327,7 @@ export default function AdLandingPage() {
                   Get the free bundle — instant download
                 </p>
                 <div className="mb-5 max-w-lg">
-                  <EmailCaptureForm id="hero-form" variant="dark" buttonLabel="Send Me the Free Bundle →" />
+                  <EmailCaptureForm id="hero-form" variant="dark" buttonLabel="Send Me the Free Bundle →" source="ad-lp-hero" />
                 </div>
 
                 <p className="text-sm text-slate-500 pb-5">
@@ -385,7 +397,7 @@ export default function AdLandingPage() {
                   Get the free bundle — instant download
                 </p>
                 <div className="mb-4">
-                  <EmailCaptureForm id="hero-form-desktop" variant="dark" buttonLabel="Send Me the Free Bundle →" />
+                  <EmailCaptureForm id="hero-form-desktop" variant="dark" buttonLabel="Send Me the Free Bundle →" source="ad-lp-hero" />
                 </div>
                 <p className="text-sm text-slate-500">
                   No credit card &nbsp;·&nbsp; Instant download &nbsp;
@@ -658,7 +670,7 @@ export default function AdLandingPage() {
           </p>
 
           <div className="max-w-lg mx-auto">
-            <EmailCaptureForm id="bottom-form" variant="dark" buttonLabel="Download the Free Bundle →" />
+            <EmailCaptureForm id="bottom-form" variant="dark" buttonLabel="Download the Free Bundle →" source="ad-lp-bottom" />
           </div>
 
           <p className="mt-5 text-sm text-slate-500">

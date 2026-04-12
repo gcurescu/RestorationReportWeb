@@ -6,7 +6,16 @@ const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mlgpqwzo';
 
 const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-export function DemoRequestForm({ id = 'demo' }) {
+function getUtmParams() {
+  const p = new URLSearchParams(window.location.search);
+  const utm = {};
+  for (const key of ['utm_source', 'utm_medium', 'utm_campaign']) {
+    if (p.get(key)) utm[key] = p.get(key);
+  }
+  return utm;
+}
+
+export function DemoRequestForm({ id = 'demo', source = 'organic-demo' }) {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -30,7 +39,7 @@ export function DemoRequestForm({ id = 'demo' }) {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email: email.trim() }),
+        body: JSON.stringify({ email: email.trim(), source, ...getUtmParams() }),
       });
 
       if (!res.ok) {
@@ -96,6 +105,9 @@ export function DemoRequestForm({ id = 'demo' }) {
 
       <p className="text-xs text-slate-500 text-center leading-relaxed">
         No commitment required &nbsp;·&nbsp; 20-minute walkthrough &nbsp;·&nbsp; We respond within 1 business day
+      </p>
+      <p className="text-xs text-slate-500 text-center">
+        🔒 Joined by 47+ restoration contractors
       </p>
     </form>
   );
