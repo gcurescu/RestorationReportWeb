@@ -293,7 +293,26 @@ const ReportPreview = () => {
   
 
   const ScopeTable = () => {
-    const scopeData = [
+    const t = (lossType || 'water').toLowerCase();
+    const scopeData = t === 'fire' ? [
+      { code: 'T001', operation: 'Testing', action: 'Pre-Cleaning Documentation', qty: '1', unit: 'Complete', notes: 'Smoke & soot levels documented' },
+      { code: 'P001', operation: 'PPE', action: 'Full PPE — N95 / Tyvek Suit', qty: '1', unit: 'Set', notes: 'Standard safety equipment' },
+      { code: 'BO001', operation: 'Board-Up', action: 'Emergency Board-Up & Tarping', qty: '1', unit: 'Complete', notes: 'Opening protection' },
+      { code: 'PO001', operation: 'Pack-Out', action: 'Contents Pack-Out & Cataloging', qty: '1', unit: 'Complete', notes: 'Off-site cleaning' },
+      { code: 'SC001', operation: 'Dry Soot Cleaning', action: 'Dry Sponge / HEPA Vac — Surfaces', qty: '800', unit: 'Sq Ft', notes: 'Before any wet methods' },
+      { code: 'EQ001', operation: 'Equipment', action: 'HEPA Air Scrubber Placement', qty: '2', unit: 'Units', notes: 'Continuous negative air' },
+      { code: 'OD001', operation: 'Odor Control', action: 'Deodorizing Encapsulant Application', qty: '800', unit: 'Sq Ft', notes: 'Pre-reconstruction treatment' },
+      { code: 'M001', operation: 'Monitoring', action: 'Air Quality Monitoring', qty: '3', unit: 'Days', notes: 'Particulate clearance tracking' },
+    ] : t === 'mold' ? [
+      { code: 'T001', operation: 'Testing', action: 'Moisture Content & Visual Assessment', qty: '1', unit: 'Complete', notes: 'Pre-remediation documentation' },
+      { code: 'P001', operation: 'PPE', action: 'Full PPE — N95 / Tyvek Suit', qty: '1', unit: 'Set', notes: 'Standard safety equipment' },
+      { code: 'CT001', operation: 'Containment', action: 'Poly Barrier with Zipper & Neg. Air', qty: '1', unit: 'Complete', notes: 'Negative pressure established' },
+      { code: 'TO001', operation: 'Tear Out', action: 'Drywall Removal — Affected Section', qty: '40', unit: 'Sq Ft', notes: '12" clearance beyond growth' },
+      { code: 'HV001', operation: 'HEPA Vac', action: 'HEPA Vacuum — All Containment Surfaces', qty: '1', unit: 'Complete', notes: 'Post-demo surface cleaning' },
+      { code: 'BC001', operation: 'Biocide', action: 'EPA-Registered Biocide Application', qty: '100', unit: 'Sq Ft', notes: 'Structural surfaces' },
+      { code: 'EQ001', operation: 'Equipment', action: 'HEPA Air Scrubber — Negative Air', qty: '1', unit: 'Unit', notes: 'Throughout remediation' },
+      { code: 'CL001', operation: 'Clearance', action: 'Post-Remediation Clearance Testing', qty: '1', unit: 'Complete', notes: 'Required before close-out' },
+    ] : [
       { code: 'T001', operation: 'Testing', action: 'Moisture Content Assessment', qty: '1', unit: 'Complete', notes: 'Initial moisture levels documented' },
       { code: 'P001', operation: 'PPE', action: 'Personal Protective Equipment', qty: '1', unit: 'Set', notes: 'Standard safety equipment' },
       { code: 'SP001', operation: 'Site Protection', action: 'Plastic Containment', qty: '200', unit: 'Sq Ft', notes: '6 mil poly sheeting' },
@@ -378,6 +397,13 @@ const ReportPreview = () => {
 
   const lossType = job.claim?.typeOfLoss || 'Water';
   const copy = getLossTypeCopy(lossType);
+  const logNotes = job.logNotes?.items?.length > 0
+    ? job.logNotes.items
+    : [
+        { atISO: job.claim?.dateOfLoss, time: '08:30', text: `Initial site assessment completed. ${copy.observations[0]}` },
+        { atISO: job.claim?.dateOfLoss, time: '09:15', text: `Equipment deployment initiated. ${copy.actions[0]}` },
+        { atISO: job.claim?.dateOfLoss, time: '11:00', text: `Psychrometric baseline documented. ${copy.observations[2] || 'Drying conditions established.'}` },
+      ];
 
   return (
     <div className="min-h-screen bg-slate-100">
@@ -433,8 +459,8 @@ const ReportPreview = () => {
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                   </svg>
-                  <span className="hidden sm:inline">Download PDF</span>
-                  <span className="sm:hidden">PDF</span>
+                  <span className="hidden sm:inline">Export Report</span>
+                  <span className="sm:hidden">Export</span>
                 </>
               )}
             </button>
@@ -444,6 +470,19 @@ const ReportPreview = () => {
 
       {/* ── On-Screen Report Summary (excluded from PDF capture and browser print) ── */}
       <div className="no-print max-w-4xl mx-auto px-4 pt-6 pb-24 sm:pb-6 space-y-5">
+
+        {/* Report ready header */}
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center shrink-0 shadow-sm">
+            <svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <div>
+            <div className="text-base font-bold text-slate-900">Your restoration report is ready</div>
+            <div className="text-sm text-slate-500">Review the summary below, then export to share with your adjuster or insured.</div>
+          </div>
+        </div>
 
         {/* Hero Job Card */}
         <div className="bg-[#0C2D48] text-white rounded-2xl p-6 shadow-lg">
@@ -628,7 +667,7 @@ const ReportPreview = () => {
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
             </svg>
-            Download PDF
+            Export Report
           </button>
         </div>
       )}
@@ -722,8 +761,16 @@ const ReportPreview = () => {
               <div className="mb-8">
                 <h2 className="font-semibold text-slate-900 mb-3 text-base">Risk Assessment</h2>
                 <p className="text-sm text-slate-700 leading-relaxed mb-4">
-                  Based on our assessment, the primary concern is preventing secondary damage through prompt and effective moisture control. Our mitigation strategy focuses on rapid stabilization and controlled drying to industry standards.
+                  {copy.summary}
                 </p>
+                <div className="space-y-2 mt-3">
+                  {copy.observations.slice(0, 3).map((obs, i) => (
+                    <div key={i} className="flex items-start gap-2 text-xs text-slate-600">
+                      <span className="mt-0.5 text-blue-500 shrink-0">•</span>
+                      <span>{obs}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <div className="mb-6">
@@ -773,21 +820,17 @@ const ReportPreview = () => {
                 <h2 className="font-semibold text-slate-900 mb-3">Log Notes</h2>
                 <div className="bg-slate-50 p-4 rounded border text-sm">
                   <div className="space-y-2">
-                    <div className="flex gap-2">
-                      <span className="text-slate-500 w-20">12/15/2024</span>
-                      <span className="text-slate-500 w-16">08:30</span>
-                      <span>Initial assessment completed. Moisture detected in affected areas.</span>
-                    </div>
-                    <div className="flex gap-2">
-                      <span className="text-slate-500 w-20">12/15/2024</span>
-                      <span className="text-slate-500 w-16">09:15</span>
-                      <span>Equipment deployment initiated. Containment established.</span>
-                    </div>
-                    <div className="flex gap-2">
-                      <span className="text-slate-500 w-20">12/15/2024</span>
-                      <span className="text-slate-500 w-16">10:00</span>
-                      <span>Psychrometric readings documented. Drying process commenced.</span>
-                    </div>
+                    {logNotes.map((item, i) => (
+                      <div key={i} className="flex gap-2">
+                        <span className="text-slate-500 w-24 shrink-0">
+                          {item.atISO ? new Date(item.atISO).toLocaleDateString() : '—'}
+                        </span>
+                        {item.time && (
+                          <span className="text-slate-500 w-14 shrink-0">{item.time}</span>
+                        )}
+                        <span>{item.text}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
