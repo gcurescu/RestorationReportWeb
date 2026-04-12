@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SlimNav } from '../components/nav/SlimNav';
 import { DemoConversionBar } from '../components/nav/DemoConversionBar';
+import { DemoTooltips } from '../components/demo/DemoTooltips';
 import { getJobs, deleteJob, duplicateJob } from './storage';
 import { formatDate, formatDateTime } from './utils/formatters';
 import { normalizeJob } from './normalizeJob';
@@ -40,25 +41,6 @@ const getJobStatus = (job) => {
 };
 
 // ─── Demo mode sub-components ──────────────────────────────────────────────────
-
-function DemoBanner({ onReset }) {
-  return (
-    <div className="bg-amber-50 border-b border-amber-200 px-4 py-2.5 flex items-start gap-3">
-      <div className="flex items-center gap-2 text-amber-800 text-sm flex-1 min-w-0">
-        <span className="w-2 h-2 rounded-full bg-amber-400 flex-shrink-0 mt-0.5" />
-        <span>
-          <strong>Demo Mode</strong> · Explore sample jobs and preview report output.
-        </span>
-      </div>
-      <button
-        onClick={onReset}
-        className="text-xs text-amber-700 underline whitespace-nowrap hover:text-amber-900 flex-shrink-0 mt-0.5"
-      >
-        Reset
-      </button>
-    </div>
-  );
-}
 
 function HeroSection({ onNewJob }) {
   return (
@@ -314,6 +296,18 @@ const JobsList = () => {
       <div className="min-h-screen bg-slate-50">
         {errorBanner}
 
+        <DemoTooltips steps={[
+          {
+            targetSelector: '.space-y-4 > div:first-child',
+            message: 'Click any job to see a complete restoration report',
+            position: 'bottom',
+          },
+          {
+            targetSelector: 'button:contains("New Job")',
+            message: 'You can create new reports from scratch in under 60 seconds',
+            position: 'bottom',
+          },
+        ]} />
         <DemoConversionBar />
         <SlimNav
           onLogoClick={() => navigate('/')}

@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { SlimNav } from '../components/nav/SlimNav';
 import { DemoConversionBar } from '../components/nav/DemoConversionBar';
+import { DemoTooltips } from '../components/demo/DemoTooltips';
 import { getJob } from './storage';
 import PhotoGrid from './components/PhotoGrid';
 import { normalizeJob } from './normalizeJob';
@@ -440,6 +441,18 @@ const ReportPreview = () => {
       {/* Sticky branded nav — hidden from PDF/print */}
       <div className="no-print">
         <DemoConversionBar />
+        <DemoTooltips steps={[
+          {
+            targetSelector: '[data-section="claim-summary"]',
+            message: 'This is what your adjuster receives — a complete, professional PDF',
+            position: 'bottom',
+          },
+          {
+            targetSelector: 'button:contains("Export")',
+            message: 'One tap generates the PDF. No formatting, no cleanup.',
+            position: 'left',
+          },
+        ]} />
         <SlimNav
           onLogoClick={() => navigate('/app/jobs')}
           action={
