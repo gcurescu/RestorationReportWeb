@@ -1,7 +1,15 @@
-import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+
+const DEMO_PATH = '/app/jobs?demo=1';
+const COUNTDOWN_START = 10;
 
 export default function ThankYouPage() {
+  const navigate = useNavigate();
+  const [countdown, setCountdown] = useState(COUNTDOWN_START);
+  const [cancelled, setCancelled] = useState(false);
+  const intervalRef = useRef(null);
+
   useEffect(() => {
     if (window.fbq) {
       window.fbq('track', 'Lead');
@@ -13,6 +21,23 @@ export default function ThankYouPage() {
       });
     }
   }, []);
+
+  useEffect(() => {
+    if (cancelled) return;
+
+    intervalRef.current = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(intervalRef.current);
+          navigate(DEMO_PATH);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(intervalRef.current);
+  }, [cancelled, navigate]);
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
@@ -33,6 +58,55 @@ export default function ThankYouPage() {
         <p className="text-slate-600 text-lg leading-relaxed mb-8">
           Two resources to help you stop losing money on denied claims.
         </p>
+
+        {/* Primary Demo CTA */}
+        <div style={{ marginBottom: '28px' }}>
+          <Link
+            to={DEMO_PATH}
+            style={{
+              display: 'inline-block',
+              background: '#1D6FD8',
+              color: 'white',
+              padding: '16px 36px',
+              borderRadius: '10px',
+              fontWeight: '700',
+              fontSize: '17px',
+              textDecoration: 'none',
+              boxShadow: '0 4px 14px rgba(29,111,216,0.35)',
+              letterSpacing: '0.01em',
+            }}
+          >
+            Explore the Live Demo →
+          </Link>
+
+          {!cancelled ? (
+            <p style={{ marginTop: '10px', fontSize: '14px', color: '#64748b' }}>
+              Taking you to the demo in{' '}
+              <span style={{ fontWeight: '600', color: '#1D6FD8' }}>{countdown}</span> second{countdown !== 1 ? 's' : ''}…{' '}
+              <button
+                onClick={() => {
+                  setCancelled(true);
+                  clearInterval(intervalRef.current);
+                }}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  padding: 0,
+                  color: '#94a3b8',
+                  textDecoration: 'underline',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                }}
+              >
+                Stay on this page
+              </button>
+            </p>
+          ) : (
+            <p style={{ marginTop: '10px', fontSize: '14px', color: '#94a3b8' }}>
+              Countdown cancelled.
+            </p>
+          )}
+        </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center', margin: '0 0 32px 0' }}>
           <a
