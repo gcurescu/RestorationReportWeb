@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SlimNav } from '../components/nav/SlimNav';
+import { DemoConversionBar } from '../components/nav/DemoConversionBar';
 import { getJobs, deleteJob, duplicateJob } from './storage';
 import { formatDate, formatDateTime } from './utils/formatters';
 import { normalizeJob } from './normalizeJob';
@@ -313,6 +314,7 @@ const JobsList = () => {
       <div className="min-h-screen bg-slate-50">
         {errorBanner}
 
+        <DemoConversionBar />
         <SlimNav
           onLogoClick={() => navigate('/')}
           action={
@@ -325,15 +327,22 @@ const JobsList = () => {
           }
         />
 
-        <DemoBanner onReset={handleResetDemo} />
         <HeroSection onNewJob={() => navigate('/app/new')} />
         <ValueStrip />
 
         {/* Sample job cards */}
         <div className="px-4 pt-6 pb-28 max-w-lg mx-auto">
-          <h2 className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-4">
-            Sample Jobs
-          </h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xs font-semibold uppercase tracking-widest text-slate-400">
+              Sample Jobs
+            </h2>
+            <button
+              onClick={handleResetDemo}
+              className="text-xs text-slate-400 hover:text-slate-600 underline underline-offset-2 transition-colors"
+            >
+              Reset demo data
+            </button>
+          </div>
 
           {jobs.length === 0 ? (
             <div className="bg-white rounded-2xl border border-slate-200 p-8 text-center">
@@ -357,15 +366,6 @@ const JobsList = () => {
             </div>
           )}
         </div>
-
-        {/* Mobile FAB */}
-        <button
-          onClick={() => navigate('/app/new')}
-          className="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-blue-600 text-white rounded-full shadow-lg flex items-center justify-center text-2xl font-light hover:bg-blue-700 transition-colors z-20"
-          aria-label="Create New Job"
-        >
-          +
-        </button>
       </div>
     );
   }

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { SlimNav } from '../components/nav/SlimNav';
+import { DemoConversionBar } from '../components/nav/DemoConversionBar';
 import { getJob } from './storage';
 import PhotoGrid from './components/PhotoGrid';
 import { normalizeJob } from './normalizeJob';
@@ -438,6 +439,7 @@ const ReportPreview = () => {
       
       {/* Sticky branded nav — hidden from PDF/print */}
       <div className="no-print">
+        <DemoConversionBar />
         <SlimNav
           onLogoClick={() => navigate('/app/jobs')}
           action={
