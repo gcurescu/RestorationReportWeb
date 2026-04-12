@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { SlimNav } from '../components/nav/SlimNav';
 import { getJobs, deleteJob, duplicateJob } from './storage';
 import { formatDate, formatDateTime } from './utils/formatters';
 import { normalizeJob } from './normalizeJob';
@@ -304,23 +305,17 @@ const JobsList = () => {
       <div className="min-h-screen bg-slate-50">
         {errorBanner}
 
-        {/* Sticky nav */}
-        <div className="bg-white border-b sticky top-0 z-10">
-          <div className="px-4 py-3 flex items-center justify-between">
-            <button
-              onClick={() => navigate('/')}
-              className="text-blue-600 text-sm font-medium"
-            >
-              ← Back to Home
-            </button>
+        <SlimNav
+          onLogoClick={() => navigate('/')}
+          action={
             <button
               onClick={() => navigate('/app/new')}
-              className="px-3 py-2 rounded-md bg-blue-600 text-white text-sm font-medium min-h-[44px] hover:bg-blue-700 transition-colors"
+              className="px-3 py-2 rounded-xl bg-blue-600 text-white text-sm font-semibold min-h-[44px] hover:bg-blue-700 transition-colors"
             >
               + New Job
             </button>
-          </div>
-        </div>
+          }
+        />
 
         <DemoBanner onReset={handleResetDemo} />
         <HeroSection onNewJob={() => navigate('/app/new')} />
@@ -372,26 +367,17 @@ const JobsList = () => {
     <div className="min-h-screen bg-slate-50">
       {errorBanner}
 
-      {/* Header */}
-      <div className="bg-white border-b sticky top-0 z-10">
-        <div className="px-4 py-3 flex items-center justify-between">
-          <div>
-            <button
-              onClick={() => navigate('/')}
-              className="text-blue-600 text-sm font-medium"
-            >
-              ← Back to Home
-            </button>
-            <h1 className="text-lg font-bold text-slate-900 mt-1">My Jobs</h1>
-          </div>
+      <SlimNav
+        onLogoClick={() => navigate('/')}
+        action={
           <button
             onClick={() => navigate('/app/new')}
-            className="px-3 py-2 rounded-md bg-blue-600 text-white text-sm font-medium min-h-[44px] hover:bg-blue-700 transition-colors"
+            className="px-3 py-2 rounded-xl bg-blue-600 text-white text-sm font-semibold min-h-[44px] hover:bg-blue-700 transition-colors"
           >
             + New Job
           </button>
-        </div>
-      </div>
+        }
+      />
 
       {/* Search and Filters */}
       {jobs.length > 0 && (

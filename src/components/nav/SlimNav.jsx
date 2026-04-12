@@ -11,7 +11,15 @@ function LogoMark() {
   );
 }
 
-export function SlimNav() {
+/**
+ * SlimNav — shared top navigation bar.
+ *
+ * Props:
+ *  - `action`       ReactNode   Replaces the default "Get Early Access" button.
+ *                               Pass `null` to render nothing on the right.
+ *  - `onLogoClick`  () => void  Overrides the default window.location.reload().
+ */
+export function SlimNav({ action, onLogoClick }) {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -36,6 +44,20 @@ export function SlimNav() {
     }
   };
 
+  const handleLogoClick = onLogoClick ?? (() => window.location.reload());
+
+  // If `action` prop is explicitly provided (including null), use it;
+  // otherwise fall back to the landing-page CTA.
+  const rightSlot = action !== undefined ? action : (
+    <button
+      type="button"
+      onClick={scrollToDemo}
+      className="inline-flex items-center justify-center px-5 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-600 transition-colors shadow-sm"
+    >
+      Get Early Access
+    </button>
+  );
+
   return (
     <header
       className={`bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-slate-200 sticky top-0 z-40 transition-shadow duration-200 ${isScrolled ? 'shadow-sm' : ''}`}
@@ -44,22 +66,17 @@ export function SlimNav() {
         <div className="flex items-center justify-between h-16">
           <button
             type="button"
-            onClick={() => window.location.reload()}
+            onClick={handleLogoClick}
             className="flex items-center gap-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
           >
             <LogoMark />
             <span className="font-bold text-slate-900 text-sm sm:text-base">Restoration Report</span>
           </button>
 
-          <button
-            type="button"
-            onClick={scrollToDemo}
-            className="inline-flex items-center justify-center px-5 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-600 transition-colors shadow-sm"
-          >
-            Get Early Access
-          </button>
+          {rightSlot}
         </div>
       </div>
     </header>
   );
 }
+

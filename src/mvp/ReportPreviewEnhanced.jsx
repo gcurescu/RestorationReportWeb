@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { SlimNav } from '../components/nav/SlimNav';
 import { getJob } from './storage';
 import PhotoGrid from './components/PhotoGrid';
 import { normalizeJob } from './normalizeJob';
@@ -406,28 +407,11 @@ const ReportPreview = () => {
         }
       `}</style>
       
-      {/* Sticky Header */}
-      <div className="bg-white border-b sticky top-0 z-10 shadow-sm no-print">
-        <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3 min-w-0">
-            <button
-              onClick={() => navigate('/app/jobs')}
-              className="text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-1.5 text-sm font-medium shrink-0"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              <span className="hidden sm:inline">Demo Jobs</span>
-            </button>
-            <div className="w-px h-5 bg-slate-200 shrink-0" />
-            <div className="min-w-0">
-              <div className="text-[10px] font-bold uppercase tracking-widest text-slate-400 hidden sm:block">Restoration Report</div>
-              <h1 className="text-sm sm:text-base font-bold text-slate-900 truncate">
-                {job.claim?.claimId ? `${job.claim.claimId} — ` : ''}{job.policyholder?.name || 'Incident Report'}
-              </h1>
-            </div>
-          </div>
-          <div className="flex items-center gap-2 shrink-0">
+      {/* Sticky branded nav — hidden from PDF/print */}
+      <div className="no-print">
+        <SlimNav
+          onLogoClick={() => navigate('/app/jobs')}
+          action={
             <button
               onClick={generatePDF}
               disabled={generating}
@@ -451,8 +435,8 @@ const ReportPreview = () => {
                 </>
               )}
             </button>
-          </div>
-        </div>
+          }
+        />
       </div>
 
       {/* ── On-Screen Report Summary (excluded from PDF capture and browser print) ── */}

@@ -158,6 +158,20 @@ export const JobWizard = () => {
     validateCurrentStep();
   }, [currentStep, validateCurrentStep]);
 
+  // Re-validate whenever the key field for the current step changes.
+  // Prevents the "Continue stuck grey after selection" bug where setValue fires
+  // but the wizard's canGoNext state never gets updated.
+  useEffect(() => {
+    const stepFields = fieldsForStep(currentStep);
+    if (stepFields.length === 0) return;
+    const sub = watch((_, { name }) => {
+      if (name && stepFields.some((f) => name.startsWith(f))) {
+        validateCurrentStep();
+      }
+    });
+    return () => sub.unsubscribe();
+  }, [currentStep, watch, validateCurrentStep]);
+
   const handleNext = async () => {
     const fields = fieldsForStep(currentStep);
     if (fields.length > 0) {

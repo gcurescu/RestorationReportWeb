@@ -65,11 +65,10 @@ export const WizardNav = ({
         <button
           type="button"
           onClick={onNext}
-          disabled={!canGoNext}
           className={`min-w-[100px] px-5 py-2.5 text-sm font-semibold rounded-xl transition-all ${
             canGoNext
               ? 'bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 shadow-sm'
-              : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+              : 'bg-gray-200 text-gray-400'
           }`}
         >
           Continue →

@@ -1,4 +1,6 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { SlimNav } from '../nav/SlimNav';
 
 interface WizardLayoutProps {
   children: React.ReactNode;
@@ -8,12 +10,19 @@ interface WizardLayoutProps {
 }
 
 export const WizardLayout = ({ children, title, subtitle }: WizardLayoutProps) => {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Branded top bar — sticky, full-width */}
+      <SlimNav
+        onLogoClick={() => navigate('/')}
+        action={null}
+      />
+
       <div className="max-w-2xl mx-auto sm:py-8 sm:px-4">
         {/* Mobile: full-screen card. sm+: rounded floating card */}
         <div className="bg-white sm:shadow-xl sm:rounded-2xl overflow-hidden min-h-screen sm:min-h-0">
-          <div className="px-5 py-4 border-b border-gray-100">
+          <div className="px-5 py-3 border-b border-gray-100">
             <h1 className="text-lg font-bold text-gray-900 leading-tight">{title}</h1>
             {subtitle && (
               <p className="text-xs text-gray-400 mt-0.5">{subtitle}</p>
