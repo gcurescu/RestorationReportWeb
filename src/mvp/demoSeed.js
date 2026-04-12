@@ -62,41 +62,41 @@ const createDemoJobs = () => {
         dateOfLoss: '2024-12-10',
         carrier: 'State Farm Insurance',
         adjuster: 'Michael Chen',
-        summary: 'Significant water damage to first floor and basement resulting from a burst pipe in the main bathroom. Water affected kitchen, living room, and finished basement areas. Initial assessment indicates Class 2 water damage affecting carpet, drywall, and hardwood flooring. Immediate mitigation measures were deployed including water extraction, dehumidification, and air movement equipment. Affected materials have been documented and moisture readings taken at multiple points throughout the property.',
+        summary: 'Cat 1 water intrusion from a failed supply line at the 2nd-floor bathroom. Source secured on arrival. Standing water present in kitchen and living room (~1–2" depth). Secondary intrusion through basement ceiling confirmed. Class 2 conditions — moisture wicked into hardwood flooring, wall cavities, and framing. Extraction and structural drying equipment deployed same day. Carpet and pad in living room and basement require removal; hardwood salvage TBD at Day 3 re-check.',
       },
       
       notes: {
-        general: 'Property accessed at 8:30 AM on 12/10/2024. Homeowner was present during initial inspection. Water source identified as failed supply line to upstairs bathroom. Main water shutoff valve was closed immediately. Standing water was approximately 1-2 inches deep in the kitchen and adjacent living room areas. Basement had water seepage through ceiling. Emergency mitigation equipment deployed same day.',
-        kitchen: 'Kitchen sustained water damage to hardwood flooring, lower cabinets, and baseboards. Approximately 200 sq ft of hardwood flooring affected. Cabinet kick plates showing signs of water absorption. Dishwasher and refrigerator inspected and appear unaffected. Moisture readings taken at multiple points. Two air movers and one dehumidifier placed strategically for optimal drying.',
-        basement: 'Finished basement with carpet and drywall ceiling affected. Ceiling tiles showing water stains and slight sagging in northwest corner. Carpet pad completely saturated, carpet surface damp throughout 300 sq ft area. Two dehumidifiers and three air movers deployed. Furniture moved to dry areas. Recommend carpet and pad replacement after full assessment.',
-        scope: 'Full scope to include: water extraction, structural drying (3-5 days estimated), removal and disposal of affected carpet and pad, drywall repair/replacement, hardwood floor assessment and possible refinishing, antimicrobial treatment, final moisture verification, and clearance testing.',
+        general: 'Accessed property at 08:30 on 12/10/2024. Homeowner on-site. Failed supply line to upstairs bathroom — main shutoff closed by homeowner prior to our arrival. Standing water ~1–2" in kitchen and living room. Basement ceiling deflecting in NW corner with active drip. Emergency extraction and equipment deployment completed same day. All readings logged at initial setup.',
+        kitchen: '~200 sq ft hardwood flooring affected. Early cupping visible along seams — moisture content 26–32% (reference: 7–9%). Lower cabinet toe kicks absorbing; drywall wicking to ~20" height at wet wall. Dishwasher and refrigerator undamaged. Two air movers and one LGR dehumidifier placed. Hardwood salvage to be re-evaluated at Day 3.',
+        basement: 'Finished basement. Drywall ceiling water-stained and light deflection in NW corner from overhead intrusion. Carpet pad fully saturated; cannot be dried in-place — scheduled for removal. ~300 sq ft affected. Two dehumidifiers and three air movers deployed. Contents moved to dry zone. Subfloor moisture readings pending after carpet removal.',
+        scope: 'Water extraction (complete). Structural drying — 3–5 days estimated per current psychrometrics. Living room and basement carpet/pad removal and disposal. Hardwood assessment at Day 3. Lower drywall removal TBD per moisture readings. Antimicrobial treatment on all affected structural surfaces post dry-down. Final moisture verification and clearance prior to reconstruction.',
       },
       
       logNotes: {
         items: [
           {
             atISO: new Date(lastWeek.getTime() + 9 * 60 * 60 * 1000).toISOString(),
-            author: 'Tech Team',
+            author: 'Dispatch',
             source: 'call',
-            text: 'Initial emergency call received. Water damage reported. Dispatch team immediately.',
+            text: 'Emergency call received — active water loss, 2nd floor supply line. Crew dispatched with extraction equipment.',
           },
           {
             atISO: new Date(lastWeek.getTime() + 10 * 60 * 60 * 1000).toISOString(),
             author: 'Mike Rodriguez',
             source: 'note',
-            text: 'On-site assessment complete. Water extraction begun. Equipment placement documented.',
+            text: 'On-site. Source confirmed shut. Extracted standing water from kitchen and living room. Psychrometrics logged. Equipment placed — 2 dehus, 5 air movers.',
           },
           {
             atISO: new Date(lastWeek.getTime() + 24 * 60 * 60 * 1000).toISOString(),
             author: 'Jennifer Park',
             source: 'note',
-            text: 'Day 2 moisture readings showing good progress. All readings trending downward.',
+            text: 'Day 2 readings: all zones tracking downward. Kitchen hardwood still elevated at 24% — monitoring closely. Equipment positions unchanged.',
           },
           {
             atISO: new Date(yesterday.getTime()).toISOString(),
             author: 'Mike Rodriguez',
             source: 'email',
-            text: 'Adjuster scheduled to visit property tomorrow at 2 PM for final assessment.',
+            text: 'Adjuster confirmed for tomorrow at 14:00. Carpet and pad removal scheduled for same visit pending adjuster sign-off.',
           },
         ],
       },
@@ -104,52 +104,52 @@ const createDemoJobs = () => {
       rooms: [
         {
           name: 'Kitchen',
-          overviewNotes: 'Main affected area with hardwood flooring damage and lower cabinet exposure to water.',
+          overviewNotes: 'Primary affected area. Hardwood flooring showing early cupping (MC 26–32%). Wicking confirmed in drywall to ~20" height. Lower cabinet toe kicks saturated. Air movers and dehumidifier placed.',
           photos: [
-            createPhoto('Standing water in kitchen upon arrival', 1),
-            createPhoto('Water damage to hardwood flooring', 2),
-            createPhoto('Cabinet base showing water damage', 3),
-            createPhoto('Equipment placement - air movers and dehumidifier', 4),
+            createPhoto('Standing water at kitchen entry on arrival', 1),
+            createPhoto('Hardwood cupping along seams — Day 1', 2),
+            createPhoto('Drywall wicking at baseboard level', 3),
+            createPhoto('Equipment placement — air movers and dehumidifier', 4),
           ],
         },
         {
           name: 'Living Room',
-          overviewNotes: 'Adjacent to kitchen, water spread to living room carpet and baseboards.',
+          overviewNotes: 'Adjacent to kitchen. Water spread via open floor plan. Carpet and pad fully saturated — removal required. Baseboards showing moisture intrusion. Air mover placed.',
           photos: [
-            createPhoto('Water line visible on baseboards', 5),
-            createPhoto('Carpet saturation assessment', 6),
-            createPhoto('Air mover placement near wet areas', 7),
+            createPhoto('Waterline on baseboard — moisture migration path', 5),
+            createPhoto('Carpet probe reading — full saturation', 6),
+            createPhoto('Air mover position at wet perimeter', 7),
           ],
         },
         {
           name: 'Basement',
-          overviewNotes: 'Finished basement with carpet and ceiling damage from water seepage.',
+          overviewNotes: 'Finished basement. Secondary intrusion through ceiling from above. Drywall ceiling deflecting in NW corner. Carpet and pad saturated throughout ~300 sq ft. Two dehus deployed.',
           photos: [
-            createPhoto('Ceiling water stains and sagging', 8),
-            createPhoto('Saturated carpet and pad', 9),
-            createPhoto('Dehumidifier placement in basement', 10),
+            createPhoto('Ceiling water staining and deflection — NW corner', 8),
+            createPhoto('Carpet saturation — probe at pad level', 9),
+            createPhoto('Dehumidifier placement and air movement setup', 10),
           ],
         },
         {
           name: 'Upstairs Bathroom',
-          overviewNotes: 'Source of water damage - failed supply line identified and shut off.',
+          overviewNotes: 'Loss origin. Failed compression fitting on supply line to toilet. Shutoff valve confirmed closed. No structural damage to bathroom floor or subfloor observed.',
           photos: [
-            createPhoto('Failed pipe connection point', 11),
-            createPhoto('Water shutoff valve location', 12),
+            createPhoto('Failed supply line fitting — loss origin', 11),
+            createPhoto('Shutoff valve — confirmed closed on arrival', 12),
           ],
         },
       ],
       
       photos: [
-        createPhoto('Property exterior overview', 1),
-        createPhoto('Entry point documentation', 2),
-        createPhoto('Overall water damage extent', 3),
-        createPhoto('Kitchen standing water', 4),
-        createPhoto('Living room affected area', 5),
-        createPhoto('Basement ceiling damage', 6),
-        createPhoto('Equipment setup overview', 7),
-        createPhoto('Moisture meter readings', 8),
-        createPhoto('Dehumidifier placement', 9),
+        createPhoto('Exterior — property overview at arrival', 1),
+        createPhoto('Front entry — no exterior damage noted', 2),
+        createPhoto('Kitchen — standing water extent on arrival', 3),
+        createPhoto('Kitchen — hardwood cupping, Day 1', 4),
+        createPhoto('Living room — carpet saturation', 5),
+        createPhoto('Basement — ceiling deflection, NW corner', 6),
+        createPhoto('Dehumidifier and air mover setup overview', 7),
+        createPhoto('Moisture meter reading — kitchen hardwood', 8),
+        createPhoto('Equipment placement — basement zone', 9),
       ],
       
       moisture: {
@@ -210,13 +210,13 @@ const createDemoJobs = () => {
         dateOfLoss: '2024-11-28',
         carrier: 'Allstate Insurance',
         adjuster: 'Lisa Thompson',
-        summary: 'Kitchen fire resulting from unattended cooking. Fire contained to kitchen area but smoke damage extends throughout first floor. Significant soot and odor present. Fire department responded and extinguished blaze. Assessment in progress for fire, smoke, and water damage from firefighting efforts.',
+        summary: 'Kitchen fire from unattended cooking. Fire confined to kitchen; smoke and soot migrated through open floor plan to dining room and first-floor hallway. Fire department extinguished prior to arrival. HVAC shut down on arrival to prevent further soot distribution. Suppression water on kitchen floor extracted. Emergency board-up complete. Full scope pending adjuster walk — contents pack-out and dry soot cleaning are immediate priorities.',
       },
       
       notes: {
-        general: 'Emergency response on 11/28/2024. Fire department had already extinguished the blaze before our arrival. Kitchen shows direct fire damage to stove area, cabinets, and ceiling. Smoke residue visible throughout first floor. Water damage from fire suppression efforts noted on kitchen floor and adjacent dining area. Initial emergency board-up completed.',
-        kitchen: 'Kitchen is primary damage area. Fire originated at stovetop and spread to overhead cabinets and ceiling. Significant charring visible on upper cabinets and range hood. Smoke staining on all surfaces. Assessment ongoing for structural integrity.',
-        scope: 'Preliminary scope includes: emergency board-up (completed), contents pack-out, demolition of fire-damaged materials, smoke and soot cleaning throughout first floor, odor remediation, water extraction and drying, structural assessment, and full restoration. Detailed scope pending adjuster inspection.',
+        general: 'On-site at 18:45 on 11/28/2024. Fire department had cleared the scene. Smoke odor throughout first floor. HVAC shut down immediately — filter and supply registers coated with fine soot. No structural compromise observed at this time; framing above stovetop area to be reassessed after cabinet demolition. Emergency board-up to rear kitchen window completed.',
+        kitchen: 'Direct fire damage. Stovetop, upper cabinets, range hood, and ceiling field show heavy char. Protein-based smoke residue on all surfaces — greasy film on cabinets, walls, and appliances. Suppression water extracted from floor. Structural ceiling framing exposed in ~15 sq ft area above range — to be assessed by licensed contractor. Lower cabinets and countertop intact; salvageability TBD post-demo.',
+        scope: 'Emergency board-up (complete). HVAC shutdown (complete). Water extraction (complete). Pending: contents inventory and pack-out; kitchen demo of charred materials; dry soot cleaning throughout first floor; duct cleaning and HVAC filter replacement; odor treatment (thermal fog or hydroxyl); structural assessment of exposed ceiling framing; full restoration scope to follow adjuster inspection.',
       },
       
       logNotes: {
@@ -225,19 +225,19 @@ const createDemoJobs = () => {
             atISO: new Date(twoWeeksAgo.getTime() + 18 * 60 * 60 * 1000).toISOString(),
             author: 'Dispatch',
             source: 'call',
-            text: 'Emergency fire damage call. Deploying team immediately with board-up supplies.',
+            text: 'Emergency call — kitchen fire, fire dept. on scene. Crew en route with board-up and extraction equipment.',
           },
           {
             atISO: new Date(twoWeeksAgo.getTime() + 20 * 60 * 60 * 1000).toISOString(),
             author: 'Carlos Mendez',
             source: 'note',
-            text: 'Emergency board-up complete. Property secured. Initial photo documentation done.',
+            text: 'On-site. HVAC shut down. Suppression water extracted. Board-up to rear window complete. Full photo and soot mapping done. HEPA scrubbers running.',
           },
           {
             atISO: new Date(now.getTime() - 48 * 60 * 60 * 1000).toISOString(),
             author: 'Lisa Thompson',
             source: 'email',
-            text: 'Adjuster inspection scheduled for next week. Proceed with contents inventory.',
+            text: 'Adjuster walk set for next Thursday AM. Contents inventory approved — pack-out can begin prior to inspection.',
           },
         ],
       },
@@ -245,30 +245,30 @@ const createDemoJobs = () => {
       rooms: [
         {
           name: 'Kitchen',
-          overviewNotes: 'Primary fire damage area. Stovetop, cabinets, and ceiling heavily damaged.',
+          overviewNotes: 'Primary burn zone. Heavy char on upper cabinets, range hood, and ceiling. Protein smoke on all surfaces. Suppression water extracted. Structural framing exposed above range — assessment pending.',
           photos: [
-            createPhoto('Fire damage to stove and cabinets', 13),
-            createPhoto('Charred ceiling and range hood', 14),
-            createPhoto('Smoke damage throughout kitchen', 15),
+            createPhoto('Range and upper cabinet char — loss origin', 13),
+            createPhoto('Ceiling field — char and exposed framing above range', 14),
+            createPhoto('Smoke and soot deposit on cabinet faces and walls', 15),
           ],
         },
         {
           name: 'Dining Room',
-          overviewNotes: 'Adjacent to kitchen. Smoke damage and water from firefighting.',
+          overviewNotes: 'No direct fire exposure. Protein smoke residue on walls and ceiling. Soot visible on horizontal surfaces. HVAC register coated — system offline.',
           photos: [
-            createPhoto('Smoke residue on walls and ceiling', 16),
-            createPhoto('Water damage from fire suppression', 17),
+            createPhoto('Smoke residue on ceiling and upper walls', 16),
+            createPhoto('Soot deposit on dining table and horizontal surfaces', 17),
           ],
         },
       ],
       
       photos: [
-        createPhoto('Exterior showing fire department access', 18),
-        createPhoto('Kitchen fire damage overview', 19),
-        createPhoto('Cabinet charring and destruction', 20),
-        createPhoto('Ceiling damage assessment', 21),
-        createPhoto('Smoke damage in adjacent rooms', 22),
-        createPhoto('Emergency board-up completion', 23),
+        createPhoto('Exterior — fire dept. access point documented', 18),
+        createPhoto('Kitchen — overall loss extent, Day 1', 19),
+        createPhoto('Upper cabinet char and range hood damage', 20),
+        createPhoto('Ceiling framing exposed above range', 21),
+        createPhoto('Dining room — smoke migration and soot deposits', 22),
+        createPhoto('Board-up complete — rear kitchen window', 23),
       ],
       
       moisture: {
@@ -313,13 +313,12 @@ const createDemoJobs = () => {
         dateOfLoss: '2025-01-05',
         carrier: 'Liberty Mutual',
         adjuster: 'David Kim',
-        summary: 'Small mold growth discovered in bathroom behind toilet. Appears to be result of slow leak from supply line. Limited to approximately 3 square feet area. No structural damage observed.',
+        summary: 'Visible microbial growth on drywall substrate in 1st-floor bathroom — approximately 4–6 sq ft behind toilet. Growth consistent with sustained elevated moisture from a slow-running supply line compression fitting. Plumber confirmed repair prior to this assessment. Moisture source is resolved. No visible growth outside the bathroom. Remediation scope is localized — containment, drywall removal, and biocide treatment. No full-floor disruption anticipated.',
       },
       
       notes: {
-        general: 'Small localized mold growth in bathroom. Homeowner discovered issue during routine cleaning. Supply line leak identified and repaired by plumber prior to our arrival. Mold confined to drywall behind toilet. Quick remediation scheduled.',
-        basement: 'No basement access required for this job.',
-        scope: 'Small containment area, removal of affected drywall section (approximately 2ft x 2ft), HEPA vacuuming, antimicrobial treatment, and drywall replacement. Estimated 1-2 day job.',
+        general: 'Homeowner noticed discoloration behind toilet during cleaning. Called plumber first — supply line fitting replaced prior to our arrival; no active moisture present. Moisture meter readings on adjacent drywall elevated at 18–22% (reference material 9–11%). Growth limited to face paper and substrate of one drywall section. No odor in adjacent rooms; no visible cross-contamination to ceiling or floor tile.',
+        scope: 'Establish poly containment with negative air and HEPA filtration. Remove affected drywall with 12" clearance beyond visible growth boundary. Inspect framing and subfloor for secondary growth after demo. HEPA-vacuum all surfaces in containment. Apply EPA-registered biocide to all structural surfaces. Re-inspect framing 24 hours post-treatment. Post-remediation clearance required before reconstruction. Estimated 1–2 days.',
       },
       
       logNotes: {
@@ -328,13 +327,13 @@ const createDemoJobs = () => {
             atISO: yesterday.toISOString(),
             author: 'Office',
             source: 'call',
-            text: 'Initial inquiry about bathroom mold. Scheduled assessment for today.',
+            text: 'Homeowner reporting mold behind toilet — plumber already addressed the leak. Scheduled assessment for next morning.',
           },
           {
             atISO: now.toISOString(),
             author: 'Tom Wilson',
             source: 'note',
-            text: 'Assessment complete. Small contained area. Remediation can begin tomorrow.',
+            text: 'Assessment complete. Growth localized to drywall behind toilet — ~4–6 sq ft. No active moisture. Readings 18–22% on adjacent material. Containment and remediation scheduled for tomorrow AM.',
           },
         ],
       },
@@ -342,18 +341,18 @@ const createDemoJobs = () => {
       rooms: [
         {
           name: 'Bathroom',
-          overviewNotes: 'Small mold growth behind toilet from slow supply line leak.',
+          overviewNotes: 'Visible growth on drywall face and paper backing behind toilet. ~4–6 sq ft affected. Moisture source (supply line) confirmed repaired. Adjacent tile and subfloor have no visible growth. Elevated moisture readings on adjacent drywall — to be re-checked after removal.',
           photos: [
-            createPhoto('Mold growth on drywall', 24),
-            createPhoto('Supply line leak point', 25),
+            createPhoto('Visible mold growth on drywall behind toilet', 24),
+            createPhoto('Repaired supply line fitting — confirmed no active moisture', 25),
           ],
         },
       ],
       
       photos: [
-        createPhoto('Bathroom overview', 26),
-        createPhoto('Mold affected area close-up', 27),
-        createPhoto('Leak source identification', 28),
+        createPhoto('Bathroom overview — affected area location', 26),
+        createPhoto('Close-up — mold growth boundary on drywall', 27),
+        createPhoto('Moisture meter reading on adjacent drywall', 28),
       ],
       
       moisture: {
