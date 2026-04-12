@@ -22,10 +22,10 @@ export const WizardLayout = ({ children, title, subtitle }: WizardLayoutProps) =
       <div className="max-w-2xl mx-auto sm:py-8 sm:px-4">
         {/* Mobile: full-screen card. sm+: rounded floating card */}
         <div className="bg-white sm:shadow-xl sm:rounded-2xl overflow-hidden min-h-screen sm:min-h-0">
-          <div className="px-5 py-3 border-b border-gray-100">
+          <div className="px-5 py-4 border-b border-gray-100">
             <h1 className="text-lg font-bold text-gray-900 leading-tight">{title}</h1>
             {subtitle && (
-              <p className="text-xs text-gray-400 mt-0.5">{subtitle}</p>
+              <p className="text-sm text-gray-500 mt-1">{subtitle}</p>
             )}
           </div>
           {/* pb-28 keeps content clear of the sticky WizardNav footer */}

@@ -102,9 +102,9 @@ export const PhotosStep = () => {
                 type="button"
                 onClick={() => remove(idx)}
                 className={[
-                  'absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-black/50 text-white',
-                  'flex items-center justify-center text-xs leading-none',
-                  'opacity-0 group-hover:opacity-100 focus:opacity-100',
+                'absolute top-1.5 right-1.5 w-7 h-7 rounded-full bg-black/60 text-white',
+                'flex items-center justify-center text-xs leading-none',
+                'sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100',
                   'transition-opacity focus:outline-none',
                 ].join(' ')}
                 aria-label="Remove photo"

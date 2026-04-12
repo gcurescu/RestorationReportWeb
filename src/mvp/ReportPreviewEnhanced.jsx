@@ -443,7 +443,7 @@ const ReportPreview = () => {
       </div>
 
       {/* ── On-Screen Report Summary (excluded from PDF capture and browser print) ── */}
-      <div className="no-print max-w-4xl mx-auto px-4 pt-6 pb-4 space-y-4">
+      <div className="no-print max-w-4xl mx-auto px-4 pt-6 pb-24 sm:pb-6 space-y-5">
 
         {/* Hero Job Card */}
         <div className="bg-[#0C2D48] text-white rounded-2xl p-6 shadow-lg">
@@ -502,9 +502,9 @@ const ReportPreview = () => {
             { label: 'Equipment Placed', value: String((job.equipment?.dehus?.length || 0) + (job.equipment?.movers?.length || 0) + (job.equipment?.scrubbers?.length || 0)) },
             { label: 'Report Pages', value: String(totalPages) },
           ].map(({ label, value }) => (
-            <div key={label} className="bg-white rounded-xl border border-slate-200 px-4 py-3 shadow-sm text-center">
+            <div key={label} className="bg-white rounded-xl border border-slate-200 px-4 py-4 shadow-sm text-center">
               <div className="text-2xl font-bold text-slate-900">{value}</div>
-              <div className="text-xs text-slate-500 mt-0.5">{label}</div>
+              <div className="text-xs text-slate-500 mt-1">{label}</div>
             </div>
           ))}
         </div>
@@ -512,7 +512,7 @@ const ReportPreview = () => {
         {/* Executive Summary */}
         <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
           <h2 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">Executive Summary</h2>
-          <p className="text-slate-700 leading-relaxed text-sm">
+          <p className="text-slate-700 leading-relaxed text-[15px]">
             {job.claim?.summary || copy.summary}
           </p>
         </div>
@@ -521,9 +521,9 @@ const ReportPreview = () => {
         <div className="grid md:grid-cols-2 gap-4">
           <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
             <h2 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">Observations</h2>
-            <ul className="space-y-2.5">
+            <ul className="space-y-3">
               {copy.observations.map((obs, i) => (
-                <li key={i} className="flex items-start gap-2.5 text-sm text-slate-700">
+                <li key={i} className="flex items-start gap-2.5 text-sm text-slate-700 leading-relaxed">
                   <svg className="w-4 h-4 text-blue-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                   </svg>
@@ -534,9 +534,9 @@ const ReportPreview = () => {
           </div>
           <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
             <h2 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">Recommended Actions</h2>
-            <ol className="space-y-2.5">
+            <ol className="space-y-3">
               {copy.actions.map((action, i) => (
-                <li key={i} className="flex items-start gap-2.5 text-sm text-slate-700">
+                <li key={i} className="flex items-start gap-2.5 text-sm text-slate-700 leading-relaxed">
                   <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">{i + 1}</span>
                   {action}
                 </li>
@@ -608,6 +608,30 @@ const ReportPreview = () => {
         )}
 
       </div>
+
+      {/* Sticky mobile action bar — phones only, hidden during PDF gen and on print */}
+      {!generating && (
+        <div
+          className="no-print sm:hidden fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur border-t border-slate-200 px-4 flex gap-3"
+          style={{ paddingTop: 12, paddingBottom: 'max(12px, env(safe-area-inset-bottom))' }}
+        >
+          <button
+            onClick={() => navigate('/app/jobs')}
+            className="px-5 py-3 rounded-xl border border-slate-200 text-slate-600 text-sm font-medium min-h-[48px] hover:bg-slate-50 active:bg-slate-100 transition-colors shrink-0"
+          >
+            ← Jobs
+          </button>
+          <button
+            onClick={generatePDF}
+            className="flex-1 py-3 rounded-xl bg-blue-600 text-white text-sm font-semibold min-h-[48px] hover:bg-blue-700 active:bg-blue-800 transition-colors flex items-center justify-center gap-2 shadow-sm"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            Download PDF
+          </button>
+        </div>
+      )}
 
       {/* Report Container */}
       <div className="px-2 pb-8 sm:px-4">

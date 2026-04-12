@@ -25,7 +25,7 @@ export const StepIndicator = ({ currentStep, steps = LEGACY_STEPS }) => {
       {/* ── Mobile: slim progress bar + step name ── */}
       <div className="sm:hidden">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-semibold text-gray-800">
+          <span className="text-base font-semibold text-gray-900">
             {currentStepData?.name}
           </span>
           <span className="text-xs text-gray-400 tabular-nums">

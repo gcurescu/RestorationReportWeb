@@ -73,7 +73,7 @@ function HeroSection({ onNewJob }) {
       </p>
       <button
         onClick={onNewJob}
-        className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl shadow-sm hover:bg-blue-700 transition-colors min-h-[48px] text-sm"
+        className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-blue-600 text-white font-semibold rounded-2xl shadow-md hover:bg-blue-700 active:bg-blue-800 transition-colors min-h-[56px] text-base w-full sm:w-auto"
       >
         + Start a New Job
       </button>
@@ -132,12 +132,12 @@ function DemoJobCard({ job, onView }) {
   const lossConfig = getLossTypeConfig(job.claim?.typeOfLoss);
   const status = getJobStatus(job);
   const summary = job.claim?.summary || '';
-  const shortSummary = summary.length > 130 ? summary.slice(0, 127) + '…' : summary;
+  const shortSummary = summary.length > 160 ? summary.slice(0, 157) + '…' : summary;
 
   return (
-    <article className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+    <article className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
       {/* Loss type + Status row */}
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between mb-4">
         <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${lossConfig.bg} ${lossConfig.text}`}>
           {job.claim?.typeOfLoss || 'Unknown'} Damage
         </span>
@@ -147,19 +147,21 @@ function DemoJobCard({ job, onView }) {
       </div>
 
       {/* Address */}
-      <p className="text-[15px] font-semibold text-slate-900 leading-snug mb-0.5">
+      <p className="text-base font-semibold text-slate-900 leading-snug mb-1">
         {job.policyholder?.address || 'Address not provided'}
       </p>
 
       {/* Date of loss */}
-      <p className="text-xs text-slate-500 mb-3">
-        Date of loss:{' '}
-        {job.claim?.dateOfLoss ? formatDate(job.claim.dateOfLoss) : 'N/A'}
+      <p className="text-sm text-slate-500 mb-4">
+        Loss date:{' '}
+        <span className="font-medium text-slate-700">
+          {job.claim?.dateOfLoss ? formatDate(job.claim.dateOfLoss) : 'N/A'}
+        </span>
       </p>
 
       {/* Summary excerpt */}
       {shortSummary && (
-        <p className="text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-3 mb-4">
+        <p className="text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-4 mb-5">
           {shortSummary}
         </p>
       )}
@@ -167,7 +169,7 @@ function DemoJobCard({ job, onView }) {
       {/* Primary CTA */}
       <button
         onClick={() => onView(job.id)}
-        className="w-full py-3 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 active:bg-blue-800 transition-colors min-h-[48px]"
+        className="w-full py-3.5 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 active:bg-blue-800 transition-colors min-h-[52px]"
       >
         View Report →
       </button>
@@ -266,7 +268,13 @@ const JobsList = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <div className="text-slate-600">Loading jobs...</div>
+        <div className="flex flex-col items-center gap-3">
+          <svg className="animate-spin h-8 w-8 text-blue-500" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+          </svg>
+          <p className="text-sm text-slate-500">Loading jobs…</p>
+        </div>
       </div>
     );
   }
@@ -423,29 +431,37 @@ const JobsList = () => {
       {/* Content */}
       <div className="p-4 max-w-4xl mx-auto pb-20">
         {jobs.length === 0 ? (
-          <div className="bg-white rounded-lg border border-slate-200 p-8 text-center">
-            <div className="text-slate-400 text-4xl mb-4">📋</div>
-            <h2 className="text-xl font-semibold text-slate-900 mb-2">No jobs yet</h2>
-            <p className="text-slate-600 mb-4">
+          <div className="bg-white rounded-2xl border border-slate-200 p-10 text-center">
+            <div className="w-14 h-14 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-7 h-7 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <h2 className="text-lg font-semibold text-slate-900 mb-2">No jobs yet</h2>
+            <p className="text-slate-500 text-sm mb-6 max-w-xs mx-auto">
               Create your first restoration report to get started.
             </p>
             <button
               onClick={() => navigate('/app/new')}
-              className="px-4 py-2 rounded-md bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors min-h-[44px]"
+              className="px-6 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 active:bg-blue-800 transition-colors min-h-[48px] text-sm"
             >
-              Create New Job
+              + Create New Job
             </button>
           </div>
         ) : filteredJobs.length === 0 ? (
-          <div className="bg-white rounded-lg border border-slate-200 p-8 text-center">
-            <div className="text-slate-400 text-4xl mb-4">🔍</div>
-            <h2 className="text-xl font-semibold text-slate-900 mb-2">No matching jobs</h2>
-            <p className="text-slate-600 mb-4">
+          <div className="bg-white rounded-2xl border border-slate-200 p-10 text-center">
+            <div className="w-14 h-14 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-7 h-7 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <h2 className="text-lg font-semibold text-slate-900 mb-2">No matching jobs</h2>
+            <p className="text-slate-500 text-sm mb-6 max-w-xs mx-auto">
               Try adjusting your search terms or filters.
             </p>
             <button
               onClick={() => { setSearchTerm(''); setFilterType('all'); }}
-              className="px-4 py-2 rounded-md bg-slate-600 text-white font-medium hover:bg-slate-700 transition-colors"
+              className="px-6 py-3 rounded-xl bg-slate-600 text-white font-semibold hover:bg-slate-700 active:bg-slate-800 transition-colors min-h-[48px] text-sm"
             >
               Clear Filters
             </button>
@@ -554,22 +570,22 @@ const JobsList = () => {
                       <span>Updated: {formatDate(job.updatedAt)}</span>
                     </div>
 
-                    <div className="flex justify-end gap-3 pt-2 border-t border-slate-100">
+                    <div className="flex gap-2 pt-3 border-t border-slate-100">
                       <button
                         onClick={(e) => { e.stopPropagation(); navigate(`/app/job/${job.id}`); }}
-                        className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                        className="flex-1 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-semibold min-h-[44px] hover:bg-blue-700 active:bg-blue-800 transition-colors"
                       >
                         Open
                       </button>
                       <button
                         onClick={(e) => handleDuplicate(job.id, e)}
-                        className="text-green-600 hover:text-green-700 text-sm font-medium"
+                        className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-medium min-h-[44px] hover:bg-slate-50 active:bg-slate-100 transition-colors"
                       >
-                        Duplicate
+                        Copy
                       </button>
                       <button
                         onClick={(e) => handleDelete(job.id, e)}
-                        className="text-red-600 hover:text-red-700 text-sm font-medium"
+                        className="px-4 py-2.5 rounded-xl border border-red-100 text-red-500 text-sm font-medium min-h-[44px] hover:bg-red-50 active:bg-red-100 transition-colors"
                       >
                         Delete
                       </button>

@@ -18,32 +18,28 @@ export const WizardNav = ({
 
   return (
     <div
-      className="sticky bottom-0 bg-white/95 backdrop-blur border-t border-gray-100 px-5 flex justify-between items-center"
-      style={{ paddingTop: 12, paddingBottom: 'max(12px, env(safe-area-inset-bottom))' }}
+      className="sticky bottom-0 bg-white/95 backdrop-blur border-t border-gray-100 px-5 flex items-center gap-3"
+      style={{ paddingTop: 14, paddingBottom: 'max(14px, env(safe-area-inset-bottom))' }}
     >
       <button
         type="button"
         onClick={onBack}
         disabled={isFirstStep}
-        className={`min-w-[72px] px-4 py-2.5 text-sm font-medium rounded-xl transition-colors ${
+        className={`min-w-[88px] px-4 py-3 text-sm font-medium rounded-xl transition-colors ${
           isFirstStep
             ? 'text-gray-300 cursor-not-allowed'
-            : 'text-gray-600 hover:bg-gray-100 active:bg-gray-200'
+            : 'text-gray-600 border border-gray-200 hover:bg-gray-50 active:bg-gray-100'
         }`}
       >
-        Back
+        ← Back
       </button>
-
-      <span className="text-xs text-gray-400 tabular-nums">
-        {currentStep} / {totalSteps}
-      </span>
 
       {isLastStep ? (
         <button
           type="button"
           onClick={onSubmit}
           disabled={!canGoNext || isSubmitting}
-          className={`min-w-[130px] px-5 py-2.5 text-sm font-semibold rounded-xl transition-all ${
+          className={`flex-1 px-5 py-3 text-sm font-semibold rounded-xl transition-all ${
             canGoNext && !isSubmitting
               ? 'bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 shadow-sm'
               : 'bg-gray-200 text-gray-400 cursor-not-allowed'
@@ -65,7 +61,7 @@ export const WizardNav = ({
         <button
           type="button"
           onClick={onNext}
-          className={`min-w-[100px] px-5 py-2.5 text-sm font-semibold rounded-xl transition-all ${
+          className={`flex-1 px-5 py-3 text-sm font-semibold rounded-xl transition-all ${
             canGoNext
               ? 'bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 shadow-sm'
               : 'bg-gray-200 text-gray-400'
