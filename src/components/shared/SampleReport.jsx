@@ -242,14 +242,14 @@ function FullReportModal({ isOpen, onClose }) {
             .footer { position: relative; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-between; align-items: center; color: #475569; font: 400 9px Inter; margin-top: 16px; padding-top: 8px; border-top: 1px solid #E5E7EB; }
             .hr { height: 1px; background: #E5E7EB; margin: 12px 0; }
             .modal-h1 { font: 700 16px Montserrat, Inter, sans-serif; margin: 0 0 6px; }
-            .modal-h2 { font: 700 12px Montserrat, Inter, sans-serif; margin: 12px 0 6px; }
-            .modal-p { margin: 0 0 8px; line-height: 1.4; font-size: 11px; }
+            .modal-h2 { font: 700 13px Montserrat, Inter, sans-serif; margin: 12px 0 6px; }
+            .modal-p { margin: 0 0 8px; line-height: 1.5; font-size: 12px; }
             .kv { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
             .kv .panel { flex: 1; border: 1px solid #E5E7EB; padding: 8px; border-radius: 6px; background: #fff; }
-            .row { display: flex; justify-content: space-between; border-bottom: 1px solid #f0f2f5; padding: 4px 0; }
+            .row { display: flex; justify-content: space-between; border-bottom: 1px solid #f0f2f5; padding: 4px 0; gap: 8px; }
             .row:last-child { border-bottom: none; }
-            .k { color: #475569; font-size: 10px; }
-            .v { font-size: 10px; font-weight: 500; }
+            .k { color: #475569; font-size: 11px; flex: 1 1 60%; }
+            .v { font-size: 11px; font-weight: 500; flex: 0 0 auto; text-align: right; }
             .photos { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 8px; }
             .ph { background: #e5e7eb; border: 1px solid #E5E7EB; height: 120px; border-radius: 4px; position: relative; overflow: hidden; }
             .ph.blur::before { content: ""; position: absolute; inset: 0; background: linear-gradient(135deg, #cbd5e1, #94a3b8, #cbd5e1); filter: blur(4px) saturate(.9) brightness(1.05); transform: scale(1.06); }
@@ -258,10 +258,10 @@ function FullReportModal({ isOpen, onClose }) {
             .meta { font-size: 8px; color: #475569; text-align: center; margin-top: 2px; opacity: .85; }
             .video { background: #e5e7eb; border: 1px solid #E5E7EB; height: 160px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #475569; }
             .muted { background: #F8FAFC; padding: 8px; border-radius: 6px; border: 1px solid #E5E7EB; }
-            .toc { font: 500 10px Inter; white-space: pre-line; }
-            .table { width: 100%; border-collapse: collapse; font: 400 9px Inter; color: #0F172A; overflow-x: auto; }
-            .table th { background: #e2e8f0; border: 1px solid #E5E7EB; padding: 4px; text-align: left; font-weight: 600; font-size: 9px; }
-            .table td { border: 1px solid #E5E7EB; padding: 4px; font-size: 9px; }
+            .toc { font: 500 11px Inter; white-space: pre-line; }
+            .table { width: 100%; border-collapse: collapse; font: 400 10px Inter; color: #0F172A; }
+            .table th { background: #e2e8f0; border: 1px solid #E5E7EB; padding: 5px 4px; text-align: left; font-weight: 600; font-size: 10px; white-space: nowrap; }
+            .table td { border: 1px solid #E5E7EB; padding: 5px 4px; font-size: 10px; white-space: nowrap; }
             .stripe tr:nth-child(even) td { background: #f8fafc; }
             
             /* Desktop styles */
@@ -595,8 +595,8 @@ function FullReportModal({ isOpen, onClose }) {
               <div className="muted">
                 {healthSafetyItems.map((item, idx) => (
                   <div key={idx} className="row">
-                    <div className="k" style={{ width: '70%' }}>{item.question}</div>
-                    <div className="v" style={{ width: '30%', textAlign: 'right' }}>{item.answer}</div>
+                    <div className="k">{item.question}</div>
+                    <div className="v">{item.answer}</div>
                   </div>
                 ))}
               </div>
@@ -686,7 +686,7 @@ export default function SampleReport() {
             {/* Photos Grid */}
             <div>
               <h4 className="font-semibold text-slate-800 mb-2">Overview Photos</h4>
-              <div className="grid grid-cols-3 gap-1">
+              <div className="grid grid-cols-2 gap-1 sm:grid-cols-3">
                 {[
                   'Kitchen Overview',
                   'Refrigerator Wall', 
