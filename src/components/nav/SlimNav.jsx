@@ -32,11 +32,11 @@ export function SlimNav({ action, onLogoClick }) {
 
   const scrollToDemo = (e) => {
     e.preventDefault();
-    const el = document.getElementById('demo');
+    const el = document.getElementById('demo-card') || document.getElementById('demo');
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       setTimeout(() => {
-        const input = el.querySelector('input[name="name"]');
+        const input = el.querySelector('input[type="email"]');
         if (input && typeof input.focus === 'function') {
           try { input.focus({ preventScroll: true }); } catch { input.focus(); }
         }

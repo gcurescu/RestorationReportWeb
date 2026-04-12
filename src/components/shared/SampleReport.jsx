@@ -183,43 +183,21 @@ function DataTable({ columns, rows, className = "table stripe" }) {
   );
 }
 
-// Full PDF Modal Component
-function FullReportModal({ isOpen, onClose }) {
-  const [totalPages, setTotalPages] = useState(18);
-
-  useEffect(() => {
-    if (isOpen) {
-      // Count pages after render
-      setTimeout(() => {
-        const pageElements = document.querySelectorAll('.page');
-        setTotalPages(pageElements.length);
-      }, 100);
-    }
-  }, [isOpen]);
-
-  if (!isOpen) return null;
-
+// ─── Exported full report content (used by page + modal) ─────────────────────
+export function SampleReportContent() {
+  const [totalPages, setTotalPages] = useState(15);
   const isMobile = window.innerWidth < 768;
 
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-2 md:p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-6xl max-h-[95vh] md:max-h-[90vh] w-full overflow-hidden">
-        {/* Modal Header */}
-        <div className="flex items-center justify-between p-3 md:p-4 border-b border-slate-200 bg-slate-50">
-          <h3 className="text-base md:text-lg font-semibold text-slate-900">Sample Restoration Report</h3>
-          <button
-            onClick={onClose}
-            className="text-slate-400 hover:text-slate-600 transition-colors p-1 rounded-md hover:bg-slate-100"
-          >
-            <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
+  useEffect(() => {
+    setTimeout(() => {
+      const pageElements = document.querySelectorAll('.page');
+      setTotalPages(pageElements.length);
+    }, 100);
+  }, []);
 
-        {/* Modal Content - Scrollable */}
-        <div className="overflow-y-auto max-h-[calc(95vh-60px)] md:max-h-[calc(90vh-80px)] bg-gray-100">
-          <style jsx>{`
+  return (
+    <div className="bg-gray-100">
+      <style>{`
             .doc { max-width: 100%; margin: 0 auto; background: #ffffff; }
             .page { 
               max-width: 100%; 
@@ -616,6 +594,30 @@ function FullReportModal({ isOpen, onClose }) {
               </div>
             </DocPage>
           </div>
+    </div>
+  );
+}
+
+// ─── Modal wrapper ────────────────────────────────────────────────────────────
+function FullReportModal({ isOpen, onClose }) {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-2 md:p-4">
+      <div className="bg-white rounded-lg shadow-xl max-w-6xl max-h-[95vh] md:max-h-[90vh] w-full overflow-hidden">
+        <div className="flex items-center justify-between p-3 md:p-4 border-b border-slate-200 bg-slate-50">
+          <h3 className="text-base md:text-lg font-semibold text-slate-900">Sample Restoration Report</h3>
+          <button
+            onClick={onClose}
+            className="text-slate-400 hover:text-slate-600 transition-colors p-1 rounded-md hover:bg-slate-100"
+          >
+            <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div className="overflow-y-auto max-h-[calc(95vh-60px)] md:max-h-[calc(90vh-80px)]">
+          <SampleReportContent />
         </div>
       </div>
     </div>

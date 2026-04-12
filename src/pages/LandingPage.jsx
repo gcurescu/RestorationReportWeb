@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { SlimNav } from '../components/nav/SlimNav';
 import { Hero } from '../components/hero/Hero';
 import { SocialProof } from '../components/proof/SocialProof';
@@ -206,7 +207,7 @@ export default function LandingPage() {
             </div>
 
             {/* Right — form card */}
-            <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8">
+            <div id="demo-card" className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8">
               <h3 className="text-xl font-bold text-slate-900 mb-1">Get Early Access</h3>
               <p className="text-slate-500 text-sm mb-6">We'll reach out within 1 business day to set up a walkthrough.</p>
               <DemoRequestForm id="demo" source="organic-demo-section" />
@@ -228,18 +229,12 @@ export default function LandingPage() {
             <SampleReport />
           </div>
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-            <button
-              onClick={() => {
-                const el = document.querySelector('[data-sample-report]');
-                if (el) {
-                  const btn = el.querySelector('button');
-                  if (btn) btn.click();
-                }
-              }}
+            <Link
+              to="/sample"
               className="inline-flex items-center justify-center bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-medium shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-600 text-sm transition-colors"
             >
               View Full Sample Report →
-            </button>
+            </Link>
             <a
               href="/app/jobs?demo=1"
               className="inline-flex items-center justify-center bg-slate-100 text-slate-700 px-6 py-3 rounded-lg hover:bg-slate-200 font-medium shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slate-600 text-sm transition-colors"
@@ -354,8 +349,16 @@ export default function LandingPage() {
             <button
               type="button"
               onClick={() => {
-                const el = document.getElementById('demo');
-                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                const el = document.getElementById('demo-card') || document.getElementById('demo');
+                if (el) {
+                  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  setTimeout(() => {
+                    const input = el.querySelector('input[type="email"]');
+                    if (input) {
+                      try { input.focus({ preventScroll: true }); } catch { input.focus(); }
+                    }
+                  }, 400);
+                }
               }}
               className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-600"
             >

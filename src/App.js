@@ -7,6 +7,7 @@ import AdLandingPage from './pages/AdLandingPage.jsx';
 import { JobWizard } from './features/job-wizard/JobWizard';
 import JobsList from './mvp/JobsList.jsx';
 import ReportPreview from './mvp/ReportPreviewEnhanced.jsx';
+import SampleReportPage from './pages/SampleReportPage.jsx';
 import './App.css';
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
           <Route path="/app/new" element={<JobWizard />} />
           <Route path="/app/jobs" element={<JobsList />} />
           <Route path="/app/job/:id" element={<ReportPreview />} />
+          <Route path="/sample" element={<SampleReportPage />} />
         </Routes>
       </BrowserRouter>
       <Analytics />
