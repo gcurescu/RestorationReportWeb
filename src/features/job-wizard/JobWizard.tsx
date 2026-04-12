@@ -4,73 +4,98 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
 import { debounce } from '../../lib/utils';
 
-import { JobSchema, defaultJobValues } from '../../schemas/job';
-import { saveDraft, loadDraft, clearDraft, hasDraft } from '../../lib/drafts';
+import { MvpJobSchema, MvpJob, defaultMvpJobValues, defaultJobValues } from '../../schemas/job';
 import { saveJob } from '../../mvp/storage';
 
 import { WizardLayout } from '../../components/wizard/WizardLayout';
 import { StepIndicator } from '../../components/wizard/StepIndicator';
 import { WizardNav } from '../../components/wizard/WizardNav';
 
-import { CaseInfoStep } from './steps/CaseInfoStep';
-import { PropertyPolicyStep } from './steps/PropertyPolicyStep';
-import { AffectedAreasStep } from './steps/AffectedAreasStep';
-import { EquipmentReadingsStep } from './steps/EquipmentReadingsStep';
-import { PhotosNotesStep } from './steps/PhotosNotesStep';
-import { CostsSignoffStep } from './steps/CostsSignoffStep';
-import { ReviewSubmitStep } from './steps/ReviewSubmitStep';
+import { JobTypeStep } from './steps/mvp/JobTypeStep';
+import { AreasChipStep } from './steps/mvp/AreasChipStep';
+import { DescriptionStep } from './steps/mvp/DescriptionStep';
+import { PhotosStep } from './steps/mvp/PhotosStep';
+import { PreviewStep } from './steps/mvp/PreviewStep';
 
-const DEBUG = false; // Set to true for development debugging
-const TOTAL_STEPS = 7;
+// ─── Draft helpers (separate key so the MVP draft doesn't clobber the full wizard) ──
+const MVP_DRAFT_KEY = 'rr-mvp-draft';
 
-const stepComponents: Record<number, React.ComponentType<any>> = {
-  1: CaseInfoStep,
-  2: PropertyPolicyStep,
-  3: AffectedAreasStep,
-  4: EquipmentReadingsStep,
-  5: PhotosNotesStep,
-  6: CostsSignoffStep,
-  7: ReviewSubmitStep,
+const saveMvpDraft = (data: Partial<MvpJob>): void => {
+  try {
+    localStorage.setItem(MVP_DRAFT_KEY, JSON.stringify(data));
+  } catch {}
 };
 
-// Field mapping matching actual job.ts schema
-const fieldsForStep = (step: number): string[] => {
-  switch (step) {
-    case 1: // Case Info
-      return [
-        'jobName',
-        'claimNumber',
-        'lossType',
-        'dateOfLoss',
-        'inspectorName',
-        'companyName',
-        'contact.phone',
-        'contact.email',
-        'contact.address',
-      ];
-    case 2: // Property & Policy
-      return [
-        'property.address',
-        'property.insured',
-        // Optional fields are okay to include; they won't block next if valid-or-empty:
-        'property.insurer',
-        'property.policyNumber',
-        'property.deductible',
-        'property.coverage',
-        'property.adjuster',
-      ];
-    case 3: // Affected Areas
-      return ['areas']; // (Your schema currently makes this optional; gating still works.)
-    case 4: // Equipment & Readings
-      return ['equipment', 'moisture']; // both are optional in schema; gating will pass if empty
-    case 5: // Photos & Notes
-      return ['photos', 'notes'];
-    case 6: // Costs & Signoff
-      return ['costs', 'signoff'];
-    case 7: // Review (full form validation happens on submit)
-    default:
-      return [];
+const loadMvpDraft = (): Partial<MvpJob> | null => {
+  try {
+    const raw = localStorage.getItem(MVP_DRAFT_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
   }
+};
+
+const clearMvpDraft = (): void => {
+  try {
+    localStorage.removeItem(MVP_DRAFT_KEY);
+  } catch {}
+};
+
+const hasMvpDraft = (): boolean => localStorage.getItem(MVP_DRAFT_KEY) !== null;
+
+// ─── Wizard config ────────────────────────────────────────────────────────────
+
+const MVP_STEPS = [
+  { id: 1, name: 'Job Type' },
+  { id: 2, name: 'Affected Areas' },
+  { id: 3, name: 'Description' },
+  { id: 4, name: 'Photos' },
+  { id: 5, name: 'Preview' },
+];
+
+const TOTAL_STEPS = MVP_STEPS.length;
+
+/** Fields that must pass validation before advancing from a given step.
+ *  Only step 1 (lossType) is truly required in the MVP flow. */
+const fieldsForStep = (step: number): string[] => {
+  if (step === 1) return ['lossType'];
+  return [];
+};
+
+/** Merges MVP form data into a full job-compatible shape for storage.
+ *  Required fields not collected by the MVP wizard are auto-generated. */
+const buildJobPayload = (mvp: MvpJob) => {
+  const dateStr = new Date().toISOString().split('T')[0];
+  const autoId = `DEMO-${Date.now().toString(36).toUpperCase()}`;
+  return {
+    ...defaultJobValues,
+    lossType: mvp.lossType,
+    jobName: `${mvp.lossType} Damage — ${dateStr}`,
+    claimNumber: autoId,
+    dateOfLoss: dateStr,
+    inspectorName: 'Inspector',
+    companyName: 'Restoration Report',
+    contact: { phone: '', email: '', address: '' },
+    property: { address: '', insured: '' },
+    areas: mvp.areas ?? [],
+    notes: {
+      general: mvp.notes?.general ?? '',
+      scope: '',
+      kitchen: '',
+      basement: '',
+    },
+    photos: mvp.photos ?? [],
+  };
+};
+
+// ─── Component ────────────────────────────────────────────────────────────────
+
+const stepComponents: Record<number, React.ComponentType<any>> = {
+  1: JobTypeStep,
+  2: AreasChipStep,
+  3: DescriptionStep,
+  4: PhotosStep,
+  5: PreviewStep,
 };
 
 export const JobWizard = () => {
@@ -80,214 +105,151 @@ export const JobWizard = () => {
   const [canGoNext, setCanGoNext] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Initialize form with draft data or defaults
-  const initializeForm = () => {
-    const draft = loadDraft();
-    return { 
-      ...defaultJobValues, 
-      ...(draft || {}) 
-    };
+  const initializeForm = (): Partial<MvpJob> => {
+    const draft = loadMvpDraft();
+    if (draft?.lossType) {
+      return { ...defaultMvpJobValues, ...draft };
+    }
+    return { ...defaultMvpJobValues };
   };
 
   const form = useForm<any>({
-    resolver: zodResolver(JobSchema),
+    resolver: zodResolver(MvpJobSchema),
     defaultValues: initializeForm(),
-    mode: 'onBlur', // Changed from 'onChange' to reduce re-renders
+    mode: 'onBlur',
   });
 
   const { watch, trigger, getValues, formState } = form;
 
-  // Add unload guard when form is dirty
+  // Unload guard when form has unsaved data
   useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+    const handler = (e: BeforeUnloadEvent) => {
       if (formState.isDirty) {
         e.preventDefault();
         e.returnValue = '';
       }
     };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener('beforeunload', handler);
+    return () => window.removeEventListener('beforeunload', handler);
   }, [formState.isDirty]);
 
-  // Create a stable debounced function
-  const debouncedSaveDraft = useMemo(
-    () => debounce((data: any) => {
-      if (DEBUG) console.log('Auto-saving draft...', Object.keys(data));
-      saveDraft(data);
-    }, 2000), // Increased to 2 seconds
+  // Auto-save draft (debounced, 1.5 s)
+  const debouncedSave = useMemo(
+    () => debounce((data: any) => saveMvpDraft(data), 1500),
     []
   );
-
-  // Watch for form changes and auto-save - but less frequently
   useEffect(() => {
-    const subscription = watch((data, { name }) => {
-      if (DEBUG) console.log('Field changed:', name);
-      debouncedSaveDraft(data);
-    });
-    return () => subscription.unsubscribe();
-  }, [watch, debouncedSaveDraft]);
+    const sub = watch((data) => debouncedSave(data));
+    return () => sub.unsubscribe();
+  }, [watch, debouncedSave]);
 
-  // Validate current step - only when step changes or on manual trigger
+  // Validate fields relevant to the current step
   const validateCurrentStep = useCallback(async () => {
-    if (DEBUG) console.log('Validating step:', currentStep);
-    if (currentStep === 7) {
-      // Review step - validate everything
-      const isValid = await trigger();
-      if (DEBUG) console.log('Review step validation result:', isValid);
-      setCanGoNext(isValid);
+    const fields = fieldsForStep(currentStep);
+    if (fields.length > 0) {
+      const ok = await trigger(fields as any);
+      setCanGoNext(ok);
     } else {
-      // Get fields to validate for current step
-      const fieldsToValidate = fieldsForStep(currentStep);
-      if (DEBUG) console.log('Validating fields:', fieldsToValidate);
-      if (fieldsToValidate.length > 0) {
-        const isValid = await trigger(fieldsToValidate as any);
-        if (DEBUG) console.log('Step validation result:', isValid);
-        setCanGoNext(isValid);
-      } else {
-        if (DEBUG) console.log('No validation needed for this step');
-        setCanGoNext(true);
-      }
+      setCanGoNext(true);
     }
   }, [currentStep, trigger]);
 
-  // Only validate when step changes
   useEffect(() => {
     validateCurrentStep();
   }, [currentStep, validateCurrentStep]);
 
   const handleNext = async () => {
-    const fieldsToValidate = fieldsForStep(currentStep);
-    
-    if (fieldsToValidate.length > 0) {
-      const isValid = await trigger(fieldsToValidate as any, { shouldFocus: true });
-      if (!isValid) {
-        // Re-validate to update canGoNext state
-        validateCurrentStep();
-        return;
-      }
+    const fields = fieldsForStep(currentStep);
+    if (fields.length > 0) {
+      const ok = await trigger(fields as any, { shouldFocus: true });
+      if (!ok) return;
     }
-
-    // Save draft and move to next step
-    saveDraft(getValues());
-    setCurrentStep(prev => Math.min(prev + 1, TOTAL_STEPS));
+    saveMvpDraft(getValues());
+    setCurrentStep((p) => Math.min(p + 1, TOTAL_STEPS));
   };
 
-  const handleBack = () => {
-    setCurrentStep(prev => Math.max(prev - 1, 1));
-  };
+  const handleBack = () => setCurrentStep((p) => Math.max(p - 1, 1));
 
   const handleJobSubmit = async () => {
     setIsSubmitting(true);
     setErrorMessage(null);
-    
     try {
-      // Validate entire form
-      if (DEBUG) console.log('Starting full form validation...');
-      const isValid = await trigger();
-      if (DEBUG) console.log('Form validation result:', isValid);
-      
-      if (!isValid) {
-        if (DEBUG) console.log('Form validation failed. Errors:', form.formState.errors);
-        setIsSubmitting(false);
-        setErrorMessage('Please check the form for errors and fix them before submitting.');
-        // Scroll to top to show error
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        return;
-      }
-
-      const formData = getValues();
-      if (DEBUG) console.log('Submitting form data:', formData);
-      
-      // Save the job
-      const jobId = await saveJob(formData);
-      if (DEBUG) console.log('Job saved with ID:', jobId);
-      
-      // Clear the draft
-      clearDraft();
-      
-      // Navigate to job detail
+      const payload = buildJobPayload(getValues());
+      const jobId = await saveJob(payload);
+      clearMvpDraft();
       navigate(`/app/job/${jobId}`);
-    } catch (error) {
-      if (DEBUG) console.error('Failed to save job:', error);
-      setErrorMessage('Failed to save job. Please try again.');
+    } catch (err) {
+      setErrorMessage('Failed to save the report. Please try again.');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleEditStep = (step: number) => {
-    setCurrentStep(step);
-  };
-
   const CurrentStepComponent = stepComponents[currentStep];
-
-  // Show draft recovery prompt if draft exists and we're on step 1
-  const showDraftPrompt = currentStep === 1 && hasDraft();
+  const isLastStep = currentStep === TOTAL_STEPS;
+  const showDraftBanner = currentStep === 1 && hasMvpDraft();
 
   return (
     <FormProvider {...form}>
-      <WizardLayout title="New Restoration Job">
+      <WizardLayout title="New Report" subtitle="Takes about 60 seconds">
+        {/* Error banner */}
         {errorMessage && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-md">
-            <div className="flex">
-              <div className="flex-shrink-0">
-                <svg className="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <div className="ml-3 flex-1">
-                <h3 className="text-sm font-medium text-red-800">
-                  Error
-                </h3>
-                <div className="mt-2 text-sm text-red-700">
-                  <p>{errorMessage}</p>
-                </div>
-              </div>
-              <div className="ml-3">
-                <button
-                  type="button"
-                  onClick={() => setErrorMessage(null)}
-                  className="inline-flex rounded-md bg-red-50 p-1.5 text-red-500 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:ring-offset-red-50"
-                >
-                  <span className="sr-only">Dismiss</span>
-                  <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-        
-        {showDraftPrompt && (
-          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-md">
-            <div className="flex">
-              <div className="flex-shrink-0">
-                <svg className="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <div className="ml-3">
-                <h3 className="text-sm font-medium text-blue-800">
-                  Draft Found
-                </h3>
-                <div className="mt-2 text-sm text-blue-700">
-                  <p>We found a saved draft of your job. Your progress has been automatically restored.</p>
-                </div>
-              </div>
-            </div>
+          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3">
+            <svg
+              className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                clipRule="evenodd"
+              />
+            </svg>
+            <p className="text-sm text-red-700 flex-1">{errorMessage}</p>
+            <button
+              type="button"
+              onClick={() => setErrorMessage(null)}
+              className="text-red-400 hover:text-red-600 flex-shrink-0"
+            >
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fillRule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </button>
           </div>
         )}
 
-        <StepIndicator currentStep={currentStep} />
-        
-        <div className="min-h-96">
-          <CurrentStepComponent 
-            onEditStep={currentStep === 7 ? handleEditStep : undefined}
-            onValidate={currentStep === 7 ? validateCurrentStep : undefined}
-            onSubmit={currentStep === 7 ? handleJobSubmit : undefined}
+        {/* Draft restored banner */}
+        {showDraftBanner && (
+          <div className="mb-4 p-3 bg-blue-50 border border-blue-100 rounded-xl flex items-center gap-2.5">
+            <svg
+              className="w-4 h-4 text-blue-400 flex-shrink-0"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fillRule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                clipRule="evenodd"
+              />
+            </svg>
+            <p className="text-xs text-blue-700">
+              Draft restored — your progress was saved automatically.
+            </p>
+          </div>
+        )}
+
+        <StepIndicator currentStep={currentStep} steps={MVP_STEPS} />
+
+        <div className="min-h-80">
+          <CurrentStepComponent
+            onSubmit={isLastStep ? handleJobSubmit : undefined}
+            isSubmitting={isLastStep ? isSubmitting : undefined}
           />
         </div>
 
@@ -299,9 +261,11 @@ export const JobWizard = () => {
           onNext={handleNext}
           onBack={handleBack}
           onSubmit={handleJobSubmit}
-          onValidate={validateCurrentStep}
+          onValidate={undefined}
+          submitLabel="Preview Report"
         />
       </WizardLayout>
     </FormProvider>
   );
 };
+

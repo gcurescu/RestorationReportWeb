@@ -298,3 +298,66 @@ export const defaultJobValues = {
 };
 
 export type Job = z.infer<typeof JobSchema>;
+
+// ─── MVP Wizard Schema ────────────────────────────────────────────────────────
+// Lightweight schema for the quick-entry (5-step) MVP flow.
+// Only lossType is required; every other field is collected progressively and
+// is optional so the form stays fast and low-friction.
+export const MvpJobSchema = z.object({
+  lossType: z
+    .string()
+    .min(1, 'Please select a damage type')
+    .refine((v) => ['Water', 'Fire', 'Mold'].includes(v), {
+      message: 'Invalid damage type',
+    }),
+
+  areas: z
+    .array(
+      z.object({
+        name: z.string().optional(),
+        category: z.string().optional(),
+        class: z.string().optional(),
+        materials: z.string().optional(),
+        cause: z.string().optional(),
+        overviewNotes: z.string().optional(),
+      })
+    )
+    .optional()
+    .default([]),
+
+  notes: z
+    .object({
+      general: z.string().optional(),
+      scope: z.string().optional(),
+      kitchen: z.string().optional(),
+      basement: z.string().optional(),
+    })
+    .optional(),
+
+  photos: z
+    .array(
+      z.object({
+        caption: z.string().optional(),
+        file: z.string(),
+        time: z.string().optional(),
+      })
+    )
+    .optional()
+    .default([]),
+});
+
+export const defaultMvpJobValues = {
+  lossType: '',
+  areas: [] as Array<{
+    name?: string;
+    category?: string;
+    class?: string;
+    materials?: string;
+    cause?: string;
+    overviewNotes?: string;
+  }>,
+  notes: { general: '', scope: '', kitchen: '', basement: '' },
+  photos: [] as Array<{ caption?: string; file: string; time?: string }>,
+};
+
+export type MvpJob = z.infer<typeof MvpJobSchema>;
