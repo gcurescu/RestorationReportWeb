@@ -8,14 +8,10 @@ const JOBS_KEY = 'rr_jobs';
 const DEMO_FLAG_KEY = 'rr_demo_mode';
 
 /**
- * Check if the app is in demo mode
- * @returns {boolean} true if ?demo=1 is in the URL
+ * Check if the app is in demo mode.
+ * /app/jobs is always the demo experience — returns true unconditionally.
  */
-export const isDemoMode = () => {
-  if (typeof window === 'undefined') return false;
-  const params = new URLSearchParams(window.location.search);
-  return params.get('demo') === '1';
-};
+export const isDemoMode = () => true;
 
 /**
  * Generate a unique ID for demo jobs
